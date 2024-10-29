@@ -1,14 +1,31 @@
 ### WindUI 
 
-## Using UI Library
-
-
 <img src="Images/ui.jpg" width="100%">
 
 ### Credits:
 - Dawid 
 
+
+### Discord: https://discord.gg/VGws6ms6
+
+## How to change it?
+1. Clone repo
+```
+git clone https://github.com/Footagesus/WindUI.git
+```
+
+2. Edit
+3. Run `npm run build`
+
+For client run `npm run dev`
+
 ### ⚠️ Full example you can find in Example.lua
+
+
+
+
+
+## Using UI Library
 
 1. Connect UI Library
 ```lua
