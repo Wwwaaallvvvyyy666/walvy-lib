@@ -1,4 +1,4 @@
-## ⚠️ Full example you can find in Example.lua
+## ⚠️ Full example you can find in [Example.lua](./Example.lua)
 
 
 # Using UI Library
