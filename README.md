@@ -2,7 +2,11 @@
 
 ## Using UI Library
 
+
 <img src="Images/ui.jpg" width="100%">
+
+### Credits:
+- Dawid 
 
 ### ⚠️ Full example you can find in Example.lua
 
