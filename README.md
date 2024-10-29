@@ -257,6 +257,8 @@ Window:AddTheme({
 })
 ```
 
+<img src="Images/numbers.png" width="100%">
+
 - Use Theme
 ```lua
 Window:SetTheme("Dark") -- Theme
