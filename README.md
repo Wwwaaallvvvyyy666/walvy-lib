@@ -10,7 +10,7 @@
 
 ## How to change it?
 1. Clone repo
-```
+```bash
 git clone https://github.com/Footagesus/WindUI.git
 ```
 
