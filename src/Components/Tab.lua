@@ -113,7 +113,7 @@ function TabModule.New(Config)
 	
 	function Tab:Paragraph(ElementConfig)
 	    local Paragraph = require("../Components/Element")({
-            Title = ElementConfig.Title,
+            Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
             Parent = Tab.UIElements.ContainerFrame,
             Theme = TabModule.Window.Theme,
