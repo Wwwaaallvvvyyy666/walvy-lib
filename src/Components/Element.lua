@@ -1,0 +1,132 @@
+local Creator = require("../Creator")
+local New = Creator.New
+local Tween = Creator.Tween
+
+return function(Config)
+    local Element = {
+        Title = Config.Title or "Element",
+        Desc = Config.Desc or nil,
+        Hover = Config.Hover,
+        UIPadding = 10,
+        UIElements = {}
+    }
+    
+    Element.UIElements.Main = New("TextButton", {
+        Size = UDim2.new(1,0,0,0),
+        AutomaticSize = "Y",
+        BackgroundTransparency = 0.98,
+        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
+        ThemeTag = {
+            BackgroundColor3 = "Text"
+        }
+    }, {
+        New("UICorner", {
+            CornerRadius = UDim.new(0,6),
+        }),
+        New("Frame", {
+            Size = UDim2.new(0,0,0,0),
+            AutomaticSize = "XY",
+            --AnchorPoint = Vector2.new(0,0.5),
+            --Position = UDim2.new(0,0,0.5,0),
+            BackgroundTransparency = 1,
+            Name = "Title"
+        }, {
+            New("UIListLayout", {
+                Padding = UDim.new(0,6),
+                --VerticalAlignment = "Left",
+            }),
+            New("TextLabel", {
+                Text = Element.Title,
+                TextColor3 = Color3.fromHex(Config.Theme.Text),
+                ThemeTag = {
+                    TextColor3 = "Text"
+                },
+                TextSize = 15, 
+                TextWrapped = true,
+                TextXAlignment = "Left",
+                Size = UDim2.new(1,-Config.TextOffset,0,0),
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                BackgroundTransparency = 1,
+                AutomaticSize = "Y"
+            })
+        }),
+        New("Frame", {
+            Size = UDim2.new(1,Element.UIPadding*2,1,Element.UIPadding*2+4),
+            BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
+            ThemeTag = {
+                BackgroundColor3 = "Text"
+            },
+            Position = UDim2.new(0,-Element.UIPadding,0,-Element.UIPadding-2),
+            BackgroundTransparency = 1,
+            Name = "Highlight"
+        }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,6),
+            }),
+        }),
+        New("UIPadding", {
+            PaddingTop = UDim.new(0,Element.UIPadding+2),
+            PaddingLeft = UDim.new(0,Element.UIPadding),
+            PaddingRight = UDim.new(0,Element.UIPadding),
+            PaddingBottom = UDim.new(0,Element.UIPadding+2),
+        }),
+        New("UIStroke", {
+            Thickness = 0.8,
+            Color = Color3.fromHex(Config.Theme.Text),
+            ThemeTag = {
+                Color = "Text",
+            },
+            Transparency = 0.94,
+            ApplyStrokeMode = "Border",
+        })
+    })
+
+    Element.UIElements.MainContainer = New("Frame", {
+        Size = UDim2.new(1,0,0,0),
+        AutomaticSize = "Y",
+        BackgroundTransparency = 1,
+        Parent = Config.Parent,
+    }, {
+        Element.UIElements.Main,
+        New("UIPadding", {
+            PaddingTop = UDim.new(0,1),
+            PaddingLeft = UDim.new(0,1),
+            PaddingRight = UDim.new(0,1),
+            PaddingBottom = UDim.new(0,1),
+        })
+    })
+    
+    if Element.Desc then
+        local Desc = New("TextLabel", {
+            Text = Element.Desc,
+            TextColor3 = Color3.fromHex(Config.Theme.Text),
+            ThemeTag = {
+                TextColor3 = "Text"
+            },
+            TextTransparency = 0.4,
+            TextSize = 15,
+            TextWrapped = true,
+            TextXAlignment = "Left",
+            Size = UDim2.new(1,-Config.TextOffset,0,0),
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+            BackgroundTransparency = 1,
+            AutomaticSize = "Y",
+            Parent = Element.UIElements.Main.Title
+        })
+    else
+        Element.UIElements.Main.Title.AnchorPoint = Vector2.new(0,0.5)
+        Element.UIElements.Main.Title.Position = UDim2.new(0,0,0.5,0)
+    end
+    
+    if Element.Hover then
+        Element.UIElements.Main.MouseEnter:Connect(function()
+            Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 0.97}):Play()
+        end)
+        Element.UIElements.Main.MouseLeave:Connect(function()
+            Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 1}):Play()
+        end)
+    end
+    
+    
+    return Element
+end

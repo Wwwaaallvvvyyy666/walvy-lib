@@ -1,0 +1,13 @@
+{
+  "name": "windui",
+  "version": "1.0.0",
+  "main": "main.lua",
+  "scripts": {
+    "build": "darklua process ./src/init.lua ./dist/main.lua --config ./darklua.config.json && lua ./build/init.lua",
+    "dev": "darklua process ./main.lua ./dist/main.lua --config ./darklua.config.json && lua ./build/init.lua"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
