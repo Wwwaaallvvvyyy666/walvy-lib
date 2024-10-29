@@ -52,6 +52,7 @@ local Window = WindUI:CreateWindow({
 | Title        | string  | "UI Library"                      |
 | Icon         | string  | nil                               |
 | Author       | string  | nil                               |
+| Folder       | string  | "WindUI"                          |
 | Size         | UDim2   | UDim2.fromOffset(560,460)         |
 | Transparent  | boolean | false                             |
 | Theme        | string  | "Dark"                            |
