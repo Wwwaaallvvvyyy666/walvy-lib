@@ -27,11 +27,16 @@ For client run `npm run dev`
 
 ## Using UI Library
 
-1. Connect UI Library
+1. Connect UI Library (using selected version)
 ```lua
 local Version = "1.0.0"
 local WindUI = loadstring(game:HttpGetAsync("https://github.com/Footagesus/WindUI/releases/download/" .. Version .. "/main.lua"))()
 ```
+or use latest version
+```lua
+local WindUI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+```
+
 
 2. Creating Window
 ```lua

@@ -68,7 +68,7 @@ function TabModule.New(Config)
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
             Image = Creator.Icon(Tab.Icon),
-            Size = UDim2.new(0,22,0,22),
+            Size = UDim2.new(0,20,0,20),
             LayoutOrder = 1,
             ImageColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
             ThemeTag = {

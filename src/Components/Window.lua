@@ -191,7 +191,9 @@ return function(Config)
     })
     
     Window.UIElements.Main = New("Frame", {
-        Size = Window.Size,
+        Size = UDim2.new(
+                    0, math.clamp(Window.Size.X.Offset, 400, 700),
+                    0, math.clamp(Window.Size.Y.Offset, 350, 520)),
         Position = Window.Position,
         BackgroundTransparency = 1,
         Parent = Config.Parent,
@@ -387,6 +389,7 @@ return function(Config)
         Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        
         Window.UIElements.Main.Visible = true
     end
     function Window:Close()
@@ -417,7 +420,10 @@ return function(Config)
     end)
     MinimizeButton.MouseButton1Click:Connect(function()
         Window:Close()
-        OpenButton.Visible = true
+        task.spawn(function()
+            task.wait(.3)
+            OpenButton.Visible = true
+        end)
         if not Notified then
             Notified = not Notified
             Config.WindUI:Notify({
@@ -475,7 +481,7 @@ return function(Config)
                 Tween(Window.UIElements.Main, 0.06, {
                     Size = UDim2.new(
                     0, math.clamp(newSize.X.Offset, 400, 700),
-                    0, math.clamp(newSize.Y.Offset, 350, 650)
+                    0, math.clamp(newSize.Y.Offset, 350, 520)
                 )}):Play()
             end
         end

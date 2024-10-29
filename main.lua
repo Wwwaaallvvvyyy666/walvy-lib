@@ -2,10 +2,10 @@ local WindUI = require("./src/init")
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
-    --Icon = "image", -- Url or rbxassetid or lucide
-    --Author = ".ftgs", -- Author & Creator
+    Icon = "image", -- Url or rbxassetid or lucide
+    Author = ".ftgs", -- Author & Creator
     Folder = "CloudHub", -- Folder name for saving data
-    Size = UDim2.fromOffset(580,460), -- UI Size
+    Size = UDim2.fromOffset(999,999), -- UI Size
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
@@ -13,24 +13,30 @@ local Window = WindUI:CreateWindow({
 
 -- Tabs
 
+--- Section for Tabs
+
 local MainTab = Window:Tab({
     Title = "Main",
     Icon = "folder",
 })
+
 local EmptyTab = Window:Tab({
     Title = "Empty Tab",
     Icon = "frown",
 })
+
 local EmptyTab2 = Window:Tab({
     Title = "Tab Without icon",
 })
-local WindowTab = Window:Tab({
-    Title = "Window Configuration",
-    Icon = "settings",
-})
+
 local NotificationTab = Window:Tab({
     Title = "Notification Tab",
     Icon = "bell",
+})
+
+local WindowTab = Window:Tab({
+    Title = "Window Configuration",
+    Icon = "settings",
 })
 
 
