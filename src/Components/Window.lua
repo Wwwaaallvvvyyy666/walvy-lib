@@ -387,6 +387,7 @@ return function(Config)
         Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        Window.UIElements.Main.Visible = true
     end
     function Window:Close()
         local Close = {}
@@ -397,6 +398,11 @@ return function(Config)
         Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        
+        task.spawn(function()
+            task.wait(0.25)
+            Window.UIElements.Main.Visible = false
+        end)
         
         function Close:Destroy()
             task.wait(0.25)
