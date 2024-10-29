@@ -11,7 +11,7 @@ return function(Config)
     local Window = {
         Title = Config.Title or "UI Library",
         Author = Config.Author,
-        Icon = Config.Icon or "",
+        Icon = Config.Icon,
         Folder = Config.Folder or "WindUI",
         Size = Config.Size or UDim2.fromOffset(560, 460),
         Transparent = Config.Transparent or false,
