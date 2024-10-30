@@ -89,14 +89,23 @@ function WindUI:CreateWindow(Config)
 		    WindUI.Theme = Themes[Value]
 		    Creator.SetTheme(Themes[Value])
 		    Creator.UpdateTheme()
+		    
+		    return Themes[Value]
 	    end
+	    return nil
     end
     
     function Window:GetThemes()
         return Themes
     end
     function Window:GetCurrentTheme()
-        return Window.Theme.Name
+        return WindUI.Theme.Name
+    end
+    function Window:GetTransparency()
+        return Config.Transparent or false
+    end
+    function Window:GetWindowSize()
+        return Window.UIElements.Main.Size
     end
     
     

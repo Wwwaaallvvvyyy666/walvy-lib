@@ -29,46 +29,43 @@ function Element:New(Config)
         Desc = Slider.Desc,
         Parent = Config.Parent,
         Theme = Config.Theme,
-        TextOffset = 50,
+        TextOffset = 85,
         Hover = false,
     })
     
-    Slider.UIElements.SliderIcon = New("Frame", {
-        BackgroundTransparency = .9,
-        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
-        ThemeTag = {
-            BackgroundColor3 = "Text",
-        },
-        Size = UDim2.new(0, 20*4, 0, 3),
+    Slider.UIElements.SliderIcon = New("ImageLabel", {
+        ImageTransparency = .9,
+        BackgroundTransparency= 1,
+        Image = "rbxassetid://18747052224",
+        ScaleType = "Crop",
+        Size = UDim2.new(0, 126, 0, 3),
+        Name = "Frame",
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5)
     }, {
         New("UICorner", {
             CornerRadius = UDim.new(1, 0),
         }),
-        New("Frame", {
+        New("ImageLabel", {
+            Name = "Frame",
             Size = UDim2.new(delta, 0, 1, 0),
-            BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
-            ThemeTag = {
-                BackgroundColor3 = "Text",
-            },
-            BackgroundTransparency = .3,
+            Image = "rbxassetid://18747052224",
+            ScaleType = "Crop",
+            BackgroundTransparency = 1,
+            ImageTransparency = .4,
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(1, 0),
             }),
-            New("Frame", {
-                Size = UDim2.new(0, 4*3, 0, 4*3),
+            New("ImageLabel", {
+                Size = UDim2.new(0, 13, 0, 13),
                 Position = UDim2.new(1, 0, 0.5, 0),
                 AnchorPoint = Vector2.new(0.5, 0.5),
-                BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
+                Image = "rbxassetid://18747052224",
+                BackgroundTransparency = 1,
                 ThemeTag = {
-                    BackgroundColor3 = "Text",
+                    ImageColor3 = "Text",
                 },
-            }, {
-                New("UICorner", {
-                    CornerRadius = UDim.new(1, 0),
-                }),
             })
         })
     })

@@ -35,7 +35,7 @@ local NotificationTab = Window:Tab({
 })
 
 local WindowTab = Window:Tab({
-    Title = "Window Configuration",
+    Title = "Window and File Configuration",
     Icon = "settings",
 })
 
@@ -101,7 +101,7 @@ MainTab:Section({ Title = "Sliders" })
 
 local Slider = MainTab:Slider({
     Title = "Slider FieldOfView",
-    Step = 10,
+    Step = 1,
     Value = {
         Min = 20,
         Max = 120,
@@ -115,14 +115,14 @@ local Slider = MainTab:Slider({
 local Slider = MainTab:Slider({
     Title = "Slider Main FieldOfView",
     Desc = "Slider Main Desc",
-    Step = 10,
+    Step = 1,
     Value = {
-        Min = 20,
-        Max = 120,
-        Default = 70,
+        Min = 16,
+        Max = 500,
+        Default = 16,
     },
     Callback = function(value)
-        print(value)
+        game.Workspace[game.Players.LocalPlayer.Name].Humanoid.WalkSpeed = value
     end
 })
 
@@ -280,44 +280,140 @@ local Button = NotificationTab:Button({
 ---- 1. Add Theme
 
 Window:AddTheme({
-    Name = "NameHere",
+    Name = "Night Sky",
     
-    Accent = "#1c1c1c",         -- Background       (1)
-    Outline = "#0055ff",        -- Outline          (2)
+    Accent = "#0d1b2a",         -- (1)
+    Outline = "#0077be",        -- (2)
     
-    Text = "#FFFFFF",           -- Text             (3)
-    Text2 = "#000000",          -- Text 2           (4)
-    PlaceholderText = "#999999" -- Placeholder Text (5)
+    Text = "#FFFFFF",           -- (3)
+    Text2 = "#87CEFA",          -- (4)
+    PlaceholderText = "#5c6b73" -- (5)
 })
 
 
 ---- 2. Use Theme
 
-Window:SetTheme("Dark")
+Window:SetTheme("Night Sky")
 
 ---- 3. Load Themes
 
-local ThemeValues = {}
-for Name, Theme in pairs(Window:GetThemes()) do
-    table.insert(ThemeValues, Name)
+local HttpService = game:GetService("HttpService")
+
+local folderPath = "WindUI"
+makefolder(folderPath)
+
+local function SaveFile(fileName, data)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    local jsonData = HttpService:JSONEncode(data)
+    writefile(filePath, jsonData)
 end
 
-local Dropdown = WindowTab:Dropdown({
-    Title = "Select theme",
+local function LoadFile(fileName)
+    local filePath = folderPath .. "/" .. fileName .. ".json"
+    if isfile(filePath) then
+        local jsonData = readfile(filePath)
+        return HttpService:JSONDecode(jsonData)
+    end
+end
+
+local function ListFiles()
+    local files = {}
+    for _, file in ipairs(listfiles(folderPath)) do
+        local fileName = file:match("([^/]+)%.json$")
+        if fileName then
+            table.insert(files, fileName)
+        end
+    end
+    return files
+end
+
+WindowTab:Section({ Title = "Window" })
+
+local themeValues = {}
+for name, _ in pairs(Window:GetThemes()) do
+    table.insert(themeValues, name)
+end
+
+local themeDropdown = WindowTab:Dropdown({
+    Title = "Select Theme",
     Multi = false,
-    Value = "Dark",
     AllowNone = false,
-    Values = ThemeValues,
-    Callback = function(Tab)
-        Window:SetTheme(Tab)
+    Value = nil,
+    Values = themeValues,
+    Callback = function(theme)
+        Window:SetTheme(theme)
     end
 })
+themeDropdown:Select(Window:GetCurrentTheme())
 
-
-local Button = WindowTab:Toggle({
-    Title = "Toggle Transparency",
-    Desc = "Toggles  Window Transparency",
+WindowTab:Toggle({
+    Title = "Toggle Window Transparency",
     Callback = function(e)
         Window:ToggleTransparency(e)
+    end,
+    Value = Window:GetTransparency()
+})
+
+WindowTab:Section({ Title = "Save" })
+
+local fileNameInput = ""
+WindowTab:Input({
+    Title = "Write File Name",
+    PlaceholderText = "Enter file name",
+    Callback = function(text)
+        fileNameInput = text
     end
 })
+
+WindowTab:Button({
+    Title = "Save File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = Window:GetTransparency(), Theme = Window:GetCurrentTheme() })
+        end
+    end
+})
+
+WindowTab:Section({ Title = "Load" })
+
+local filesDropdown
+local files = ListFiles()
+
+filesDropdown = WindowTab:Dropdown({
+    Title = "Select File",
+    Multi = false,
+    AllowNone = true,
+    Values = files,
+    Callback = function(selectedFile)
+        fileNameInput = selectedFile
+    end
+})
+
+WindowTab:Button({
+    Title = "Load File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            local data = LoadFile(fileNameInput)
+            if data then
+                WindUI:Notify({
+                    Title = "File Loaded",
+                    Content = "Loaded data: " .. HttpService:JSONEncode(data),
+                    Duration = 5,
+                })
+                if data.Transparent then Window:ToggleTransparency(data.Transparent) end
+                if data.Theme then Window:SetTheme(data.Theme) end
+            end
+        end
+    end
+})
+
+WindowTab:Button({
+    Title = "Overwrite File",
+    Callback = function()
+        if fileNameInput ~= "" then
+            SaveFile(fileNameInput, { Transparent = Window:GetTransparency(), Theme = Window:GetCurrentTheme() })
+        end
+    end
+})
+
+filesDropdown:Refresh(ListFiles())

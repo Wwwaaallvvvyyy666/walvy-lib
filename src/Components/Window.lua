@@ -12,7 +12,7 @@ return function(Config)
         Title = Config.Title or "UI Library",
         Author = Config.Author,
         Icon = Config.Icon,
-        Folder = Config.Folder or "WindUI",
+        Folder = Config.Folder,
         Size = Config.Size or UDim2.fromOffset(560, 460),
         Transparent = Config.Transparent or false,
         Position = UDim2.new(
@@ -27,6 +27,9 @@ return function(Config)
 		SuperParent = Config.Parent
     }
     
+    if Window.Folder then
+        makefolder("WindUI/" .. Window.Folder)
+    end
     
     local UICorner = New("UICorner", {
         CornerRadius = UDim.new(0,Window.UICorner)
@@ -363,22 +366,24 @@ return function(Config)
             end
             if string.find(Window.Icon,"http") then
                 if not isfile(Window.Folder .. "/Assets/Icon.png") then
-                    if not isfolder(Window.Folder) then
-                        makefolder(Window.Folder)
+                    if not isfolder("WindUI" .. Window.Folder) then
+                        makefolder("WindUI" .. Window.Folder)
                     end
                     print("pisun")
                     local response = request({
                         Url = Window.Icon,
                         Method = "GET",
                     }).Body
-                    writefile(Window.Folder .. "/Assets/Icon.png", response)
+                    writefile("WindUI" .. Window.Folder .. "/Assets/Icon.png", response)
                 end
-                ImageLabel.Image = getcustomasset(Window.Folder .. "/Assets/Icon.png")
-                OpenButton.Icon.Image = getcustomasset(Window.Folder .. "/Assets/Icon.png")
+                ImageLabel.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
+                OpenButton.Icon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
             elseif string.find(Window.Icon,"rbxassetid") then
                 ImageLabel.Image = Window.Icon
                 OpenButton.Icon.Image = Window.Icon
             end
+        else
+            OpenButton.Icon.Image = Creator.Icon("external-link")
         end
     end)
     

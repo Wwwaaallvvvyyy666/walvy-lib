@@ -20,8 +20,8 @@ function Element:New(Config)
         Title = Config.Title or "Dropdown",
         Desc = Config.Desc or nil,
         Values = Config.Values or {},
-        Value = Config.Value or {},
-        AllowNone = Config.AllowNone or true,
+        Value = Config.Value,
+        AllowNone = Config.AllowNone,
         Multi = Config.Multi,
         Callback = Config.Callback or function() end,
         
@@ -99,9 +99,6 @@ function Element:New(Config)
         BackgroundTransparency = 0.15,
         Size = UDim2.new(1,0,1,0)
     }, {
-        New("UIScale", {
-            Scale = .9,
-        }),
         New("UISizeConstraint", {
 			MinSize = Vector2.new(170, 0),
 		}),
@@ -126,10 +123,11 @@ function Element:New(Config)
                 Color = "Text"
             }
         }),
-		New("CanvasGroup", {
+		New("Frame", {
 		    BackgroundTransparency = 1,
 		    Size = UDim2.new(1,0,1,0),
-		    GroupTransparency = 1,
+		    Name = "CanvasGroup",
+		    ClipsDescendants = true
 		}, {
             New("UIPadding", {
                 PaddingTop = UDim.new(0, Element.MenuPadding),
@@ -170,19 +168,18 @@ function Element:New(Config)
 		if #Dropdown.Values > 10 then
 			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, 392)
 		else
-			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + 10)
+			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + Element.MenuPadding*2 +1)
 		end
 	end
     
     function UpdatePosition()
-	    local Add = 0
-	    if Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y < Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y + 10 then
-		    Add = Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y
-			    - (Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y)
-			    + 10
-	    end
-	    Dropdown.UIElements.MenuCanvas.Position =
-		    UDim2.fromOffset(Dropdown.UIElements.Dropdown.AbsolutePosition.X - 1, Dropdown.UIElements.Dropdown.AbsolutePosition.Y - 5 - Add)
+        local Add = -35
+        if Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y + Add < Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y + 10 then
+            Add = Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y
+                - (Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y)
+                + 10
+        end
+        Dropdown.UIElements.MenuCanvas.Position = UDim2.fromOffset(Dropdown.UIElements.Dropdown.AbsolutePosition.X - 1, Dropdown.UIElements.Dropdown.AbsolutePosition.Y - Add)
     end
     
     function Dropdown:Display()
@@ -203,92 +200,110 @@ function Element:New(Config)
 		Dropdown.UIElements.Dropdown.Text = (Str == "" and "--" or Str)
 	end
     
-
-    for Index,Tab in next, Dropdown.Values do
-        local TabMain = {
-            Name = Tab,
-            Selected = false,
-            UIElements = {},
-        }
-        TabMain.UIElements.TabItem = New("TextButton", {
-            Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "Y",
-            BackgroundTransparency = 1,
-            Parent = Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame,
-            Text = Tab,
-            TextXAlignment = "Left",
-            FontFace = Font.new(Creator.Font),
-            ThemeTag = {
-                TextColor3 = "Text",
-                BackgroundColor3 = "Text"
-            },
-            TextSize = 15,
-        }, {
-            New("UIPadding", {
-                PaddingTop = UDim.new(0,Element.TabPadding),
-                PaddingLeft = UDim.new(0,Element.TabPadding),
-                PaddingRight = UDim.new(0,Element.TabPadding),
-                PaddingBottom = UDim.new(0,Element.TabPadding),
-            }),
-            New("UICorner", {
-                CornerRadius = UDim.new(0,Element.MenuCorner-3)
+    function Dropdown:Refresh(Values)
+        for _, Elementt in next, Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame:GetChildren() do
+            if not Elementt:IsA("UIListLayout") then
+                Elementt:Destroy()
+            end
+        end
+        
+        Dropdown.Tabs = {}
+        
+        for Index,Tab in next, Values do
+            local TabMain = {
+                Name = Tab,
+                Selected = false,
+                UIElements = {},
+            }
+            TabMain.UIElements.TabItem = New("TextButton", {
+                Size = UDim2.new(1,0,0,0),
+                AutomaticSize = "Y",
+                BackgroundTransparency = 1,
+                Parent = Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame,
+                Text = Tab,
+                TextXAlignment = "Left",
+                FontFace = Font.new(Creator.Font),
+                ThemeTag = {
+                    TextColor3 = "Text",
+                    BackgroundColor3 = "Text"
+                },
+                TextSize = 15,
+            }, {
+                New("UIPadding", {
+                    PaddingTop = UDim.new(0,Element.TabPadding),
+                    PaddingLeft = UDim.new(0,Element.TabPadding),
+                    PaddingRight = UDim.new(0,Element.TabPadding),
+                    PaddingBottom = UDim.new(0,Element.TabPadding),
+                }),
+                New("UICorner", {
+                    CornerRadius = UDim.new(0,Element.MenuCorner-3)
+                })
             })
-        })
-    
-
-        if Dropdown.Multi then
-            TabMain.Selected = table.find(Dropdown.Value, TabMain.Name)
-        else
-            TabMain.Selected = Dropdown.Value == TabMain.Name
-        end
         
-        if TabMain.Selected then
-            TabMain.UIElements.TabItem.BackgroundTransparency = .93
-        end
         
-        Dropdown.Tabs[Index] = TabMain
-        
-        local function Callback()
-            Dropdown:Display()
-            task.spawn(function()
-                pcall(Dropdown.Callback, Dropdown.Value)
-            end)
-        end
-        
-        TabMain.UIElements.TabItem.MouseButton1Click:Connect(function()
             if Dropdown.Multi then
-                if not TabMain.Selected then
-                    TabMain.Selected = true
-                    Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
-                    table.insert(Dropdown.Value, TabMain.Name)
-                else
-                    if not Dropdown.AllowNone and #Dropdown.Value == 1 then
-                        return
-                    end
-                    TabMain.Selected = false
-                    Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
-                    for i, v in ipairs(Dropdown.Value) do
-                        if v == TabMain.Name then
-                            table.remove(Dropdown.Value, i)
-                            break
+                TabMain.Selected = table.find(Dropdown.Value, TabMain.Name)
+            else
+                TabMain.Selected = Dropdown.Value == TabMain.Name
+            end
+            
+            if TabMain.Selected then
+                TabMain.UIElements.TabItem.BackgroundTransparency = .93
+            end
+            
+            Dropdown.Tabs[Index] = TabMain
+            
+            local function Callback()
+                Dropdown:Display()
+                task.spawn(function()
+                    pcall(Dropdown.Callback, Dropdown.Value)
+                end)
+            end
+            
+            TabMain.UIElements.TabItem.MouseButton1Click:Connect(function()
+                if Dropdown.Multi then
+                    if not TabMain.Selected then
+                        TabMain.Selected = true
+                        Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
+                        table.insert(Dropdown.Value, TabMain.Name)
+                    else
+                        if not Dropdown.AllowNone and #Dropdown.Value == 1 then
+                            return
+                        end
+                        TabMain.Selected = false
+                        Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
+                        for i, v in ipairs(Dropdown.Value) do
+                            if v == TabMain.Name then
+                                table.remove(Dropdown.Value, i)
+                                break
+                            end
                         end
                     end
+                else
+                    for Index, TabPisun in next, Dropdown.Tabs do
+                        -- pisun
+                        Tween(TabPisun.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
+                        TabPisun.Selected = false
+                    end
+                    TabMain.Selected = true
+                    Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
+                    Dropdown.Value = TabMain.Name
                 end
-            else
-                for Index, TabPisun in next, Dropdown.Tabs do
-                    -- pisun
-                    Tween(TabPisun.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
-                    TabPisun.Selected = false
-                end
-                TabMain.Selected = true
-                Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
-                Dropdown.Value = TabMain.Name
-            end
-            Callback()
-        end)
-        
-        RecalculateCanvasSize()
-        RecalculateListSize()
+                Callback()
+            end)
+            
+            RecalculateCanvasSize()
+            RecalculateListSize()
+        end
+    end
+    
+    Dropdown:Refresh(Dropdown.Values)
+    
+    function Dropdown:Select(Items)
+        if Items then
+            Dropdown.Value = Items
+        end
+        Dropdown:Refresh(Dropdown.Values)
     end
     
     Dropdown:Display()
@@ -302,12 +317,6 @@ function Element:New(Config)
             1, 0,
             0, 0
         )
-        Tween(Dropdown.UIElements.Menu.CanvasGroup, 0.1, {
-            GroupTransparency = 0,
-        }):Play()
-        Tween(Dropdown.UIElements.Menu.UIScale, 0.1, {
-            Scale = 1,
-        }):Play()
         Tween(Dropdown.UIElements.Menu, 0.1, {
             Size = UDim2.new(
                 1, 0,
@@ -315,23 +324,20 @@ function Element:New(Config)
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
         
+        Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 180}):Play()
+        
         UpdatePosition()
     end
     function Dropdown:Close()
         Dropdown.Opened = false
         
-        Tween(Dropdown.UIElements.Menu.CanvasGroup, 0.1, {
-            GroupTransparency = 1,
-        }):Play()
-        Tween(Dropdown.UIElements.Menu.UIScale, 0.1, {
-            Scale = .9,
-        }):Play()
         Tween(Dropdown.UIElements.Menu, 0.1, {
             Size = UDim2.new(
                 1, 0,
                 0, 0
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
+        Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 0}):Play()
         task.wait(.1)
         Dropdown.UIElements.MenuCanvas.Visible = false
         Dropdown.UIElements.MenuCanvas.Active = false
