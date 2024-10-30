@@ -259,6 +259,26 @@ WindUI:Notify({
 })
 ```
 
+- Notify with buttons
+```lua
+local Notification
+Notification = WindUI:Notify({
+    Title = "Question",                 -- Notification Title
+    Content = "Would you like to die?", -- notification Content
+    CanClose = false,                   -- dont allow to close the notification
+    --Duration = 5,                     -- removing duration
+    Callback = function(Button)         -- Callback
+        if Button == "Confirm" then
+            game.Players.LocalPlayer.Character.Humanoid.Health = 0
+        else
+            print("Canceled..")
+        end
+        -- Closing Notification
+        Notification:Close()
+    end
+})
+```
+
 <hr>
 
 - Load Own Theme

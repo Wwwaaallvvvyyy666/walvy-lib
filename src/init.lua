@@ -40,6 +40,8 @@ function WindUI:Notify(Config)
         Title = Config.Title,
         Content = Config.Content,
         Duration = Config.Duration,
+        CanClose = Config.CanClose,
+        Callback = Config.Callback ,
         Window = WindUI.Window,
         Holder = Holder,
     })

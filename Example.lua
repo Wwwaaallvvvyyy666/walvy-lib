@@ -3,9 +3,9 @@ local WindUI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/F
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
     Icon = "image", -- Url or rbxassetid or lucide
-    --Author = ".ftgs", -- Author & Creator
+    Author = ".ftgs", -- Author & Creator
     Folder = "CloudHub", -- Folder name for saving data
-    Size = UDim2.fromOffset(580,460), -- UI Size
+    Size = UDim2.fromOffset(999,999), -- UI Size
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
@@ -13,24 +13,30 @@ local Window = WindUI:CreateWindow({
 
 -- Tabs
 
+--- Section for Tabs
+
 local MainTab = Window:Tab({
     Title = "Main",
     Icon = "folder",
 })
+
 local EmptyTab = Window:Tab({
     Title = "Empty Tab",
     Icon = "frown",
 })
+
 local EmptyTab2 = Window:Tab({
     Title = "Tab Without icon",
 })
-local WindowTab = Window:Tab({
-    Title = "Window Configuration",
-    Icon = "settings",
-})
+
 local NotificationTab = Window:Tab({
     Title = "Notification Tab",
     Icon = "bell",
+})
+
+local WindowTab = Window:Tab({
+    Title = "Window Configuration",
+    Icon = "settings",
 })
 
 
@@ -240,6 +246,28 @@ local Button = NotificationTab:Button({
             Title = "Notification LONG AND BIG",
             Content = "Content LON GGGGG EEE RRR AND BIGGER ",
             Duration = 200,
+        })
+    end,
+})
+local Button = NotificationTab:Button({
+    Title = "Notification with buttons",
+    Desc = "Notify with buttons and Callback",
+    Callback = function()
+        local Notification
+        Notification = WindUI:Notify({
+            Title = "Question",
+            Content = "Would you like to die?",
+            CanClose = false, -- dont allow to close the notification
+            --Duration = 5, -- removing duration
+            Callback = function(Button)  -- Callback
+                if Button == "Confirm" then
+                    game.Players.LocalPlayer.Character.Humanoid.Health = 0
+                else
+                    print("Canceled..")
+                end
+                -- Closing Notification
+                Notification:Close()
+            end
         })
     end,
 })
