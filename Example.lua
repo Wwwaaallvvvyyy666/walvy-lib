@@ -346,7 +346,7 @@ local themeDropdown = WindowTab:Dropdown({
 })
 themeDropdown:Select(Window:GetCurrentTheme())
 
-WindowTab:Toggle({
+local ToggleTransparency = WindowTab:Toggle({
     Title = "Toggle Window Transparency",
     Callback = function(e)
         Window:ToggleTransparency(e)
@@ -400,7 +400,10 @@ WindowTab:Button({
                     Content = "Loaded data: " .. HttpService:JSONEncode(data),
                     Duration = 5,
                 })
-                if data.Transparent then Window:ToggleTransparency(data.Transparent) end
+                if data.Transparent then 
+                    Window:ToggleTransparency(data.Transparent)
+                    ToggleTransparency:SetValue(data.Transparent)
+                end
                 if data.Theme then Window:SetTheme(data.Theme) end
             end
         end
@@ -416,4 +419,9 @@ WindowTab:Button({
     end
 })
 
-filesDropdown:Refresh(ListFiles())
+WindowTab:Button({
+    Title = "Refresh List",
+    Callback = function()
+        filesDropdown:Refresh(ListFiles())
+    end
+})
