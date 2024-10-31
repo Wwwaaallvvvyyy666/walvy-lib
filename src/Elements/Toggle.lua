@@ -9,7 +9,7 @@ function Element:New(Config)
         __type = "Toggle",
         Title = Config.Title or "Toggle",
         Desc = Config.Desc or nil,
-        Value = Config.Value or false,
+        Value = Config.Value,
         Callback = Config.Callback or function() end,
         UIElements = {}
     }
@@ -21,6 +21,10 @@ function Element:New(Config)
         TextOffset = 44,
         Hover = true,
     })
+
+    if Toggle.Value == nil then
+        Toggle.Value = false
+    end
     
     Toggle.UIElements.Toggle = New("Frame",{
         BackgroundTransparency = .95,
@@ -73,7 +77,7 @@ function Element:New(Config)
     })
 
     function Toggle:SetValue(Toggled)
-        if not Toggled then
+        if Toggled then
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(1,-18-3,0.5,0), BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = .15}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .15}):Play()
@@ -94,6 +98,7 @@ function Element:New(Config)
 
     local Toggled = Config.Value
     Toggle:SetValue(Toggled)
+    Toggled = not Toggled
     Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
         Toggle:SetValue(Toggled)
         Toggled = not Toggled

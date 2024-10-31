@@ -1,7 +1,8 @@
 local WindUI = {
     Window = nil,
     Theme = nil,
-    Themes = nil
+    Themes = nil,
+    Transparent = false
 }
 local RunService = game:GetService("RunService")
 
@@ -76,7 +77,8 @@ function WindUI:CreateWindow(Config)
         Parent = WindUI.ScreenGui.Window,
         SideBarWidth = Config.SideBarWidth
     })
-    
+
+    WindUI.Transparent = Config.Transparent
     WindUI.Window = Window
     
     function Window:AddTheme(LTheme)
@@ -102,7 +104,7 @@ function WindUI:CreateWindow(Config)
         return WindUI.Theme.Name
     end
     function Window:GetTransparency()
-        return Config.Transparent or false
+        return WindUI.Transparent or false
     end
     function Window:GetWindowSize()
         return Window.UIElements.Main.Size
@@ -110,6 +112,7 @@ function WindUI:CreateWindow(Config)
     
     
     function Window:ToggleTransparency(Value)
+        WindUI.Transparent = Value
         Window.UIElements.Main.Background.BackgroundTransparency = Value and 0.15 or 0
         Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
             NumberSequenceKeypoint.new(0, 1), 
