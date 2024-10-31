@@ -1,4 +1,4 @@
-local WindUI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
