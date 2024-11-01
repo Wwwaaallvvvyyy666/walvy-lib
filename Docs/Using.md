@@ -313,7 +313,7 @@ Window:AddTheme({
 })
 ```
 
-<img src="Images/numbers.png" width="100%">
+<img src="../Images/numbers.png" width="100%">
 
 <hr>
 
