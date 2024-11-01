@@ -1,14 +1,13 @@
-## ⚠️ Full example you can find in [Example.lua](../Example.lua)
-
+## ⚠️ |  Full example you can find in [Example.lua](../Example.lua)
 
 # Using UI Library
 
-- Connect UI Library (using latest version) (Recomended)
+## Connect UI Library (using latest version: Recomended)
 ```lua
 local WindUI = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
 ```
 
-or use selected version
+## or use selected version
 ```lua
 local Version = "1.0.0"
 local WindUI = loadstring(game:HttpGetAsync("https://github.com/Footagesus/WindUI/releases/download/" .. Version .. "/main.lua"))()
@@ -16,41 +15,29 @@ local WindUI = loadstring(game:HttpGetAsync("https://github.com/Footagesus/WindU
 
 <hr>
 
-- Creating Window
+## Creating Window
 ```lua
 local Window = WindUI:CreateWindow({
-    Title = "WindUI Library", -- UI Title
-    Icon = "image", -- Url or rbxassetid or lucide
-    Author = ".ftgs", -- Author & Creator
-    Folder = "CloudHub", -- Folder name for saving data (And key)
-    Size = UDim2.fromOffset(580, 460), -- UI Size
-    KeySystem = { -- Creates key system
-        Key = "1234", -- key
-        Note = "The Key is 1234", -- Note
+    Title = "WindUI Library",                         -- UI Title
+    Icon = "image",                                   -- Url or rbxassetid or lucide
+    Author = ".ftgs",                                 -- Author & Creator
+    Folder = "CloudHub",                              -- Folder name for saving data (And key)
+    Size = UDim2.fromOffset(580, 460),                -- UI Size
+    KeySystem = {                                     -- Creates key system
+        Key = "1234",                                 -- Key
+        Note = "The Key is 1234",                     -- Note
         URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
-        SaveKey = true, -- Saves the key in the folder specified above
+        SaveKey = true,                               -- Saves the key in the folder specified above
     }, 
-    Transparent = true,-- UI Transparency
-    Theme = "Dark", -- UI Theme
-    SideBarWidth = 170, -- UI Sidebar Width (number)
+    Transparent = true,                               -- UI Transparency
+    Theme = "Dark",                                   -- UI Theme
+    SideBarWidth = 170,                               -- UI Sidebar Width (number)
 })
 ```
 
-| Key          | Type    | Default                           |
-|--------------|---------|-----------------------------------|
-| Title        | string  | "UI Library"                      |
-| Icon         | string  | nil                               |
-| Author       | string  | nil                               |
-| Folder       | string  | "WindUI"                          |
-| Size         | UDim2   | UDim2.fromOffset(560,460)         |
-| KeySystem    | table   | {}                                |
-| Transparent  | boolean | false                             |
-| Theme        | string  | "Dark"                            |
-| SideBarWidth | number  | 200                               |
-
 <hr>
 
-- Creating Tab
+## Creating Tab
 ```lua
 local MainTab = Window:Tab({
     Title = "Main",  -- Tab Title                    
@@ -58,29 +45,20 @@ local MainTab = Window:Tab({
 })
 ```
 
-| Key   | Type   | Default |
-|-------|--------|---------|
-| Title | string | "Tab"   |
-| Icon  | string | nil     |
-
 <hr>
 
 ### Elements
 
-- Creating Section
+## Creating Section
 ```lua
 MainTab:Section({ 
     Title = "Title" -- Section Title
 })
 ```
 
-| Key   | Type   | Default   |
-|-------|--------|-----------|
-| Title | string | "Section" |
-
 <hr>
 
-- Creating Button
+## Creating Button
 ```lua
 local Button = MainTab:Button({
     Title = "Button Main",        -- Button Title       
@@ -91,15 +69,9 @@ local Button = MainTab:Button({
 })
 ```
 
-| Key      | Type     | Default                |
-|----------|----------|------------------------|
-| Title    | string   | "Button"               |
-| Desc     | string   | nil                    |
-| Callback | function | function() end         |
-
 <hr>
 
-- Creating Paragraph
+## Creating Paragraph
 ```lua
 local Paragraph = MainTab:Paragraph({
     Title = "Paragraph",                         -- Paragraph Title       
@@ -107,14 +79,9 @@ local Paragraph = MainTab:Paragraph({
 })
 ```
 
-| Key   | Type   | Default     |
-|-------|--------|-------------|
-| Title | string | "Paragraph" |
-| Desc  | string | nil         |
-
 <hr>
 
-- Creating Toggle
+## Creating Toggle
 ```lua
 local Button = MainTab:Toggle({
     Title = "Toggle",            -- Toggle Title
@@ -129,15 +96,9 @@ local Button = MainTab:Toggle({
 })
 ```
 
-| Key      | Type     | Default                |
-|----------|----------|------------------------|
-| Title    | string   | "Toggle"               |
-| Desc     | string   | nil                    |
-| Callback | function | function() end         |
-
 <hr>
 
-- Creating Slider
+## Creating Slider
 ```lua
 local Slider = MainTab:Slider({
     Title = "Slider FieldOfView", -- Slider Title
@@ -154,17 +115,9 @@ local Slider = MainTab:Slider({
 })
 ```
 
-| Key      | Type     | Default             |
-|----------|----------|---------------------|
-| Title    | string   | "Slider"            |
-| Desc     | string   | nil                 |
-| Step     | number   | 1                   |
-| Value    | table    | {}                  |
-| Callback | function | function(value) end |
-
 <hr>
 
-- Creating Keybind
+## Creating Keybind
 ```lua
 local Keybind = MainTab:Keybind({
     Title = "Keybind Toggle UI",     -- Keybind Title
@@ -177,17 +130,9 @@ local Keybind = MainTab:Keybind({
 })
 ```
 
-| Key      | Type    | Default                           |
-|----------|---------|-----------------------------------|
-| Title    | string  | "Keybind"                        |
-| Desc     | string  | nil                               |
-| Value    | string  | "LeftShift"                      |
-| CanChange| boolean | true                              |
-| Callback | function | function(key) end                |
-
 <hr>
 
-- Creating Input
+## Creating Input
 ```lua
 local Input = MainTab:Input({
     Title = "Input Notify",                      -- Input Title
@@ -205,18 +150,9 @@ local Input = MainTab:Input({
 })
 ```
 
-| Key                | Type     | Default                       |
-|--------------------|----------|-------------------------------|
-| Title              | string   | "Input"                       |
-| Desc               | string   | nil                           |
-| Value              | string   | ""                            |
-| PlaceholderText    | string   | ""                            |
-| ClearTextOnFocus   | boolean  | false                         |
-| Callback           | function | function() end                |
-
 <hr>
 
-- Creating Dropdown
+## Creating Dropdown
 ```lua
 local Dropdown = MainTab:Dropdown({
     Title = "Dropdown",               -- Dropdown Title
@@ -242,36 +178,26 @@ local Dropdown = MainTab:Dropdown({
 })
 ```
 
-| Key      | Type     | Default                |
-|----------|----------|------------------------|
-| Title    | string   | "Dropdown"             |
-| Desc     | string   | nil                    |
-| Multi    | boolean  | false                  |
-| Value    | string   | ""                     |
-| AllowNone| boolean  | false                  |
-| Values   | table    | {}                     |
-| Callback | function | function(Tab) end      |
-
---- Refresing Dropdown
+### Refresing Dropdown
 ```lua
 Dropdown:Refresh({"Tab 1", "Tab 2"})
 ```
 
---- Select Value
------- Default Dropdown
+### Select Value
+> Default Dropdown
 ```lua
 Dropdown:Select("Tab 2") 
 ```
 
------- Multi Dropdown
+> Multi Dropdown
 ```lua
 Dropdown:Select({"Tab 1", "Tab 2"}) 
 ```
 
 <hr>
 
-- Creating Colorpicker
---- Without Transparency
+## Creating Colorpicker
+### Without Transparency
 ```lua
 local Colorpicker = MainTab:Colorpicker({
     Title = "Colorpicker",                   -- Colorpicker Title
@@ -290,7 +216,7 @@ local Colorpicker = MainTab:Colorpicker({
 })
 ```
 
---- With Transparency
+### With Transparency
 ```lua
 local Colorpicker = MainTab:Colorpicker({
     Title = "Colorpicker",                   -- Colorpicker Title
@@ -311,17 +237,9 @@ local Colorpicker = MainTab:Colorpicker({
 })
 ```
 
-| Key          | Type     | Default                |
-|--------------|----------|------------------------|
-| Title        | string   | "Colorpicker"          |
-| Desc         | string   | nil                    |
-| Transparency | number   | nil                    |
-| Default      | Color3   | Color3.new(1,1,1)      |
-| Callback     | function | function() end         |
-
 <hr>
 
---- Set Colorpicker
+### Set Colorpicker
 
 ```lua
 Colorpicker:Update(
@@ -333,7 +251,7 @@ Colorpicker:Update(
 
 ### Other:
 
-- Dialog
+## Dialog
 ```lua
 Window:Dialog({
     Title = "Warning",                             -- Dialog Title
@@ -351,7 +269,7 @@ Window:Dialog({
 })
 ```
 
-- Notify
+## Notify
 ```lua
 WindUI:Notify({
     Title = "Notify Title",     -- Notification Title
@@ -360,7 +278,7 @@ WindUI:Notify({
 })
 ```
 
-- Notify with buttons
+## Notify with buttons
 ```lua
 local Notification
 Notification = WindUI:Notify({
@@ -382,7 +300,7 @@ Notification = WindUI:Notify({
 
 <hr>
 
-- Load Own Theme
+## Load Own Theme
 ```lua
 Window:AddTheme({
     Name = "Example",           -- Theme Name
@@ -399,14 +317,14 @@ Window:AddTheme({
 
 <hr>
 
-- Use Theme
+## Use Theme
 ```lua
 Window:SetTheme("Dark") -- Theme
 ```
 
 <hr>
 
-- Get Themes
+## Get Themes
 ```lua
 Window:GetThemes()
 ```
