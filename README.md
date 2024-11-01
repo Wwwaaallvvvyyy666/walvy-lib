@@ -26,10 +26,10 @@ An Open source and customizable UI library for Roblox, featuring a dark theme an
 🚀 Installation
 
 1. Clone the repository:
-
+```bash
 git clone https://github.com/Footagesus/WindUI.git
 cd WindUI
-
+```
 
 2. Install dependencies if required.
 
