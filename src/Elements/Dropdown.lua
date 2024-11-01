@@ -9,7 +9,7 @@ local Tween = Creator.Tween
 local Element = {
     UICorner = 6,
     UIPadding = 8,
-    MenuCorner = 9,
+    MenuCorner = 12,
     MenuPadding = 6,
     TabPadding = 10,
 }
@@ -101,17 +101,6 @@ function Element:New(Config)
     }, {
         New("UISizeConstraint", {
 			MinSize = Vector2.new(170, 0),
-		}),
-		New("ImageLabel", {
-			BackgroundTransparency = 1,
-			Image = "http://www.roblox.com/asset/?id=5554236805",
-			ScaleType = Enum.ScaleType.Slice,
-			SliceCenter = Rect.new(23, 23, 277, 277),
-			Size = UDim2.fromScale(1, 1) + UDim2.fromOffset(30, 30),
-			Position = UDim2.fromOffset(-15, -15),
-			ImageColor3 = Color3.fromRGB(0, 0, 0),
-			ImageTransparency = 0.1,
-			SliceScale = 1.1,
 		}),
         New("UICorner", {
             CornerRadius = UDim.new(0,Element.MenuCorner)
@@ -222,7 +211,7 @@ function Element:New(Config)
                 Parent = Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame,
                 Text = Tab,
                 TextXAlignment = "Left",
-                FontFace = Font.new(Creator.Font),
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 ThemeTag = {
                     TextColor3 = "Text",
                     BackgroundColor3 = "Text"
@@ -236,7 +225,7 @@ function Element:New(Config)
                     PaddingBottom = UDim.new(0,Element.TabPadding),
                 }),
                 New("UICorner", {
-                    CornerRadius = UDim.new(0,Element.MenuCorner-3)
+                    CornerRadius = UDim.new(0,Element.MenuCorner - Element.MenuPadding)
                 })
             })
         
@@ -354,10 +343,11 @@ function Element:New(Config)
 		then
 			local AbsPos, AbsSize = Dropdown.UIElements.MenuCanvas.AbsolutePosition, Dropdown.UIElements.MenuCanvas.AbsoluteSize
 			if
-				Mouse.X < AbsPos.X
+				Config.Window.CanDropdown
+				and (Mouse.X < AbsPos.X
 				or Mouse.X > AbsPos.X + AbsSize.X
 				or Mouse.Y < (AbsPos.Y - 20 - 1)
-				or Mouse.Y > AbsPos.Y + AbsSize.Y
+				or Mouse.Y > AbsPos.Y + AbsSize.Y)
 			then
 				Dropdown:Close()
 			end

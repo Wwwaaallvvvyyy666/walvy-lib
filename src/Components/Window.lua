@@ -24,6 +24,7 @@ return function(Config)
 		SideBarWidth = Config.SideBarWidth or 200,
 		UIElements = {},
 		Theme = Config.Theme,
+		CanDropdown = true,
 		SuperParent = Config.Parent
     }
     
@@ -395,10 +396,14 @@ return function(Config)
         Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         
+        Window.CanDropdown = true
+        
         Window.UIElements.Main.Visible = true
     end
     function Window:Close()
         local Close = {}
+        
+        Window.CanDropdown = false
         
         Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
@@ -420,9 +425,6 @@ return function(Config)
         return Close
     end
     
-    CloseButton.MouseButton1Click:Connect(function()
-        Window:Close():Destroy()
-    end)
     MinimizeButton.MouseButton1Click:Connect(function()
         Window:Close()
         task.spawn(function()
@@ -434,7 +436,7 @@ return function(Config)
             Config.WindUI:Notify({
                 Title = "Minimize",
                 Content = "You've closed the Window. Click the Button to open the Window",
-                Durarion = 5,
+                Duration = 5,
             })
         end
     end)
@@ -447,11 +449,153 @@ return function(Config)
         Window:Open()
     end)
     
-    function Window:Tab(Config)
-        local TabModule = require("./Tab").Init(Window)
+    local TabModule = require("./Tab").Init(Window)
+    function Window:Tab(TabConfig)
         
-        return TabModule.New({ Title = Config.Title, Icon = Config.Icon, Parent = Window.UIElements.SideBar })
+        return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
+    
+    local DialogModule = require("./Dialog").Init(Window)
+    function Window:Dialog(DialogConfig)
+        local DialogTable = {
+            Title = DialogConfig.Title or "Dialog",
+            Content = DialogConfig.Content,
+            Buttons = DialogConfig.Buttons or {},
+        }
+        local Dialog = DialogModule.Create()
+        
+        
+        
+        Dialog.UIElements.UIListLayout = New("UIListLayout", {
+            Padding = UDim.new(0,8*1.8),
+            FillDirection = "Vertical",
+            Parent = Dialog.UIElements.Main
+        })
+    
+        New("UISizeConstraint", {
+			MinSize = Vector2.new(50, 20),
+			MaxSize = Vector2.new(620, math.huge),
+			Parent = Dialog.UIElements.Main,
+		})
+        
+        Dialog.UIElements.Title = New("TextLabel", {
+            Text = DialogTable.Title,
+            TextSize = 20,
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
+            TextXAlignment = "Left",
+            TextWrapped = true,
+            Size = UDim2.new(1,0,0,0),
+            AutomaticSize = "Y",
+            ThemeTag = {
+                TextColor3 = "Text"
+            },
+            BackgroundTransparency = 1,
+            Parent = Dialog.UIElements.Main
+        })
+        if DialogTable.Content then
+            local Content = New("TextLabel", {
+                Text = DialogTable.Content,
+                TextSize = 18,
+                TextTransparency = .4,
+                TextWrapped = true,
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                TextXAlignment = "Left",
+                Size = UDim2.new(1,0,0,0),
+                AutomaticSize = "Y",
+                LayoutOrder = 2,
+                ThemeTag = {
+                    TextColor3 = "Text"
+                },
+                BackgroundTransparency = 1,
+                Parent = Dialog.UIElements.Main
+            })
+        end
+        
+        local ButtonsContent = New("Frame", {
+            Size = UDim2.new(1,0,0,0),
+            AutomaticSize = "Y",
+            BackgroundTransparency = 1,
+            Parent = Dialog.UIElements.Main,
+            LayoutOrder = 4,
+        }, {
+            New("UIListLayout", {
+			    Padding = UDim.new(0, 8),
+			    FillDirection = "Horizontal",
+			    HorizontalAlignment = "Center",
+		    }),
+        })
+        
+        for _,Button in next, DialogTable.Buttons do
+            local ButtonFrame = New("TextButton", {
+                Text = Button.Title or "Button",
+                TextSize = 15,
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                ThemeTag = {
+                    TextColor3 = "Text",
+                    BackgroundColor3 = "Text",
+                },
+                BackgroundTransparency = .9,
+                Parent = ButtonsContent,
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 8) / #DialogTable.Buttons), 0, 0),
+                AutomaticSize = "Y",
+            }, {
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, Dialog.UICorner-3),
+                }),
+                New("UIPadding", {
+                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.6),
+                    PaddingLeft = UDim.new(0, Dialog.UIPadding/1.6),
+                    PaddingRight = UDim.new(0, Dialog.UIPadding/1.6),
+                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.6),
+                }),
+                New("Frame", {
+                    Size = UDim2.new(1,(Dialog.UIPadding/1.6)*2,1,(Dialog.UIPadding/1.6)*2),
+                    Position = UDim2.new(0.5,0,0.5,0),
+                    AnchorPoint = Vector2.new(0.5,0.5),
+                    ThemeTag = {
+                        BackgroundColor3 = "Text"
+                    },
+                    BackgroundTransparency = 1, -- .9
+                }, {
+                    New("UICorner", {
+                        CornerRadius = UDim.new(0, Dialog.UICorner-3),
+                    }),
+                })
+            })
+            
+            ButtonFrame.MouseEnter:Connect(function()
+                Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = .9}):Play()
+            end)
+            ButtonFrame.MouseLeave:Connect(function()
+                Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
+            end)
+            ButtonFrame.MouseButton1Click:Connect(function()
+                Dialog:Close()
+                task.spawn(function()
+                    pcall(Button.Callback)
+                end)
+            end)
+        end
+        
+        return Dialog
+    end
+    
+    CloseButton.MouseButton1Click:Connect(function()
+        Window:Dialog({
+            Title = "Warning",
+            Content = "Do you want to close this window?",
+            Buttons = {
+                {
+                    Title = "No",
+                    Callback = function() end
+                },
+                {
+                    Title = "Yes",
+                    Callback = function() Window:Close():Destroy() end
+                }
+            }
+        })
+    end)
 
     local function startResizing(input)
         isResizing = true

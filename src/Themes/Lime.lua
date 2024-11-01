@@ -5,6 +5,5 @@ return {
     Outline = "#FFFFFF", 
     
     Text = "#1a2e05",   
-    Text2 = "#ecfccb",
     PlaceholderText = "#999999"
 }

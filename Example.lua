@@ -4,8 +4,14 @@ local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
     Icon = "image", -- Url or rbxassetid or lucide
     Author = ".ftgs", -- Author & Creator
-    Folder = "CloudHub", -- Folder name for saving data
-    Size = UDim2.fromOffset(999,999), -- UI Size
+    Folder = "CloudHub", -- Folder name for saving data (And key)
+    Size = UDim2.fromOffset(580, 460), -- UI Size
+    KeySystem = { -- Creates key system
+        Key = "1234", -- key
+        Note = "The Key is 1234", -- Note
+        URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
+        SaveKey = true, -- Saves the key in the folder specified above
+    }, 
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
@@ -60,8 +66,24 @@ local Button = MainTab:Button({
     Title = "Button Main",
     Desc = "Button Desc",
     Callback = function()
-        -- Destroy Button
-        Button.ButtonFrame:Destroy()
+        Window:Dialog({
+            Title = "Dialog haha",
+            Content = "Dialog Content",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        print("confirm")
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("cancel")
+                    end
+                }
+            }
+        })
     end,
 })
 local ButtonClose = MainTab:Button({
@@ -224,6 +246,34 @@ local Dropdown = MainTab:Dropdown({
     end
 })
 
+MainTab:Section({ Title = "Colorpickers" })
+
+local Colorpicker = MainTab:Colorpicker({
+    Title = "Colorpicker",
+    Default = Color3.fromRGB(255, 129, 0),
+    Callback = function(color)
+        WindUI:Notify({
+            Title = "Colorpicker Callback",
+            Content = "Color: \nR: " .. math.floor(color.R * 255) .. "\nG: " .. math.floor(color.G * 255) .. "\nB: " .. math.floor(color.B * 255),
+            Duration = 6,
+        })
+    end
+})
+
+local Colorpicker2 = MainTab:Colorpicker({
+    Title = "Colorpicker",
+    Desc = "Colorpicker Desc Transparency",
+    Transparency = 0.5,
+    Default = Color3.fromRGB(96, 205, 255),
+    Callback = function(color, transparency)
+        WindUI:Notify({
+            Title = "Colorpicker Callback 2",
+            Content = "Color: \nR: " .. math.floor(color.R * 255) .. "\nG: " .. math.floor(color.G * 255) .. "\nB: " .. math.floor(color.B * 255) .. "\nTransparency: " .. transparency,
+            Duration = 6,
+        })
+    end
+})
+
 -- Notification Tab
 
 
@@ -280,20 +330,20 @@ local Button = NotificationTab:Button({
 ---- 1. Add Theme
 
 Window:AddTheme({
-    Name = "Night Sky",
+    Name = "Halloween",
     
-    Accent = "#0d1b2a",         -- (1)
-    Outline = "#0077be",        -- (2)
+    Accent = "#331400",
+    Outline = "#400000",
     
-    Text = "#FFFFFF",           -- (3)
-    Text2 = "#87CEFA",          -- (4)
-    PlaceholderText = "#5c6b73" -- (5)
+    Text = "#EAEAEA",
+    PlaceholderText = "#AAAAAA"
 })
+
 
 
 ---- 2. Use Theme
 
-Window:SetTheme("Night Sky")
+Window:SetTheme("Halloween")
 
 ---- 3. Load Themes
 

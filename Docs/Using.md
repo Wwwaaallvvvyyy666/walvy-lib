@@ -19,14 +19,20 @@ local WindUI = loadstring(game:HttpGetAsync("https://github.com/Footagesus/WindU
 - Creating Window
 ```lua
 local Window = WindUI:CreateWindow({
-    Title = "WindUI Library",         -- UI Title                     
-    Icon = "image",                   -- Url or rbxassetid or lucide  
-    Author = ".ftgs",                 -- Author & Creator 
-    Folder = "FootagesHub",           -- Folder name for saving data
-    Size = UDim2.fromOffset(580,460), -- UI Size                      
-    Transparent = true,               -- UI Transparency              
-    Theme = "Dark",                   -- UI Theme (Dark, Light, Lime) 
-    SideBarWidth = 170,               -- UI Sidebar Width             
+    Title = "WindUI Library", -- UI Title
+    Icon = "image", -- Url or rbxassetid or lucide
+    Author = ".ftgs", -- Author & Creator
+    Folder = "CloudHub", -- Folder name for saving data (And key)
+    Size = UDim2.fromOffset(580, 460), -- UI Size
+    KeySystem = { -- Creates key system
+        Key = "1234", -- key
+        Note = "The Key is 1234", -- Note
+        URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
+        SaveKey = true, -- Saves the key in the folder specified above
+    }, 
+    Transparent = true,-- UI Transparency
+    Theme = "Dark", -- UI Theme
+    SideBarWidth = 170, -- UI Sidebar Width (number)
 })
 ```
 
@@ -37,6 +43,7 @@ local Window = WindUI:CreateWindow({
 | Author       | string  | nil                               |
 | Folder       | string  | "WindUI"                          |
 | Size         | UDim2   | UDim2.fromOffset(560,460)         |
+| KeySystem    | table   | {}                                |
 | Transparent  | boolean | false                             |
 | Theme        | string  | "Dark"                            |
 | SideBarWidth | number  | 200                               |
@@ -216,7 +223,7 @@ local Dropdown = MainTab:Dropdown({
     Desc = "Dropdown Desc",           -- Dropdown Description
     Multi = false,                    -- Allow multiple selections
     Value = "Tab 1",                  -- Default selected value
-    AllowNone = true,                 -- Allow no selection
+    AllowNone = true,                 -- Allow none selection
     Values = {                        -- List of options
         "Tab 1", "Tab 2", "Tab 3", "Tab 4", 
         "Tab 5", "Tab 6", "Tab 7", "Tab 8", 
@@ -245,10 +252,104 @@ local Dropdown = MainTab:Dropdown({
 | Values   | table    | {}                     |
 | Callback | function | function(Tab) end      |
 
+--- Refresing Dropdown
+```lua
+Dropdown:Refresh({"Tab 1", "Tab 2"})
+```
+
+--- Select Value
+------ Default Dropdown
+```lua
+Dropdown:Select("Tab 2") 
+```
+
+------ Multi Dropdown
+```lua
+Dropdown:Select({"Tab 1", "Tab 2"}) 
+```
+
 <hr>
 
+- Creating Colorpicker
+--- Without Transparency
+```lua
+local Colorpicker = MainTab:Colorpicker({
+    Title = "Colorpicker",                   -- Colorpicker Title
+    Desc = "Colorpicker Desc Transparency",  -- Colorpicker Desc
+    Default = Color3.fromRGB(96, 205, 255),  -- Default Colorpicker color
+    Callback = function(color)               -- Colorpicker Callback (It is activated only when you click on the "apply" button)
+        WindUI:Notify({
+            Title = "Colorpicker Callback 2",
+            Content = "Color: \nR: " 
+            .. math.floor(color.R * 255) .. 
+            "\nG: " .. math.floor(color.G * 255) .. 
+            "\nB: " .. math.floor(color.B * 255)
+            Duration = 6,
+        })
+    end
+})
+```
+
+--- With Transparency
+```lua
+local Colorpicker = MainTab:Colorpicker({
+    Title = "Colorpicker",                   -- Colorpicker Title
+    Desc = "Colorpicker Desc Transparency",  -- Colorpicker Desc
+    Transparency = 0.5,                      -- Colorpicker Transparency (remove it, if you want Colorpicker without Transparency)
+    Default = Color3.fromRGB(96, 205, 255),  -- Default Colorpicker color
+    Callback = function(color, transparency) -- Colorpicker Callback (It is activated only when you click on the "apply" button)
+        WindUI:Notify({
+            Title = "Colorpicker Callback 2",
+            Content = "Color: \nR: " 
+            .. math.floor(color.R * 255) .. 
+            "\nG: " .. math.floor(color.G * 255) .. 
+            "\nB: " .. math.floor(color.B * 255) .. 
+            "\nTransparency: " .. transparency,
+            Duration = 6,
+        })
+    end
+})
+```
+
+| Key          | Type     | Default                |
+|--------------|----------|------------------------|
+| Title        | string   | "Colorpicker"          |
+| Desc         | string   | nil                    |
+| Transparency | number   | nil                    |
+| Default      | Color3   | Color3.new(1,1,1)      |
+| Callback     | function | function() end         |
+
+<hr>
+
+--- Set Colorpicker
+
+```lua
+Colorpicker:Update(
+    Color3.fromRGB(255,0,0),  -- Color
+    0.5                       -- Transparency. ADD THIS ONLY WHEN YOU HAVE "Transparency" IN COLORPICKER
+)
+```
+<hr>
 
 ### Other:
+
+- Dialog
+```lua
+Window:Dialog({
+    Title = "Warning",                             -- Dialog Title
+    Content = "Do you want to close this window?", -- Dialog Content
+    Buttons = {                                    -- Dialog Buttons
+        {
+            Title = "No",
+            Callback = function() end
+        },
+        {
+            Title = "Yes",
+            Callback = function() Window:Close():Destroy() end
+        }
+    }
+})
+```
 
 - Notify
 ```lua
@@ -290,8 +391,7 @@ Window:AddTheme({
     Outline = "#0055ff",        -- Outline          (2)
     
     Text = "#FFFFFF",           -- Text             (3)
-    Text2 = "#000000",          -- Text 2           (4)
-    PlaceholderText = "#999999" -- Placeholder Text (5)
+    PlaceholderText = "#999999" -- Placeholder Text (4)
 })
 ```
 

@@ -19,7 +19,7 @@ function Element:New(Config)
         ThemeTag = {
             TextColor3 = "Text",
         },
-        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
         Parent = Config.Parent,
         Size = UDim2.new(1,0,0,0),
         Text = Section.Title,

@@ -201,6 +201,20 @@ function TabModule.New(Config)
 	    Tab.Elements[Dropdown] = Content
 	    return Content
 	end
+	function Tab:Colorpicker(ElementConfig)
+	    local Dropdown, Content = require("../Elements/Colorpicker"):New({
+	        Title = ElementConfig.Title,
+	        Desc = ElementConfig.Desc,
+	        Default = ElementConfig.Default,
+	        Transparency = ElementConfig.Transparency,
+	        Callback = ElementConfig.Callback,
+	        Parent = Tab.UIElements.ContainerFrame,
+	        Theme = TabModule.Window.Theme,
+	        Window = Window
+	    })
+	    Tab.Elements[Dropdown] = Content
+	    return Content
+	end
 	function Tab:Section(ElementConfig)
 	    local Section, Content = require("../Elements/Section"):New({
 	        Title = ElementConfig.Title,

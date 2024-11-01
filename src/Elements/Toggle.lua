@@ -63,10 +63,9 @@ function Element:New(Config)
             }),
             New("Frame", {
                 Size = UDim2.new(1,0,1,0),
-                BackgroundColor3 = Color3.fromHex(Config.Theme.Text2),
                 BackgroundTransparency = 1,
                 ThemeTag = {
-                    BackgroundColor3 = "Text2"
+                    BackgroundColor3 = "Accent"
                 },
             }, {
                 New("UICorner", {
@@ -81,18 +80,10 @@ function Element:New(Config)
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(1,-18-3,0.5,0), BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = .15}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .15}):Play()
-            
-            task.spawn(function()
-                pcall(Toggle.Callback, Toggled)
-            end)
         else
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(0,3,0.5,0), BackgroundTransparency = .15}):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .95}):Play()
-            
-            task.spawn(function()
-                pcall(Toggle.Callback, Toggled)
-            end)
         end
     end
 
@@ -101,6 +92,9 @@ function Element:New(Config)
     Toggled = not Toggled
     Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
         Toggle:SetValue(Toggled)
+        task.spawn(function()
+            pcall(Toggle.Callback, Toggled)
+        end)
         Toggled = not Toggled
     end) 
     

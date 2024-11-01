@@ -41,7 +41,10 @@ function Element:New(Config)
         Size = UDim2.new(0, 126, 0, 3),
         Name = "Frame",
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5)
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ThemeTag = {
+            ImageColor3 = "Text"
+        }
     }, {
         New("UICorner", {
             CornerRadius = UDim.new(1, 0),
@@ -53,6 +56,9 @@ function Element:New(Config)
             ScaleType = "Crop",
             BackgroundTransparency = 1,
             ImageTransparency = .4,
+            ThemeTag = {
+                ImageColor3 = "Text"
+            }
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(1, 0),

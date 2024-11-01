@@ -4,8 +4,8 @@ local Tween = Creator.Tween
 
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
-    UICorner = 9,
-    UIPadding = 12,
+    UICorner = 12,
+    UIPadding = 16,
     ButtonPadding = 9,
     Holder = nil,
     NotificationIndex = 0,
@@ -110,11 +110,11 @@ function NotificationModule.New(Config)
         
         for _,Button in next, ButtonsTable do
             local ButtonText = New("TextButton", {
-                Size = UDim2.new(1 / #ButtonsTable, -2.5, 0, 0),
+                Size = UDim2.new(1 / #ButtonsTable, -(((#ButtonsTable - 1) * 11/2) / #ButtonsTable), 0, 0),
                 AutomaticSize = "Y",
                 ThemeTag = {
                     BackgroundColor3 = "Text",
-                    TextColor3 = Button == "Confirm" and "Text2" or "Text"
+                    TextColor3 = Button == "Confirm" and "Accent" or "Text"
                 },
                 BackgroundTransparency = Button == "Confirm" and 0.15 or .9,
                 Text = Button,
@@ -205,8 +205,8 @@ function NotificationModule.New(Config)
                         ThemeTag = {
                             TextColor3 = "Text"
                         },
-                        TextSize = 15,
-                        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                        TextSize = 16,
+                        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
                         BackgroundTransparency = 1,
                         TextWrapped = true,
                         AutomaticSize = "Y",
