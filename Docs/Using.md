@@ -184,12 +184,12 @@ Dropdown:Refresh({"Tab 1", "Tab 2"})
 ```
 
 ### Select Value
-> Default Dropdown
+Default Dropdown
 ```lua
 Dropdown:Select("Tab 2") 
 ```
 
-> Multi Dropdown
+Multi Dropdown
 ```lua
 Dropdown:Select({"Tab 1", "Tab 2"}) 
 ```
@@ -249,7 +249,7 @@ Colorpicker:Update(
 ```
 <hr>
 
-### Other:
+# Other:
 
 ## Dialog
 ```lua
