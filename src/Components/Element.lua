@@ -43,6 +43,7 @@ return function(Config)
                 },
                 TextSize = 15, 
                 TextWrapped = true,
+                Name = "Title",
                 TextXAlignment = "Left",
                 Size = UDim2.new(1,-Config.TextOffset,0,0),
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
@@ -56,7 +57,8 @@ return function(Config)
             ThemeTag = {
                 BackgroundColor3 = "Text"
             },
-            Position = UDim2.new(0,-Element.UIPadding,0,-Element.UIPadding-2),
+            Position = UDim2.new(0.5,0,0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
             BackgroundTransparency = 1,
             Name = "Highlight"
         }, {
@@ -96,8 +98,10 @@ return function(Config)
         })
     })
     
+    local Desc
+    
     if Element.Desc then
-        local Desc = New("TextLabel", {
+        Desc = New("TextLabel", {
             Text = Element.Desc,
             TextColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
@@ -127,6 +131,31 @@ return function(Config)
         end)
     end
     
+    function Element:SetTitle(Title)
+        Element.UIElements.Main.Title.Title.Text = Title
+    end
+    function Element:SetDesc(Title)
+        if Desc then
+            Desc.Text = Title
+        else
+            Desc = New("TextLabel", {
+                Text = Title,
+                TextColor3 = Color3.fromHex(Config.Theme.Text),
+                ThemeTag = {
+                    TextColor3 = "Text"
+                },
+                TextTransparency = 0.4,
+                TextSize = 15,
+                TextWrapped = true,
+                TextXAlignment = "Left",
+                Size = UDim2.new(1,-Config.TextOffset,0,0),
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                BackgroundTransparency = 1,
+                AutomaticSize = "Y",
+                Parent = Element.UIElements.Main.Title
+            })
+        end
+    end
     
     return Element
 end

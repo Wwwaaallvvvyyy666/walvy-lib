@@ -105,33 +105,23 @@ function Creator.Icon(Icon)
     return Icons.assets["lucide-" .. Icon]
 end
 
-local elements = 0
-
 function Creator.New(Name, Properties, Children)
-    elements = elements + 1
-    
-    if elements >= 22 then
-        RenderStepped:Wait()
-        elements = 0
-    end
-    
     local Object = Instance.new(Name)
-    
-    
+
     for Name, Value in next, Creator.DefaultProperties[Name] or {} do
-	    Object[Name] = Value
+        Object[Name] = Value
     end
-    
+
     for Name, Value in next, Properties or {} do
         if Name ~= "ThemeTag" then
-		    Object[Name] = Value
-	    end
+            Object[Name] = Value
+        end
     end
-    
+
     for _, Child in next, Children or {} do
-	    Child.Parent = Object
+        Child.Parent = Object
     end
-    
+
     ApplyCustomProps(Object, Properties)
     return Object
 end

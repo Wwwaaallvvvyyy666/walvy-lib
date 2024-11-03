@@ -51,13 +51,16 @@ local WindowTab = Window:Tab({
 
 MainTab:Section({ Title = "Paragraphs" })
 
-local Paragraph = MainTab:Paragraph({
+local Paragraph1 = MainTab:Paragraph({
     Title = "Paragraph",
     Desc = "Paragraph Content \nAnd second line",
 })
 local Paragraph = MainTab:Paragraph({
     Title = "Paragraph without content",
 })
+
+Paragraph1:SetTitle("New Title!")
+Paragraph1:SetDesc("New Description!")
 
 
 MainTab:Section({ Title = "Buttons" })

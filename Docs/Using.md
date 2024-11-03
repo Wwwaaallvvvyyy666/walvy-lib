@@ -49,6 +49,16 @@ local MainTab = Window:Tab({
 
 ### Elements
 
+## Set Title & Desc for all Elements
+```lua
+-- Example
+
+Paragraph1:SetTitle("New Title!")
+Paragraph1:SetDesc("New Description!")
+
+-- Paragraph1 - Element ↓
+```
+
 ## Creating Section
 ```lua
 MainTab:Section({ 

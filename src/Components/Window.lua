@@ -104,7 +104,7 @@ return function(Config)
     
     local Gradient = New("Frame", {
         Size = UDim2.new(1,0,1,0),
-        BackgroundTransparency = Window.Transparent and 0.15 or 0,
+        BackgroundTransparency = 1, -- Window.Transparent and 0.15 or 0
         ZIndex = 3,
         Name = "Gradient"
     }, {
@@ -513,12 +513,13 @@ return function(Config)
     end)
     
     task.spawn(function()
+        --task.wait(1.38583)
         Window:Open()
     end)
     
     local TabModule = require("./Tab").Init(Window)
     function Window:Tab(TabConfig)
-        task.wait()
+        RunService.Heartbeat:Wait()
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
 
@@ -703,6 +704,6 @@ return function(Config)
             end
         end
     end)
-
+    
     return Window
 end

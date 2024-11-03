@@ -143,7 +143,7 @@ function Element:New(Config)
         end
     end)
     
-    return Slider
+    return Slider.__type, Slider
 end
 
 return Element

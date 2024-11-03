@@ -92,6 +92,10 @@ function DialogModule.Create(Key)
         if not Key then
             Tween(Dialog.UIElements.FullScreen, 0.1, {BackgroundTransparency = 1}):Play()
             Dialog.UIElements.FullScreen.Active = false
+            task.spawn(function()
+                task.wait(.1)
+                Dialog.UIElements.FullScreen.Visible = false
+            end)
         end
         
         Tween(Dialog.UIElements.Main, 0.1, {GroupTransparency = 1}):Play()
@@ -101,11 +105,6 @@ function DialogModule.Create(Key)
         return function()
             task.spawn(function()
                 task.wait(.1)
-                if not Key then
-                    Dialog.UIElements.FullScreen.Visible = false
-                end
-                Dialog.UIElements.Main.Visible = false
-                
                 if not Key then
                     Dialog.UIElements.FullScreen:Destroy()
                 else

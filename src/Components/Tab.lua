@@ -111,8 +111,8 @@ function TabModule.New(Config)
 	
 	-- WTF
 	
-    task.wait()
     function Tab:Paragraph(ElementConfig)
+        task.wait(0)
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
@@ -122,10 +122,10 @@ function TabModule.New(Config)
             Hover = false,
         })
         Tab.Elements["Paragraph"] = Paragraph
-        return Content
+        return Paragraph
     end
-    task.wait()
     function Tab:Button(ElementConfig)
+        task.wait(0)
         local Button, Content = require("../Elements/Button"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -134,10 +134,18 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame
         })
         Tab.Elements[Button] = Content
+        
+        function Content:SetTitle(Title)
+            Content.ButtonFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.ButtonFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Toggle(ElementConfig)
+        task.wait(0)
         local Toggle, Content = require("../Elements/Toggle"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -147,10 +155,18 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame
         })
         Tab.Elements[Toggle] = Content
+        
+        function Content:SetTitle(Title)
+            Content.ToggleFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.ToggleFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Slider(ElementConfig)
+        task.wait(0)
         local Slider, Content = require("../Elements/Slider"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -161,10 +177,18 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Slider] = Content
+        
+        function Content:SetTitle(Title)
+            Content.SliderFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.SliderFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Keybind(ElementConfig)
+        task.wait(0)
         local Keybind, Content = require("../Elements/Keybind"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -174,10 +198,18 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Keybind] = Content
+        
+        function Content:SetTitle(Title)
+            Content.KeybindFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.KeybindFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Input(ElementConfig)
+        task.wait(0)
         local Input, Content = require("../Elements/Input"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -189,10 +221,18 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Input] = Content
+        
+        function Content:SetTitle(Title)
+            Content.InputFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.InputFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Dropdown(ElementConfig)
+        task.wait(0)
         local Dropdown, Content = require("../Elements/Dropdown"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -206,10 +246,18 @@ function TabModule.New(Config)
             Window = Window
         })
         Tab.Elements[Dropdown] = Content
+        
+        function Content:SetTitle(Title)
+            Content.DropdownFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.DropdownFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Colorpicker(ElementConfig)
+        task.wait(0)
         local Dropdown, Content = require("../Elements/Colorpicker"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -221,10 +269,18 @@ function TabModule.New(Config)
             Window = Window
         })
         Tab.Elements[Dropdown] = Content
+        
+        function Content:SetTitle(Title)
+            Content.ColorpickerFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.ColorpickerFrame:SetDesc(Title)
+        end
+        
         return Content
     end
-    task.wait()
     function Tab:Section(ElementConfig)
+        task.wait(0)
         local Section, Content = require("../Elements/Section"):New({
             Title = ElementConfig.Title,
             Parent = Tab.UIElements.ContainerFrame,

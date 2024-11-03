@@ -9,8 +9,8 @@ local Tween = Creator.Tween
 local Element = {
     UICorner = 6,
     UIPadding = 8,
-    MenuCorner = 12,
-    MenuPadding = 6,
+    MenuCorner = 14,
+    MenuPadding = 7,
     TabPadding = 10,
 }
 
@@ -199,6 +199,7 @@ function Element:New(Config)
         Dropdown.Tabs = {}
         
         for Index,Tab in next, Values do
+            task.wait()
             local TabMain = {
                 Name = Tab,
                 Selected = false,
