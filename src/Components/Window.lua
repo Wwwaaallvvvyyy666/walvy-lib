@@ -168,10 +168,10 @@ return function(Config)
     
     if not IsPC then
         OpenButton = New("TextButton", {
-            Size = UDim2.new(0,0,0,48),
-            Position = UDim2.new(0.5,0,0.5,6+48/2),
+            Size = UDim2.new(0,0,0,44),
+            Position = UDim2.new(0.5,0,0,6+44/2),
             Parent = Config.Parent,
-            AnchorPoint = Vector2.new(0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
             AutomaticSize = "XY",
             Visible = false,
             BackgroundColor3 = Color3.new(0,0,0),
