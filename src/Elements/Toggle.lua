@@ -89,13 +89,13 @@ function Element:New(Config)
 
     local Toggled = Config.Value
     Toggle:SetValue(Toggled)
-    Toggled = not Toggled
+    --Toggled = not Toggled
     Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
+        Toggled = not Toggled
         Toggle:SetValue(Toggled)
         task.spawn(function()
             pcall(Toggle.Callback, Toggled)
         end)
-        Toggled = not Toggled
     end) 
     
     return Toggle.__type, Toggle

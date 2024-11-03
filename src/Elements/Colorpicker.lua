@@ -40,6 +40,9 @@ function Element:Colorpicker(Config, OnApply)
     local ColorpickerModule = require("../Components/Dialog").Init(Config.Window)
     local ColorpickerFrame = ColorpickerModule.Create()
     
+    Colorpicker.ColorpickerFrame = ColorpickerFrame
+    
+    ColorpickerFrame:Close()
     
     local Hue, Sat, Vib = Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib
 
@@ -336,6 +339,7 @@ function Element:Colorpicker(Config, OnApply)
                 BackgroundColor3 = "Text",
             },
             BackgroundTransparency = .9,
+            ZIndex = 999999,
             Parent = ButtonsContent,
             Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 8) / #Buttons), 0, 0),
             AutomaticSize = "Y",
@@ -624,7 +628,7 @@ function Element:New(Config)
         Parent = Config.Parent,
         Theme = Config.Theme,
         TextOffset = 40,
-        Hover = true,
+        Hover = false,
     })
     
     Colorpicker.UIElements.Colorpicker = New("TextButton",{
@@ -669,15 +673,18 @@ function Element:New(Config)
         end
     end
     
+    local clrpckr = Element:Colorpicker(Colorpicker, function(color, transparency)
+        Colorpicker:Update(color, transparency)
+        Colorpicker.Default = color
+        Colorpicker.Transparency = transparency
+        pcall(Colorpicker.Callback, color, transparency)
+    end)
+    
     Colorpicker:Update(Colorpicker.Default, Colorpicker.Transparency)
 
-    Colorpicker.ColorpickerFrame.UIElements.Main.MouseButton1Click:Connect(function()
-        Element:Colorpicker(Colorpicker, function(color, transparency)
-            Colorpicker:Update(color, transparency)
-            Colorpicker.Default = color
-            Colorpicker.Transparency = transparency
-            pcall(Colorpicker.Callback, color, transparency)
-        end)
+    
+    Colorpicker.UIElements.Colorpicker.MouseButton1Click:Connect(function()
+        clrpckr.ColorpickerFrame:Open()
     end)
     
     return Colorpicker.__type, Colorpicker

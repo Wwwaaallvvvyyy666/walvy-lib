@@ -98,22 +98,24 @@ function DialogModule.Create(Key)
         Tween(Dialog.UIElements.Main.UIScale, 0.1, {Scale = .9}):Play()
         Tween(Dialog.UIElements.Main.UIStroke, 0.1, {Transparency = 1}):Play()
         
-        task.spawn(function()
-            task.wait(.1)
-            if not Key then
-                Dialog.UIElements.FullScreen.Visible = false
-            end
-            Dialog.UIElements.Main.Visible = false
-            
-            if not Key then
-                Dialog.UIElements.FullScreen:Destroy()
-            else
-                Dialog.UIElements.Main:Destroy()
-            end
-        end)
+        return function()
+            task.spawn(function()
+                task.wait(.1)
+                if not Key then
+                    Dialog.UIElements.FullScreen.Visible = false
+                end
+                Dialog.UIElements.Main.Visible = false
+                
+                if not Key then
+                    Dialog.UIElements.FullScreen:Destroy()
+                else
+                    Dialog.UIElements.Main:Destroy()
+                end
+            end)
+        end
     end
     
-    Dialog:Open()
+    --Dialog:Open()
     return Dialog
 end
 

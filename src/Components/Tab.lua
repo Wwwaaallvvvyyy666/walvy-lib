@@ -111,8 +111,9 @@ function TabModule.New(Config)
 	
 	-- WTF
 	
-	function Tab:Paragraph(ElementConfig)
-	    local Paragraph = require("../Components/Element")({
+    task.wait()
+    function Tab:Paragraph(ElementConfig)
+        local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
             Parent = Tab.UIElements.ContainerFrame,
@@ -120,110 +121,118 @@ function TabModule.New(Config)
             TextOffset = 0,
             Hover = false,
         })
-	    Tab.Elements["Paragraph"] = Paragraph
-	    return Content
-	end
-	function Tab:Button(ElementConfig)
-	    local Button, Content = require("../Elements/Button"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame
-	    })
-	    Tab.Elements[Button] = Content
-	    return Content
-	end
-	function Tab:Toggle(ElementConfig)
-	    local Toggle, Content = require("../Elements/Toggle"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Value = ElementConfig.Value,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame
-	    })
-	    Tab.Elements[Toggle] = Content
-	    return Content
-	end
-	function Tab:Slider(ElementConfig)
-	    local Slider, Content = require("../Elements/Slider"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Step = ElementConfig.Step,
-	        Value = ElementConfig.Value,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame,
-	    })
-	    Tab.Elements[Slider] = Content
-	    return Content
-	end
-	function Tab:Keybind(ElementConfig)
-	    local Keybind, Content = require("../Elements/Keybind"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Value = ElementConfig.Value,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame,
-	    })
-	    Tab.Elements[Keybind] = Content
-	    return Content
-	end
-	function Tab:Input(ElementConfig)
-	    local Input, Content = require("../Elements/Input"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Value = ElementConfig.Value,
-	        PlaceholderText = ElementConfig.PlaceholderText,
-	        ClearTextOnFocus = ElementConfig.ClearTextOnFocus,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame,
-	    })
-	    Tab.Elements[Input] = Content
-	    return Content
-	end
-	function Tab:Dropdown(ElementConfig)
-	    local Dropdown, Content = require("../Elements/Dropdown"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        AllowNone = ElementConfig.AllowNone,
-	        Value = ElementConfig.Value,
-	        Values = ElementConfig.Values,
-	        Multi = ElementConfig.Multi,
-	        Callback = ElementConfig.Callback,
-	        Theme = TabModule.Window.Theme,
-	        Parent = Tab.UIElements.ContainerFrame,
-	        Window = Window
-	    })
-	    Tab.Elements[Dropdown] = Content
-	    return Content
-	end
-	function Tab:Colorpicker(ElementConfig)
-	    local Dropdown, Content = require("../Elements/Colorpicker"):New({
-	        Title = ElementConfig.Title,
-	        Desc = ElementConfig.Desc,
-	        Default = ElementConfig.Default,
-	        Transparency = ElementConfig.Transparency,
-	        Callback = ElementConfig.Callback,
-	        Parent = Tab.UIElements.ContainerFrame,
-	        Theme = TabModule.Window.Theme,
-	        Window = Window
-	    })
-	    Tab.Elements[Dropdown] = Content
-	    return Content
-	end
-	function Tab:Section(ElementConfig)
-	    local Section, Content = require("../Elements/Section"):New({
-	        Title = ElementConfig.Title,
-	        Parent = Tab.UIElements.ContainerFrame,
-	    })
-	    Tab.Elements[Section] = Content
-	    return Content
-	end
-	
+        Tab.Elements["Paragraph"] = Paragraph
+        return Content
+    end
+    task.wait()
+    function Tab:Button(ElementConfig)
+        local Button, Content = require("../Elements/Button"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame
+        })
+        Tab.Elements[Button] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Toggle(ElementConfig)
+        local Toggle, Content = require("../Elements/Toggle"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Value = ElementConfig.Value,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame
+        })
+        Tab.Elements[Toggle] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Slider(ElementConfig)
+        local Slider, Content = require("../Elements/Slider"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Step = ElementConfig.Step,
+            Value = ElementConfig.Value,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame,
+        })
+        Tab.Elements[Slider] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Keybind(ElementConfig)
+        local Keybind, Content = require("../Elements/Keybind"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Value = ElementConfig.Value,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame,
+        })
+        Tab.Elements[Keybind] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Input(ElementConfig)
+        local Input, Content = require("../Elements/Input"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Value = ElementConfig.Value,
+            PlaceholderText = ElementConfig.PlaceholderText,
+            ClearTextOnFocus = ElementConfig.ClearTextOnFocus,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame,
+        })
+        Tab.Elements[Input] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Dropdown(ElementConfig)
+        local Dropdown, Content = require("../Elements/Dropdown"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            AllowNone = ElementConfig.AllowNone,
+            Value = ElementConfig.Value,
+            Values = ElementConfig.Values,
+            Multi = ElementConfig.Multi,
+            Callback = ElementConfig.Callback,
+            Theme = TabModule.Window.Theme,
+            Parent = Tab.UIElements.ContainerFrame,
+            Window = Window
+        })
+        Tab.Elements[Dropdown] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Colorpicker(ElementConfig)
+        local Dropdown, Content = require("../Elements/Colorpicker"):New({
+            Title = ElementConfig.Title,
+            Desc = ElementConfig.Desc,
+            Default = ElementConfig.Default,
+            Transparency = ElementConfig.Transparency,
+            Callback = ElementConfig.Callback,
+            Parent = Tab.UIElements.ContainerFrame,
+            Theme = TabModule.Window.Theme,
+            Window = Window
+        })
+        Tab.Elements[Dropdown] = Content
+        return Content
+    end
+    task.wait()
+    function Tab:Section(ElementConfig)
+        local Section, Content = require("../Elements/Section"):New({
+            Title = ElementConfig.Title,
+            Parent = Tab.UIElements.ContainerFrame,
+        })
+        Tab.Elements[Section] = Content
+        return Content
+    end
+
 	
 	task.spawn(function()
         local Empty = New("Frame", {

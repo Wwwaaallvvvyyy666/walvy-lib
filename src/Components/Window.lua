@@ -1,5 +1,6 @@
 
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local Creator = require("../Creator")
 local New = Creator.New
@@ -14,6 +15,7 @@ return function(Config)
         Icon = Config.Icon,
         Folder = Config.Folder,
         Size = Config.Size or UDim2.fromOffset(560, 460),
+        ToggleKey = Config.ToggleKey or Enum.KeyCode.G,
         Transparent = Config.Transparent or false,
         Position = UDim2.new(
 			0.5, 0,
@@ -25,6 +27,7 @@ return function(Config)
 		UIElements = {},
 		Theme = Config.Theme,
 		CanDropdown = true,
+		Closed = false,
 		SuperParent = Config.Parent
     }
     
@@ -151,48 +154,88 @@ return function(Config)
         Position = UDim2.new(0.5,0,0.5,0),
     })
 
-    local OpenButton = New("TextButton", {
-        Size = UDim2.new(0,50,0,50),
-        Position = UDim2.new(0.5,0,0.5,0),
-        AnchorPoint = Vector2.new(0.5,0.5),
-        Parent = Config.Parent,
-        Visible = false,
-        ThemeTag = {
-            BackgroundColor3 = "Accent"
-        },
-        BackgroundTransparency = .15,
-        ZIndex = 99,
-    }, {
-        New("ImageLabel", {
-			BackgroundTransparency = 1,
-			Image = "http://www.roblox.com/asset/?id=5554236805",
-			ScaleType = Enum.ScaleType.Slice,
-			SliceCenter = Rect.new(23, 23, 277, 277),
-			Size = UDim2.fromScale(1, 1) + UDim2.fromOffset(30, 30),
-			Position = UDim2.fromOffset(-15, -15),
-			ImageColor3 = Color3.fromRGB(0, 0, 0),
-			ImageTransparency = 0.1,
-			SliceScale = 1.1,
-		}),
-		New("UICorner", {
-            CornerRadius = UDim.new(0,Window.UICorner)
-        }),
-        New("UIStroke", {
-            Thickness = 0.6,
-            ThemeTag = {
-                Color = "Outline",
-            },
-            Transparency = 1, -- 0.8
-        }),
-        New("ImageLabel", {
-            Image = "",
-            Size = UDim2.new(1,-20,1,-20),
-            Position = UDim2.new(0.5,0,0.5,0),
-            AnchorPoint = Vector2.new(0.5,0.5),
-            BackgroundTransparency = 1,
-            Name = "Icon"
+    local IsPC
+
+    if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+        IsPC = false
+    elseif UserInputService.KeyboardEnabled then
+        IsPC = true
+    else
+        IsPC = nil
+    end
+    
+    local OpenButton
+    
+    if not IsPC then
+        OpenButton = New("TextButton", {
+            Size = UDim2.new(0,0,0,48),
+            Position = UDim2.new(0.5,0,0.5,6+48/2),
+            Parent = Config.Parent,
+            AnchorPoint = Vector2.new(0.5,0),
+            AutomaticSize = "XY",
+            Visible = false,
+            BackgroundColor3 = Color3.new(0,0,0),
+            BackgroundTransparency = .3,
+            ZIndex = 99,
+        }, {
+            New("UIScale", {
+                Scale = 1,
+            }),
+		    New("UICorner", {
+                CornerRadius = UDim.new(1,0)
+            }),
+            New("UIStroke", {
+                Thickness = 1,
+                ApplyStrokeMode = "Border",
+                Color = Color3.new(1,1,1),
+                Transparency = 0,
+            }, {
+                New("UIGradient", {
+                    Color = ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff"))
+                })
+            }),
+            New("ImageLabel", {
+                Image = "",
+                Size = UDim2.new(0,22,0,22),
+                Position = UDim2.new(0.5,0,0.5,0),
+                LayoutOrder = -1,
+                AnchorPoint = Vector2.new(0.5,0.5),
+                BackgroundTransparency = 1,
+                Name = "Icon"
+            }),
+            New("UIListLayout", {
+                Padding = UDim.new(0, Window.UIPadding),
+                FillDirection = "Horizontal",
+                VerticalAlignment = "Center",
+            }),
+            New("TextLabel", {
+                Text = Window.Title,
+                TextSize = 17,
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                BackgroundTransparency = 1,
+                AutomaticSize = "XY",
+            }),
+            New("UIPadding", {
+                PaddingTop = UDim.new(0,0),
+                PaddingLeft = UDim.new(0,16),
+                PaddingRight = UDim.new(0,16),
+                PaddingBottom = UDim.new(0,0),
+            })
         })
-    })
+        local uiGradient = OpenButton.UIStroke.UIGradient
+    
+        RunService.RenderStepped:Connect(function(deltaTime)
+            uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
+        end)
+        
+        OpenButton.MouseEnter:Connect(function()
+            Tween(OpenButton.UIScale, .1, {Scale = .95}):Play()
+        end)
+        OpenButton.MouseLeave:Connect(function()
+            Tween(OpenButton.UIScale, .1, {Scale = 1}):Play()
+        end)
+    end
+    
     
     Window.UIElements.Main = New("Frame", {
         Size = UDim2.new(
@@ -298,7 +341,7 @@ return function(Config)
                     AnchorPoint = Vector2.new(1,0.5)
                 }, {
                     New("UIListLayout", {
-                        Padding = UDim.new(0,6),
+                        Padding = UDim.new(0,12),
                         FillDirection = "Horizontal",
                         SortOrder = "LayoutOrder",
                     }),
@@ -330,7 +373,7 @@ return function(Config)
     local Dragged = false
 
     Creator.Drag(Window.UIElements.Main)
-    Creator.Drag(OpenButton, function(v) Dragged = v end)
+    --Creator.Drag(OpenButton, function(v) Dragged = v end)
     
     if Window.Author then
         New("TextLabel", {
@@ -384,11 +427,15 @@ return function(Config)
                 OpenButton.Icon.Image = Window.Icon
             end
         else
-            OpenButton.Icon.Image = Creator.Icon("external-link")
+            if not IsPC then
+                OpenButton.Icon.Image = Creator.Icon("external-link")
+            end
         end
     end)
     
     function Window:Open()
+        Window.Closed = false
+        
         Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Window.Transparent and 0.15 or 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
@@ -404,6 +451,7 @@ return function(Config)
         local Close = {}
         
         Window.CanDropdown = false
+        Window.Closed = true
         
         Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
@@ -429,20 +477,39 @@ return function(Config)
         Window:Close()
         task.spawn(function()
             task.wait(.3)
-            OpenButton.Visible = true
+            if not IsPC then
+                OpenButton.Visible = true
+            end
         end)
+        
+        local NotifiedText = IsPC and "Press " .. Window.Name .. " to open the Window" or "Click the Button to open the Window"
+        
         if not Notified then
             Notified = not Notified
             Config.WindUI:Notify({
                 Title = "Minimize",
-                Content = "You've closed the Window. Click the Button to open the Window",
+                Content = "You've closed the Window. " .. NotifiedText,
                 Duration = 5,
             })
         end
     end)
-    OpenButton.MouseButton1Click:Connect(function()
-        Window:Open()
-        OpenButton.Visible = false
+    if not IsPC then
+        OpenButton.MouseButton1Click:Connect(function()
+            Window:Open()
+            OpenButton.Visible = false
+        end)
+    end
+    
+    UserInputService.InputBegan:Connect(function(input, isProcessed)
+        if isProcessed then return end
+        
+        if input.KeyCode == Window.ToggleKey then
+            if Window.Closed then
+                Window:Open()
+            else
+                Window:Close()
+            end
+        end
     end)
     
     task.spawn(function()
@@ -451,10 +518,10 @@ return function(Config)
     
     local TabModule = require("./Tab").Init(Window)
     function Window:Tab(TabConfig)
-        
+        task.wait()
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
-    
+
     local DialogModule = require("./Dialog").Init(Window)
     function Window:Dialog(DialogConfig)
         local DialogTable = {
@@ -465,9 +532,8 @@ return function(Config)
         local Dialog = DialogModule.Create()
         
         
-        
         Dialog.UIElements.UIListLayout = New("UIListLayout", {
-            Padding = UDim.new(0,8*1.8),
+            Padding = UDim.new(0,8*2),
             FillDirection = "Vertical",
             Parent = Dialog.UIElements.Main
         })
@@ -540,16 +606,16 @@ return function(Config)
                 AutomaticSize = "Y",
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, Dialog.UICorner-3),
+                    CornerRadius = UDim.new(0, Dialog.UICorner-6),
                 }),
                 New("UIPadding", {
-                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.6),
-                    PaddingLeft = UDim.new(0, Dialog.UIPadding/1.6),
-                    PaddingRight = UDim.new(0, Dialog.UIPadding/1.6),
-                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.6),
+                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.75),
+                    PaddingLeft = UDim.new(0, Dialog.UIPadding/1.75),
+                    PaddingRight = UDim.new(0, Dialog.UIPadding/1.75),
+                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.75),
                 }),
                 New("Frame", {
-                    Size = UDim2.new(1,(Dialog.UIPadding/1.6)*2,1,(Dialog.UIPadding/1.6)*2),
+                    Size = UDim2.new(1,(Dialog.UIPadding/1.75)*2,1,(Dialog.UIPadding/1.75)*2),
                     Position = UDim2.new(0.5,0,0.5,0),
                     AnchorPoint = Vector2.new(0.5,0.5),
                     ThemeTag = {
@@ -570,12 +636,14 @@ return function(Config)
                 Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
             end)
             ButtonFrame.MouseButton1Click:Connect(function()
-                Dialog:Close()
+                Dialog:Close()()
                 task.spawn(function()
                     pcall(Button.Callback)
                 end)
             end)
         end
+        
+        Dialog:Open()
         
         return Dialog
     end

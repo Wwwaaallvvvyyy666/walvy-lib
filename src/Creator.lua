@@ -5,6 +5,7 @@
 ]]
 
 local RunService = game:GetService("RunService")
+local RenderStepped = RunService.Heartbeat
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
@@ -104,8 +105,18 @@ function Creator.Icon(Icon)
     return Icons.assets["lucide-" .. Icon]
 end
 
+local elements = 0
+
 function Creator.New(Name, Properties, Children)
+    elements = elements + 1
+    
+    if elements >= 22 then
+        RenderStepped:Wait()
+        elements = 0
+    end
+    
     local Object = Instance.new(Name)
+    
     
     for Name, Value in next, Creator.DefaultProperties[Name] or {} do
 	    Object[Name] = Value
