@@ -105,14 +105,14 @@ function TabModule.New(Config)
     TabModule.Containers[TabIndex] = Tab.UIElements.ContainerFrame
 	TabModule.Tabs[TabIndex] = Tab
 	
-	Tab.UIElements.Main.MouseButton1Down:Connect(function()
+	Tab.UIElements.Main.MouseButton1Click:Connect(function()
 	    TabModule:SelectTab(Tab)
 	end)
 	
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
@@ -125,7 +125,7 @@ function TabModule.New(Config)
         return Paragraph
     end
     function Tab:Button(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Button, Content = require("../Elements/Button"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -145,7 +145,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Toggle(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Toggle, Content = require("../Elements/Toggle"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -166,7 +166,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Slider(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Slider, Content = require("../Elements/Slider"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -188,7 +188,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Keybind(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Keybind, Content = require("../Elements/Keybind"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -209,7 +209,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Input(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Input, Content = require("../Elements/Input"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -232,7 +232,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Dropdown(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Dropdown, Content = require("../Elements/Dropdown"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -257,7 +257,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Colorpicker(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Dropdown, Content = require("../Elements/Colorpicker"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -280,7 +280,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Section(ElementConfig)
-        task.wait(0)
+        task.wait(0.01)
         local Section, Content = require("../Elements/Section"):New({
             Title = ElementConfig.Title,
             Parent = Tab.UIElements.ContainerFrame,

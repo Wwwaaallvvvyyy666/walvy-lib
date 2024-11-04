@@ -195,25 +195,47 @@ return function(Config)
                 })
             }),
             New("ImageLabel", {
-                Image = "",
-                Size = UDim2.new(0,22,0,22),
-                Position = UDim2.new(0.5,0,0.5,0),
-                LayoutOrder = -1,
-                AnchorPoint = Vector2.new(0.5,0.5),
+                Image = Creator.Icon("grab"),
+                Size = UDim2.new(0,20,0,20),
                 BackgroundTransparency = 1,
-                Name = "Icon"
+                Position = UDim2.new(0,0,0.5,0),
+                AnchorPoint = Vector2.new(0,0.5),
             }),
-            New("UIListLayout", {
-                Padding = UDim.new(0, Window.UIPadding),
-                FillDirection = "Horizontal",
-                VerticalAlignment = "Center",
+            New("Frame", {
+                Size = UDim2.new(0,1,1,-16),
+                Position = UDim2.new(0,20+16,0.5,0),
+                AnchorPoint = Vector2.new(0,0.5),
+                BackgroundColor3 = Color3.new(1,1,1),
+                BackgroundTransparency = .86,
             }),
-            New("TextLabel", {
-                Text = Window.Title,
-                TextSize = 17,
-                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                BackgroundTransparency = 1,
+            New("TextButton",{
                 AutomaticSize = "XY",
+                Active = true,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0,0,1,0),
+                Position = UDim2.new(0,20+16+16+1,0,0)
+            }, {
+                New("ImageLabel", {
+                    Image = "",
+                    Size = UDim2.new(0,22,0,22),
+                    Position = UDim2.new(0.5,0,0.5,0),
+                    LayoutOrder = -1,
+                    AnchorPoint = Vector2.new(0.5,0.5),
+                    BackgroundTransparency = 1,
+                    Name = "Icon"
+                }),
+                New("UIListLayout", {
+                    Padding = UDim.new(0, Window.UIPadding),
+                    FillDirection = "Horizontal",
+                    VerticalAlignment = "Center",
+                }),
+                New("TextLabel", {
+                    Text = Window.Title,
+                    TextSize = 17,
+                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                    BackgroundTransparency = 1,
+                    AutomaticSize = "XY",
+                }),
             }),
             New("UIPadding", {
                 PaddingTop = UDim.new(0,0),
@@ -228,10 +250,10 @@ return function(Config)
             uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
         end)
         
-        OpenButton.MouseEnter:Connect(function()
+        OpenButton.TextButton.MouseEnter:Connect(function()
             Tween(OpenButton.UIScale, .1, {Scale = .95}):Play()
         end)
-        OpenButton.MouseLeave:Connect(function()
+        OpenButton.TextButton.MouseLeave:Connect(function()
             Tween(OpenButton.UIScale, .1, {Scale = 1}):Play()
         end)
     end
@@ -373,7 +395,9 @@ return function(Config)
     local Dragged = false
 
     Creator.Drag(Window.UIElements.Main)
-    --Creator.Drag(OpenButton, function(v) Dragged = v end)
+    if not IsPC then
+        Creator.Drag(OpenButton, function(v) Dragged = v end)
+    end
     
     if Window.Author then
         New("TextLabel", {
@@ -406,7 +430,7 @@ return function(Config)
             })
             if Creator.Icon(Window.Icon) then
                 ImageLabel.Image = Creator.Icon(Window.Icon)
-                OpenButton.Icon.Image = Creator.Icon(Window.Icon)
+                OpenButton.TextButton.Icon.Image = Creator.Icon(Window.Icon)
             end
             if string.find(Window.Icon,"http") then
                 if not isfile(Window.Folder .. "/Assets/Icon.png") then
@@ -421,14 +445,14 @@ return function(Config)
                     writefile("WindUI" .. Window.Folder .. "/Assets/Icon.png", response)
                 end
                 ImageLabel.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
-                OpenButton.Icon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
+                OpenButton.TextButton.Icon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
             elseif string.find(Window.Icon,"rbxassetid") then
                 ImageLabel.Image = Window.Icon
-                OpenButton.Icon.Image = Window.Icon
+                OpenButton.TextButton.Icon.Image = Window.Icon
             end
         else
             if not IsPC then
-                OpenButton.Icon.Image = Creator.Icon("external-link")
+                OpenButton.TextButton.Icon.Image = Creator.Icon("external-link")
             end
         end
     end)
@@ -494,7 +518,7 @@ return function(Config)
         end
     end)
     if not IsPC then
-        OpenButton.MouseButton1Click:Connect(function()
+        OpenButton.TextButton.MouseButton1Click:Connect(function()
             Window:Open()
             OpenButton.Visible = false
         end)
@@ -534,7 +558,7 @@ return function(Config)
         
         
         Dialog.UIElements.UIListLayout = New("UIListLayout", {
-            Padding = UDim.new(0,8*2),
+            Padding = UDim.new(0,8*2.3),
             FillDirection = "Vertical",
             Parent = Dialog.UIElements.Main
         })
@@ -551,6 +575,7 @@ return function(Config)
             FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
             TextXAlignment = "Left",
             TextWrapped = true,
+            RichText = true,
             Size = UDim2.new(1,0,0,0),
             AutomaticSize = "Y",
             ThemeTag = {
@@ -562,9 +587,10 @@ return function(Config)
         if DialogTable.Content then
             local Content = New("TextLabel", {
                 Text = DialogTable.Content,
-                TextSize = 18,
+                TextSize = 16,
                 TextTransparency = .4,
                 TextWrapped = true,
+                RichText = true,
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 TextXAlignment = "Left",
                 Size = UDim2.new(1,0,0,0),
@@ -586,7 +612,7 @@ return function(Config)
             LayoutOrder = 4,
         }, {
             New("UIListLayout", {
-			    Padding = UDim.new(0, 8),
+			    Padding = UDim.new(0, 10),
 			    FillDirection = "Horizontal",
 			    HorizontalAlignment = "Center",
 		    }),
@@ -595,28 +621,28 @@ return function(Config)
         for _,Button in next, DialogTable.Buttons do
             local ButtonFrame = New("TextButton", {
                 Text = Button.Title or "Button",
-                TextSize = 15,
+                TextSize = 14,
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 ThemeTag = {
                     TextColor3 = "Text",
                     BackgroundColor3 = "Text",
                 },
-                BackgroundTransparency = .9,
+                BackgroundTransparency = .93,
                 Parent = ButtonsContent,
-                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 8) / #DialogTable.Buttons), 0, 0),
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 0),
                 AutomaticSize = "Y",
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, Dialog.UICorner-6),
+                    CornerRadius = UDim.new(0, Dialog.UICorner-7),
                 }),
                 New("UIPadding", {
-                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.75),
-                    PaddingLeft = UDim.new(0, Dialog.UIPadding/1.75),
-                    PaddingRight = UDim.new(0, Dialog.UIPadding/1.75),
-                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.75),
+                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.85),
+                    PaddingLeft = UDim.new(0, Dialog.UIPadding/1.85),
+                    PaddingRight = UDim.new(0, Dialog.UIPadding/1.85),
+                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.85),
                 }),
                 New("Frame", {
-                    Size = UDim2.new(1,(Dialog.UIPadding/1.75)*2,1,(Dialog.UIPadding/1.75)*2),
+                    Size = UDim2.new(1,(Dialog.UIPadding/1.85)*2,1,(Dialog.UIPadding/1.85)*2),
                     Position = UDim2.new(0.5,0,0.5,0),
                     AnchorPoint = Vector2.new(0.5,0.5),
                     ThemeTag = {
@@ -625,7 +651,7 @@ return function(Config)
                     BackgroundTransparency = 1, -- .9
                 }, {
                     New("UICorner", {
-                        CornerRadius = UDim.new(0, Dialog.UICorner-3),
+                        CornerRadius = UDim.new(0, Dialog.UICorner-7),
                     }),
                 })
             })

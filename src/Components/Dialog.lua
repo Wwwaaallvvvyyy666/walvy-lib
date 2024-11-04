@@ -22,7 +22,7 @@ function DialogModule.Create(Key)
     }
     
     if Key then Dialog.UIPadding = 24 end
-    if Key then Dialog.UICorner  = 14 end
+    if Key then Dialog.UICorner  = 16 end
     
     if not Key then
         Dialog.UIElements.FullScreen = New("Frame", {

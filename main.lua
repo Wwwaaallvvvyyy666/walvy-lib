@@ -84,6 +84,12 @@ local Button = MainTab:Button({
                     Callback = function()
                         print("cancel")
                     end
+                },
+                {
+                    Title = "Idk",
+                    Callback = function()
+                        print("idk")
+                    end
                 }
             }
         })

@@ -21,7 +21,7 @@ function Element:New(Config)
     })
     
     Button.UIElements.ButtonIcon = New("ImageLabel",{
-        Image = Creator.Icon("chevron-right"),
+        Image = Creator.Icon("fingerprint"),
         BackgroundTransparency = 1,
         Parent = Button.ButtonFrame.UIElements.Main,
         Size = UDim2.new(0,20,0,20),
