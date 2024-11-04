@@ -199,7 +199,7 @@ function Element:New(Config)
         Dropdown.Tabs = {}
         
         for Index,Tab in next, Values do
-            task.wait()
+            task.wait(0.012)
             local TabMain = {
                 Name = Tab,
                 Selected = false,

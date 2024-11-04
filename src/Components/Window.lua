@@ -164,16 +164,24 @@ return function(Config)
         IsPC = nil
     end
     
+    local OpenButtonContainer
     local OpenButton
     
     if not IsPC then
+        OpenButtonContainer = New("Frame", {
+            Size = UDim2.new(0,0,0,0),
+            Position = UDim2.new(0.5,0,0,6+44/2),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            Parent = Config.Parent,
+            BackgroundTransparency = 1,
+            Active = true,
+            Visible = false,
+        })
         OpenButton = New("TextButton", {
             Size = UDim2.new(0,0,0,44),
-            Position = UDim2.new(0.5,0,0,6+44/2),
-            Parent = Config.Parent,
-            AnchorPoint = Vector2.new(0.5,0.5),
             AutomaticSize = "XY",
-            Visible = false,
+            Parent = OpenButtonContainer,
+            Active = false,
             BackgroundColor3 = Color3.new(0,0,0),
             BackgroundTransparency = .3,
             ZIndex = 99,
@@ -246,8 +254,32 @@ return function(Config)
         })
         local uiGradient = OpenButton.UIStroke.UIGradient
     
+        local Glow = New("ImageLabel", {
+            Image = "rbxassetid://93831937596979", -- UICircle Glow
+            ScaleType = "Slice",
+            SliceCenter = Rect.new(375,375,375,375),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,21,1,21),
+            Position = UDim2.new(0.5,0,0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            ImageTransparency = .5,
+            Parent = OpenButtonContainer,
+        }, {
+            New("UIGradient", {
+                Color = ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff"))
+            })
+        })
+        
         RunService.RenderStepped:Connect(function(deltaTime)
             uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
+            Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
+        end)
+        
+        OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+            OpenButtonContainer.Size = UDim2.new(
+                0, OpenButton.AbsoluteSize.X,
+                0, OpenButton.AbsoluteSize.Y
+            )
         end)
         
         OpenButton.TextButton.MouseEnter:Connect(function()
@@ -396,7 +428,7 @@ return function(Config)
 
     Creator.Drag(Window.UIElements.Main)
     if not IsPC then
-        Creator.Drag(OpenButton, function(v) Dragged = v end)
+        Creator.Drag(OpenButtonContainer, function(v) Dragged = v end)
     end
     
     if Window.Author then
@@ -437,7 +469,6 @@ return function(Config)
                     if not isfolder("WindUI" .. Window.Folder) then
                         makefolder("WindUI" .. Window.Folder)
                     end
-                    print("pisun")
                     local response = request({
                         Url = Window.Icon,
                         Method = "GET",
@@ -502,7 +533,7 @@ return function(Config)
         task.spawn(function()
             task.wait(.3)
             if not IsPC then
-                OpenButton.Visible = true
+                OpenButtonContainer.Visible = true
             end
         end)
         
@@ -520,7 +551,7 @@ return function(Config)
     if not IsPC then
         OpenButton.TextButton.MouseButton1Click:Connect(function()
             Window:Open()
-            OpenButton.Visible = false
+            OpenButtonContainer.Visible = false
         end)
     end
     

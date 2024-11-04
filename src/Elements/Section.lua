@@ -29,6 +29,10 @@ function Element:New(Config)
             PaddingBottom = UDim.new(0,2),
         })
     })
+
+    function Section:SetTitle(Title)
+        Section.UIElements.Main.Text = Title
+    end
     
     return Section.__type, Section
 end

@@ -236,6 +236,20 @@ local Dropdown = MainTab:Dropdown({
         })
     end
 })
+
+MainTab:Button({
+    Title = "Refresh Dropdown ↑",
+    Callback = function()
+        local someItems = {}
+        
+        for i = 1, 100 do
+            table.insert(someItems, "Item blablablabla " .. i)
+        end
+
+        Dropdown:Refresh(someItems)
+    end
+})
+
 local Dropdown = MainTab:Dropdown({
     Title = "Dropdown 2",
     Desc = "Dropdown Desc 2",

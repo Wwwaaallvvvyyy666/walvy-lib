@@ -21,7 +21,7 @@ function Element:New(Config)
     })
     
     Button.UIElements.ButtonIcon = New("ImageLabel",{
-        Image = Creator.Icon("fingerprint"),
+        Image = Creator.Icon("mouse-pointer-click"),
         BackgroundTransparency = 1,
         Parent = Button.ButtonFrame.UIElements.Main,
         Size = UDim2.new(0,20,0,20),
