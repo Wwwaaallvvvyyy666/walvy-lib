@@ -118,6 +118,7 @@ local Button = MainTab:Toggle({
 local Button = MainTab:Toggle({
     Title = "Toggle Main",
     Desc = "Toggle Desc Main",
+    Value = true,
     Callback = function(state)
         if state then
             print("True State")

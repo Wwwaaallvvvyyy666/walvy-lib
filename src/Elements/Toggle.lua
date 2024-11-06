@@ -74,25 +74,26 @@ function Element:New(Config)
             })
         })
     })
+    local Toggled = Config.Value
 
-    function Toggle:SetValue(Toggled)
+    function Toggle:SetValue(a)
+        Toggled = a or Toggled
         if Toggled then
-            Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(1,-18-3,0.5,0), BackgroundTransparency = 1}):Play()
+            Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(1, -18-3, 0.5, 0), BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = .15}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .15}):Play()
         else
-            Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(0,3,0.5,0), BackgroundTransparency = .15}):Play()
+            Tween(Toggle.UIElements.Toggle.Frame, 0.1, {Position = UDim2.new(0, 3, 0.5, 0), BackgroundTransparency = .15}):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .95}):Play()
         end
+        Toggled = not Toggled
     end
 
-    local Toggled = Config.Value
-    Toggle:SetValue(Toggled)
-    --Toggled = not Toggled
+    Toggle:SetValue()
+    pcall(Toggle.Callback, Toggled)
     Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
-        Toggled = not Toggled
-        Toggle:SetValue(Toggled)
+        Toggle:SetValue()
         task.spawn(function()
             pcall(Toggle.Callback, Toggled)
         end)

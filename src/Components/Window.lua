@@ -591,6 +591,7 @@ return function(Config)
         Dialog.UIElements.UIListLayout = New("UIListLayout", {
             Padding = UDim.new(0,8*2.3),
             FillDirection = "Vertical",
+            HorizontalAlignment = "Center",
             Parent = Dialog.UIElements.Main
         })
     
@@ -634,6 +635,17 @@ return function(Config)
                 Parent = Dialog.UIElements.Main
             })
         end
+        
+        New("Frame", {
+            Name = "Line",
+            Size = UDim2.new(1, Dialog.UIPadding*2, 0, 1),
+            Parent = Dialog.UIElements.Main,
+            LayoutOrder = 3,
+            BackgroundTransparency = .8,
+            ThemeTag = {
+                BackgroundColor3 = "Text",
+            }
+        })
         
         local ButtonsContent = New("Frame", {
             Size = UDim2.new(1,0,0,0),
