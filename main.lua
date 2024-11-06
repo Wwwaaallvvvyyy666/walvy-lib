@@ -108,11 +108,7 @@ MainTab:Section({ Title = "Toggles" })
 local Button = MainTab:Toggle({
     Title = "Toggle Main",
     Callback = function(state)
-        if state then
-            print("True State")
-        else
-            print("False State")
-        end
+        print(state)
     end,
 })
 local Button = MainTab:Toggle({

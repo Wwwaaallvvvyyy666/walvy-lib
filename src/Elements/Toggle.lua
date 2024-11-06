@@ -74,7 +74,7 @@ function Element:New(Config)
             })
         })
     })
-    local Toggled = Config.Value
+    local Toggled = Toggle.Value
 
     function Toggle:SetValue(a)
         Toggled = a or Toggled
@@ -87,16 +87,19 @@ function Element:New(Config)
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {BackgroundTransparency = .95}):Play()
         end
-        Toggled = not Toggled
     end
 
     Toggle:SetValue()
-    pcall(Toggle.Callback, Toggled)
+    task.spawn(function()
+        pcall(Toggle.Callback, Toggled)
+    end)
+    Toggled = not Toggled
     Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
         Toggle:SetValue()
         task.spawn(function()
             pcall(Toggle.Callback, Toggled)
         end)
+        Toggled = not Toggled
     end) 
     
     return Toggle.__type, Toggle
