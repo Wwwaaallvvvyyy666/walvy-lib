@@ -8,14 +8,16 @@ function Element:New(Config)
     local Section = {
         __type = "Section",
         Title = Config.Title or "Section",
+        TextXAlignment = Config.TextXAlignment or "Left",
+        TextSize = Config.TextSize or 17,
         UIElements = {},
     }
     
     Section.UIElements.Main = New("TextLabel", {
         BackgroundTransparency = 1,
-        TextXAlignment = "Left",
+        TextXAlignment = Section.TextXAlignment,
         AutomaticSize = "Y",
-        TextSize = 17,
+        TextSize = Section.TextSize,
         ThemeTag = {
             TextColor3 = "Text",
         },

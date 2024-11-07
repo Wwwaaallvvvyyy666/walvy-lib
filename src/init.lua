@@ -418,6 +418,7 @@ function WindUI:CreateWindow(Config)
         Transparent = Config.Transparent,
         Icon = Config.Icon,
         Folder = Config.Folder,
+        HasOutline = Config.HasOutline,
         Theme = Theme,
         WindUI = WindUI,
         Parent = WindUI.ScreenGui.Window,

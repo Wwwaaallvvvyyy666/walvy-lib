@@ -15,6 +15,7 @@ local Window = WindUI:CreateWindow({
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
+    HasOutline = true, -- Adds Oultines to the window
 })
 
 -- Tabs
@@ -48,16 +49,35 @@ local WindowTab = Window:Tab({
 
 -- Main Tab
 
+MainTab:Section({ 
+    Title = "Big section!",
+    TextSize = 22,
+})
+MainTab:Section({ 
+    Title = "Section Left",
+    TextXAlignment = "Left"
+})
+MainTab:Section({ 
+    Title = "Section Center",
+    TextXAlignment = "Center"
+})
+MainTab:Section({ 
+    Title = "Section Right",
+    TextXAlignment = "Right"
+})
 
 MainTab:Section({ Title = "Paragraphs" })
 
-local Paragraph = MainTab:Paragraph({
+local Paragraph1 = MainTab:Paragraph({
     Title = "Paragraph",
     Desc = "Paragraph Content \nAnd second line",
 })
 local Paragraph = MainTab:Paragraph({
     Title = "Paragraph without content",
 })
+
+Paragraph1:SetTitle("New Title!")
+Paragraph1:SetDesc("New Description!")
 
 
 MainTab:Section({ Title = "Buttons" })
@@ -81,6 +101,12 @@ local Button = MainTab:Button({
                     Callback = function()
                         print("cancel")
                     end
+                },
+                {
+                    Title = "Idk",
+                    Callback = function()
+                        print("idk")
+                    end
                 }
             }
         })
@@ -99,16 +125,13 @@ MainTab:Section({ Title = "Toggles" })
 local Button = MainTab:Toggle({
     Title = "Toggle Main",
     Callback = function(state)
-        if state then
-            print("True State")
-        else
-            print("False State")
-        end
+        print(state)
     end,
 })
 local Button = MainTab:Toggle({
     Title = "Toggle Main",
     Desc = "Toggle Desc Main",
+    Value = true,
     Callback = function(state)
         if state then
             print("True State")
@@ -227,6 +250,20 @@ local Dropdown = MainTab:Dropdown({
         })
     end
 })
+
+MainTab:Button({
+    Title = "Refresh Dropdown ↑",
+    Callback = function()
+        local someItems = {}
+        
+        for i = 1, 100 do
+            table.insert(someItems, "Item blablablabla " .. i)
+        end
+
+        Dropdown:Refresh(someItems)
+    end
+})
+
 local Dropdown = MainTab:Dropdown({
     Title = "Dropdown 2",
     Desc = "Dropdown Desc 2",

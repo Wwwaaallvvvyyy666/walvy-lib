@@ -15,6 +15,7 @@ local Window = WindUI:CreateWindow({
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
+    HasOutline = true, -- Adds Oultines to the window
 })
 
 -- Tabs
@@ -48,6 +49,22 @@ local WindowTab = Window:Tab({
 
 -- Main Tab
 
+MainTab:Section({ 
+    Title = "Big section!",
+    TextSize = 22,
+})
+MainTab:Section({ 
+    Title = "Section Left",
+    TextXAlignment = "Left"
+})
+MainTab:Section({ 
+    Title = "Section Center",
+    TextXAlignment = "Center"
+})
+MainTab:Section({ 
+    Title = "Section Right",
+    TextXAlignment = "Right"
+})
 
 MainTab:Section({ Title = "Paragraphs" })
 

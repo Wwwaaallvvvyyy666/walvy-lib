@@ -32,6 +32,7 @@ local Window = WindUI:CreateWindow({
     Transparent = true,                               -- UI Transparency
     Theme = "Dark",                                   -- UI Theme
     SideBarWidth = 170,                               -- UI Sidebar Width (number)
+    HasOutline = true,                                -- Adds Oultines to the window
 })
 ```
 
@@ -62,7 +63,9 @@ Paragraph1:SetDesc("New Description!")
 ## Creating Section
 ```lua
 MainTab:Section({ 
-    Title = "Title" -- Section Title
+    Title = "Title",         -- Section Title
+    TextXAlignment = "Left", -- Text Alignment
+    TextSize = 17            -- Text Size
 })
 ```
 

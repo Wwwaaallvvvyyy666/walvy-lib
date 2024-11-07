@@ -283,6 +283,8 @@ function TabModule.New(Config)
         task.wait(0.01)
         local Section, Content = require("../Elements/Section"):New({
             Title = ElementConfig.Title,
+            TextXAlignment = ElementConfig.TextXAlignment,
+            TextSize = ElementConfig.TextSize,
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Section] = Content

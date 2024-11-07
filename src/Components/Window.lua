@@ -28,6 +28,7 @@ return function(Config)
 		Theme = Config.Theme,
 		CanDropdown = true,
 		Closed = false,
+		HasOutline = Config.HasOutline or false,
 		SuperParent = Config.Parent
     }
     
@@ -85,10 +86,10 @@ return function(Config)
         ScrollingDirection = "Y",
     }, {
         New("UIPadding", {
-            PaddingTop = UDim.new(0,0),
+            PaddingTop = UDim.new(0,Window.UIPadding),
             PaddingLeft = UDim.new(0,Window.UIPadding+4),
-            PaddingRight = UDim.new(0,0),
-            PaddingBottom = UDim.new(0,Window.UIPadding+4),
+            PaddingRight = UDim.new(0,Window.UIPadding+4),
+            PaddingBottom = UDim.new(0,Window.UIPadding),
         }),
         New("UIListLayout", {
             SortOrder = "LayoutOrder",
@@ -290,6 +291,30 @@ return function(Config)
         end)
     end
     
+    local Outline1
+    local Outline2
+    if Window.HasOutline then
+        Outline1 = New("Frame", {
+            Name = "Outline",
+            Size = UDim2.new(1,Window.UIPadding*2,0,1),
+            Position = UDim2.new(0.5,0,1,Window.UIPadding),
+            BackgroundTransparency= .8,
+            AnchorPoint = Vector2.new(0.5,0.5),
+            ThemeTag = {
+                BackgroundColor3 = "Outline"
+            },
+        })
+        Outline2 = New("Frame", {
+            Name = "Outline",
+            Size = UDim2.new(0,1,1,-Window.UIPadding*4),
+            Position = UDim2.new(0,Window.SideBarWidth,0,Window.UIPadding*4),
+            BackgroundTransparency= .8,
+            AnchorPoint = Vector2.new(0.5,0),
+            ThemeTag = {
+                BackgroundColor3 = "Outline"
+            },
+        })
+    end
     
     Window.UIElements.Main = New("Frame", {
         Size = UDim2.new(
@@ -336,11 +361,13 @@ return function(Config)
             }),
             Window.UIElements.SideBar,
             Window.UIElements.MainBar,
+            Outline2,
             New("Frame", { -- Topbar
                 Size = UDim2.new(1,0,0,Window.UIPadding*4),
                 BackgroundTransparency = 1,
                 Name = "Topbar"
             }, {
+                Outline1,
                 --[[New("Frame", { -- Outline
                     Size = UDim2.new(1,Window.UIPadding*2, 0, 1),
                     Position = UDim2.new(0,-Window.UIPadding, 1,Window.UIPadding-2),
@@ -706,33 +733,34 @@ return function(Config)
                 Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
             end)
             ButtonFrame.MouseButton1Click:Connect(function()
-                Dialog:Close()()
+                Dialog:Close()
                 task.spawn(function()
                     pcall(Button.Callback)
                 end)
             end)
         end
         
-        Dialog:Open()
+        --Dialog:Open()
         
         return Dialog
     end
     
-    CloseButton.MouseButton1Click:Connect(function()
-        Window:Dialog({
-            Title = "Warning",
-            Content = "Do you want to close this window?",
-            Buttons = {
-                {
-                    Title = "No",
-                    Callback = function() end
-                },
-                {
-                    Title = "Yes",
-                    Callback = function() Window:Close():Destroy() end
-                }
+    local CloseDialog = Window:Dialog({
+        Title = "Warning",
+        Content = "Do you want to close this window?",
+        Buttons = {
+            {
+                Title = "No",
+                Callback = function() end
+            },
+            {
+                Title = "Yes",
+                Callback = function() Window:Close():Destroy() end
             }
-        })
+        }
+    })
+    CloseButton.MouseButton1Click:Connect(function()
+        CloseDialog:Open()
     end)
 
     local function startResizing(input)
