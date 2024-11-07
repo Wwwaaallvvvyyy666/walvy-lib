@@ -332,7 +332,7 @@ function Element:Colorpicker(Config, OnApply)
 	for _,Button in next, Buttons do
         local ButtonFrame = New("TextButton", {
             Text = Button.Title or "Button",
-            TextSize = 15,
+            TextSize = 14,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             ThemeTag = {
                 TextColor3 = "Text",
@@ -345,7 +345,7 @@ function Element:Colorpicker(Config, OnApply)
             AutomaticSize = "Y",
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-3),
+                CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
             }),
             New("UIPadding", {
                 PaddingTop = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
@@ -363,7 +363,7 @@ function Element:Colorpicker(Config, OnApply)
                 BackgroundTransparency = 1, -- .9
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-3),
+                    CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
                 }),
             })
         })

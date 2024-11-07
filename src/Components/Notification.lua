@@ -4,8 +4,8 @@ local Tween = Creator.Tween
 
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
-    UICorner = 12,
-    UIPadding = 16,
+    UICorner = 10,
+    UIPadding = 15,
     ButtonPadding = 9,
     Holder = nil,
     NotificationIndex = 0,
@@ -49,16 +49,17 @@ function NotificationModule.New(Config)
     NotificationModule.NotificationIndex = NotificationModule.NotificationIndex + 1
     NotificationModule.Notifications[NotificationModule.NotificationIndex] = Notification
     
-    local Blur = New("ImageLabel", {
-        Image = "rbxassetid://8992230677",
-        ImageColor3 = Color3.new(0,0,0),
-        ImageTransparency = .75,
-        Size = UDim2.new(1,120,1,116),
-        Position = UDim2.new(0,-120/2,0,-116/2),
-        ScaleType = "Slice",
-        SliceCenter = Rect.new(99,99,99,99),
-        BackgroundTransparency = 1,
-    })
+    local Blur 
+    -- local Blur = New("ImageLabel", {
+    --     Image = "rbxassetid://8992230677",
+    --     ImageColor3 = Color3.new(0,0,0),
+    --     ImageTransparency = .75,
+    --     Size = UDim2.new(1,120,1,116),
+    --     Position = UDim2.new(0,-120/2,0,-116/2),
+    --     ScaleType = "Slice",
+    --     SliceCenter = Rect.new(99,99,99,99),
+    --     BackgroundTransparency = 1,
+    -- })
     local Duration
     if Notification.Duration then
         Duration = New("Frame", {
@@ -124,7 +125,7 @@ function NotificationModule.New(Config)
                 LayoutOrder = Button == "Confirm" and 0 or 1
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0,NotificationModule.UICorner-4),
+                    CornerRadius = UDim.new(0,NotificationModule.UICorner-6),
                 }),
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,NotificationModule.ButtonPadding),
@@ -140,7 +141,7 @@ function NotificationModule.New(Config)
                     AnchorPoint = Vector2.new(0.5,0.5)
                 }, {
                     New("UICorner", {
-                        CornerRadius = UDim.new(0,NotificationModule.UICorner-4),
+                        CornerRadius = UDim.new(0,NotificationModule.UICorner-6),
                     })
                 })
             })
@@ -231,24 +232,6 @@ function NotificationModule.New(Config)
                         CornerRadius = UDim.new(0,NotificationModule.UICorner),
                     }),
                 }),
-                New("Frame", {
-                    Size = UDim2.new(1,0,1,0),
-                    BackgroundTransparency = 0,
-                    Name = "Gradient",
-                    ZIndex = 5,
-                }, {
-                    New("UICorner", {
-                        CornerRadius = UDim.new(0,NotificationModule.UICorner),
-                    }),
-                    New("UIGradient", {
-                        Color = ColorSequence.new(Color3.new(0,0,0), Color3.new(0,0,0)),
-                        Rotation = 90,
-                        Transparency = NumberSequence.new{
-                            NumberSequenceKeypoint.new(0, 1), 
-                            NumberSequenceKeypoint.new(1, 0.7),
-                        }
-                    })
-                })
             })
         })
     })
