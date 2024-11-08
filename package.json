@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
-    "serve": "vitepress serve docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "dev:lua": "darklua process main.lua dist/main.lua --config darklua.dev.config.json && lua build/init.lua",
     "build:lua": "darklua process src/init.lua dist/main.lua --config darklua.config.json && lua build/init.lua"
   },
