@@ -1,22 +1,29 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
-pageClass: home
-next:
-  text: 'Introduction'
-  link: '/tut/crash-course/1-introduction'
 
 hero:
-  name: "WindUI"
-  tagline: An Open source and customizable UI library for Roblox.
+  name: WindUI
+  text: Luau UI Library
+  tagline: Open-source, customizable UI library for Roblox with a dark theme and flexible color options.
   image:
-    src: /ui.jpg
+    src: ./W.png
+    alt: WindUI
   actions:
     - theme: brand
-      text: Documentation
-      link: /tut/crash-course/1-introduction
+      text: Get Started (indev)
+      link: /documentation/installation
     - theme: alt
-      text: Discord
-      link: /api/reactivity-core
+      text: View on GitHub
+      link: https://github.com/Footagesus/WindUI
 
+features:
+  - icon: 🎨
+    title: Customizable Color Scheme
+    details: Easily adjust colors to match your Window’s theme with flexible color options.
+  - icon: 🌑
+    title: Dark Theme by Default
+    details: Enjoy a modern dark theme designed for a visually appealing interface.
+  - icon: ⚙️
+    title: Highly Customizable
+    details: Tailor the UI components to fit your needs with simple configuration options.
 ---

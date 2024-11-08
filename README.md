@@ -1,6 +1,6 @@
 # WindUI 
 
-<img src="Images/ui.jpg" width="100%">
+<img src="docs/ui.png" width="100%">
 
 [![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Footagesus/WindUI/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
