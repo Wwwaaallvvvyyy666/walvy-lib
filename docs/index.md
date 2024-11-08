@@ -10,7 +10,7 @@ hero:
   name: "WindUI"
   tagline: An Open source and customizable UI library for Roblox.
   image:
-    src: Images/ui.jpg
+    src: /ui.jpg
   actions:
     - theme: brand
       text: Documentation
