@@ -454,6 +454,9 @@ return function(Config)
     local Dragged = false
 
     Creator.Drag(Window.UIElements.Main)
+    
+    --Creator.Blur(Window.UIElements.Main.Background)
+    
     if not IsPC then
         Creator.Drag(OpenButtonContainer, function(v) Dragged = v end)
     end
