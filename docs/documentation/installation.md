@@ -8,4 +8,10 @@ cd WindUI
 
 2. You need to install NodeJS and Lua
 
-3. Run `npm run build`
+
+## Lua code
+3. Run `npm run build:lua`
+
+
+## Docs code
+3. Run `npm run docs:build`
