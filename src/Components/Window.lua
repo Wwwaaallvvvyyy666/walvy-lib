@@ -607,6 +607,10 @@ return function(Config)
         RunService.Heartbeat:Wait()
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
+    
+    function Window:SelectTab(Tab)
+        TabModule:SelectTab(Tab)
+    end
 
     local DialogModule = require("./Dialog").Init(Window)
     function Window:Dialog(DialogConfig)

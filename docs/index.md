@@ -10,7 +10,7 @@ hero:
     alt: WindUI
   actions:
     - theme: brand
-      text: Get Started (indev)
+      text: Get Started
       link: /documentation/installation
     - theme: alt
       text: View on GitHub

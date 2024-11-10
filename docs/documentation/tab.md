@@ -12,6 +12,11 @@ local Tab = Window:Tab({
 })
 ```
 
+### Select Tab
+```lua
+Window:SelectTab(2) -- Number of Tab
+```
+
 ::: warning
 Lucide icons are used in the tabs. Some icons have not been added to the library.
 :::
