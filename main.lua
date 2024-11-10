@@ -27,6 +27,8 @@ local MainTab = Window:Tab({
     Icon = "folder",
 })
 
+Window:SelectTab(1)
+
 local EmptyTab = Window:Tab({
     Title = "Empty Tab",
     Icon = "frown",

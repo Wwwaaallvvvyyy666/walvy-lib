@@ -106,7 +106,7 @@ function TabModule.New(Config)
 	TabModule.Tabs[TabIndex] = Tab
 	
 	Tab.UIElements.Main.MouseButton1Click:Connect(function()
-	    TabModule:SelectTab(Tab)
+	    TabModule:SelectTab(TabIndex)
 	end)
 	
 	-- WTF
@@ -335,9 +335,7 @@ function TabModule.New(Config)
 	return Tab
 end
 
-function TabModule:SelectTab(Tab)
-    local TabIndex = Tab.Index
-    
+function TabModule:SelectTab(TabIndex)
     TabModule.SelectedTab = TabIndex
     
     for _, TabObject in next, TabModule.Tabs do
@@ -348,7 +346,7 @@ function TabModule:SelectTab(Tab)
 		TabObject.Selected = false
 	end
     Tween(TabModule.Tabs[TabIndex].UIElements.Main.TextLabel, 0.15, {TextTransparency = 0}):Play()
-    if Tab.Icon and Creator.Icon(Tab.Icon) then
+    if TabModule.Tabs[TabIndex].Icon and Creator.Icon(TabModule.Tabs[TabIndex].Icon) then
         Tween(TabModule.Tabs[TabIndex].UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0}):Play()
     end
 	TabModule.Tabs[TabIndex].Selected = true
