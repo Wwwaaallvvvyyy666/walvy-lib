@@ -4,7 +4,7 @@ export default {
     base: '/WindUI/',
     
     themeConfig: {
-        logo: '../W.png',
+        logo: 'https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/docs/W.png',
         
         nav: [
             { text: 'Home', link: '/' },
@@ -39,42 +39,83 @@ export default {
                 collapsed: true,
                 items: [
                     {
-                        text: '📦 Installation',
+                        text: 'Installation',
                         link: '/documentation/installation',
                         activeMatch: '/documentation/installation',
                     },
                     {
-                        text: '🚀 Getting Started',
+                        text: 'Getting Started',
                         link: '/documentation/getting-started',
                         activeMatch: '/documentation/getting-started',
                     },
                     {
-                        text: '🎨 Themes',
+                        text: 'Themes',
                         link: '/documentation/themes',
                         activeMatch: '/documentation/themes',
                     },
                     {
-                        text: '📚 Components',
-                        items: [
-                            {
-                                text: 'Tab',
-                                link: '/documentation/components/tab',
-                                activeMatch: '/documentation/components/tab',
-                            },
-                            {
-                                text: 'Section',
-                                link: '/documentation/components/section',
-                                activeMatch: '/documentation/components/section',
-                            },
-                            ]
-                    }
+                        text: 'Tab',
+                        link: '/documentation/tab',
+                        activeMatch: '/documentation/tab',
+                    },
                 ],
             },
-            ]
+            {
+                text: 'Components',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Section',
+                        link: '/documentation/components/section',
+                        activeMatch: '/documentation/components/section',
+                    },
+                    {
+                        text: 'Paragraph',
+                        link: '/documentation/components/paragraph',
+                        activeMatch: '/documentation/components/paragraph',
+                    },
+                    {
+                        text: 'Button',
+                        link: '/documentation/components/button',
+                        activeMatch: '/documentation/components/button',
+                    },
+                    {
+                        text: 'Toggle',
+                        link: '/documentation/components/toggle',
+                        activeMatch: '/documentation/components/toggle',
+                    },
+                    {
+                        text: 'Slider',
+                        link: '/documentation/components/slider',
+                        activeMatch: '/documentation/components/slider',
+                    },
+                    {
+                        text: 'Keybind',
+                        link: '/documentation/components/keybind',
+                        activeMatch: '/documentation/components/keybind',
+                    },
+                    {
+                        text: 'Input',
+                        link: '/documentation/components/input',
+                        activeMatch: '/documentation/components/input',
+                    },
+                    {
+                        text: 'Dropdown',
+                        link: '/documentation/components/dropdown',
+                        activeMatch: '/documentation/components/dropdown',
+                    },
+                    {
+                        text: 'Colorpicker',
+                        link: '/documentation/components/colorpicker',
+                        activeMatch: '/documentation/components/colorpicker',
+                    },
+                ]
+            }
+        ]
     },
     
     markdown: {
-        lineNumbers: false, 
+        lineNumbers: true, 
     },
     
     css: {

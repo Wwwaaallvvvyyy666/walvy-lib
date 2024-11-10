@@ -37,4 +37,4 @@ cd WindUI
 3. Run `npm run build`
 
 
-[Usage Documentation](Docs/Using.md)
+[Usage Documentation](https://footagesus.github.io/WindUI/)

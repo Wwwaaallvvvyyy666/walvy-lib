@@ -382,7 +382,7 @@ Window:AddTheme({
 
 ---- 2. Use Theme
 
-Window:SetTheme("Halloween")
+Window:SetTheme("Dark")
 
 ---- 3. Load Themes
 
