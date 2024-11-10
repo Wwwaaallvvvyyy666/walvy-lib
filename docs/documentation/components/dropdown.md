@@ -40,6 +40,15 @@ Dropdown:Refresh({
 ```
 
 - Select()
-```lua
-Dropdown:Select("Tab 2")
-```
+
+    No Multi
+    ```lua
+    Dropdown:Select("Tab 2")
+    ```
+
+    Multi
+    ```lua
+    Dropdown:Select({
+        "Tab 2", "Tab 3"
+    })
+    ```

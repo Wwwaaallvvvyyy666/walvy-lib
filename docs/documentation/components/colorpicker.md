@@ -27,7 +27,7 @@ Colorpicker:SetTitle("New Title!")
 Colorpicker:SetDesc("New Description!")
 ```
 
-- Updare()
+- Update()
 ```lua
 Colorpicker:Update(
     Color3.new(0.5,0.5,0.6), -- Color
