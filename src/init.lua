@@ -388,14 +388,15 @@ function WindUI:CreateWindow(Config)
         
         
         CloseButton.MouseButton1Click:Connect(function()
-            KeyDialog:Close()
+            KeyDialog:Close()()
             Tween(Blur, .1, {ImageTransparency = 1}):Play()
             task.spawn(function()
                 task.wait(0.1)
                 Blur:Destroy()
             end)
         end)
-	
+	    
+	    KeyDialog:Open()
     end
     
     if Config.KeySystem then

@@ -511,10 +511,6 @@ return function(Config)
                 ImageLabel.Image = Window.Icon
                 OpenButton.TextButton.Icon.Image = Window.Icon
             end
-        else
-            if not IsPC then
-                OpenButton.TextButton.Icon.Image = Creator.Icon("external-link")
-            end
         end
     end)
     
