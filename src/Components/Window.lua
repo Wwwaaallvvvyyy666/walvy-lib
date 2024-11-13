@@ -167,8 +167,19 @@ return function(Config)
     
     local OpenButtonContainer
     local OpenButton
+    local OpenButtonIcon
     
     if not IsPC then
+        OpenButtonIcon= New("ImageLabel", {
+            Image = "",
+            Size = UDim2.new(0,22,0,22),
+            Position = UDim2.new(0.5,0,0.5,0),
+            LayoutOrder = -1,
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundTransparency = 1,
+            Name = "Icon"
+        })
+        
         OpenButtonContainer = New("Frame", {
             Size = UDim2.new(0,0,0,0),
             Position = UDim2.new(0.5,0,0,6+44/2),
@@ -224,15 +235,7 @@ return function(Config)
                 Size = UDim2.new(0,0,1,0),
                 Position = UDim2.new(0,20+16+16+1,0,0)
             }, {
-                New("ImageLabel", {
-                    Image = "",
-                    Size = UDim2.new(0,22,0,22),
-                    Position = UDim2.new(0.5,0,0.5,0),
-                    LayoutOrder = -1,
-                    AnchorPoint = Vector2.new(0.5,0.5),
-                    BackgroundTransparency = 1,
-                    Name = "Icon"
-                }),
+                OpenButtonIcon,
                 New("UIListLayout", {
                     Padding = UDim.new(0, Window.UIPadding),
                     FillDirection = "Horizontal",
@@ -291,7 +294,7 @@ return function(Config)
             Tween(OpenButton.UIScale, .1, {Scale = .95}):Play()
         end)
         OpenButton.TextButton.MouseLeave:Connect(function()
-            Tween(OpenButton.UIScale, .1, {Scale = 1}):Play()
+            Tween(OpenButton.UIScale, .1, {Scale = 1.05}):Play()
         end)
     end
     
@@ -496,7 +499,7 @@ return function(Config)
             })
             if Creator.Icon(Window.Icon) then
                 ImageLabel.Image = Creator.Icon(Window.Icon)
-                OpenButton.TextButton.Icon.Image = Creator.Icon(Window.Icon)
+                OpenButtonIcon.Image = Creator.Icon(Window.Icon)
             end
             if string.find(Window.Icon,"http") then
                 if not isfile(Window.Folder .. "/Assets/Icon.png") then
@@ -510,11 +513,13 @@ return function(Config)
                     writefile("WindUI" .. Window.Folder .. "/Assets/Icon.png", response)
                 end
                 ImageLabel.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
-                OpenButton.TextButton.Icon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
+                OpenButtonIcon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
             elseif string.find(Window.Icon,"rbxassetid") then
                 ImageLabel.Image = Window.Icon
-                OpenButton.TextButton.Icon.Image = Window.Icon
+                OpenButtonIcon.Image = Window.Icon
             end
+        else
+            OpenButtonIcon:Destroy()
         end
     end)
     

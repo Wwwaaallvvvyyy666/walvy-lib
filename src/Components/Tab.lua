@@ -78,7 +78,7 @@ function TabModule.New(Config)
             BackgroundTransparency = 1,
             Parent = Tab.UIElements.Main,
         })
-        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-22,0,0)
+        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-30,0,0)
     elseif Tab.Icon and string.find(Tab.Icon, "rbxassetid://") then
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
@@ -91,7 +91,7 @@ function TabModule.New(Config)
             BackgroundTransparency = 1,
             Parent = Tab.UIElements.Main,
         })
-        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-22,0,0)
+        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-30,0,0)
 	end
 	
 	Tab.UIElements.ContainerFrame = New("ScrollingFrame", {
