@@ -12,12 +12,16 @@ function Element:New(Config)
         __type = "Input",
         Title = Config.Title or "Input",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or false,
         PlaceholderText = Config.PlaceholderText or "Enter Text...",
         Value = Config.Value or "",
         Callback = Config.Callback or function() end,
         ClearTextOnFocus = Config.ClearTextOnFocus or false,
         UIElements = {},
     }
+    
+    local CanCallback = true
+    
     Input.InputFrame = require("../Components/Element")({
         Title = Input.Title,
         Desc = Input.Desc,
@@ -78,16 +82,35 @@ function Element:New(Config)
             PaddingBottom = UDim.new(0,Element.UIPadding),
         })
     })
+
+    function Input:Lock()
+        CanCallback = false
+        return Input.InputFrame:Lock()
+    end
+    function Input:Unlock()
+        CanCallback = true
+        return Input.InputFrame:Unlock()
+    end
+    
+    if Input.Locked then
+        Input:Lock()
+    end
     
     Input.UIElements.Input.TextBox.Focused:Connect(function()
+        if not CanCallback then
+            Input.UIElements.Input.TextBox:ReleaseFocus()
+            return
+        end
         Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .8}):Play()
     end)
+    
     Input.UIElements.Input.TextBox.FocusLost:Connect(function()
-        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
-        pcall(Input.Callback, Input.UIElements.Input.TextBox.Text)
+        if CanCallback then
+            pcall(Input.Callback, Input.UIElements.Input.TextBox.Text)
+            Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
+        end
     end)
 
-    
     return Input.__type, Input
 end
 

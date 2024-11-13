@@ -615,12 +615,16 @@ function Element:New(Config)
         __type = "Colorpicker",
         Title = Config.Title or "Colorpicker",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or false,
         Default = Config.Default or Color3.new(1,1,1),
         Callback = Config.Callback or function() end,
         Window = Config.Window,
         Transparency = Config.Transparency,
         UIElements = {}
     }
+    
+    local CanCallback = true
+    
     
     Colorpicker.ColorpickerFrame = require("../Components/Element")({
         Title = Colorpicker.Title,
@@ -664,6 +668,20 @@ function Element:New(Config)
     })
     
     
+    function Colorpicker:Lock()
+        CanCallback = false
+        return Colorpicker.ColorpickerFrame:Lock()
+    end
+    function Colorpicker:Unlock()
+        CanCallback = true
+        return Colorpicker.ColorpickerFrame:Unlock()
+    end
+    
+    if Colorpicker.Locked then
+        Colorpicker:Lock()
+    end
+
+    
     function Colorpicker:Update(Color,Transparency)
         Colorpicker.UIElements.Colorpicker.BackgroundTransparency = Transparency or 0
         Colorpicker.UIElements.Colorpicker.BackgroundColor3 = Color
@@ -674,17 +692,21 @@ function Element:New(Config)
     end
     
     local clrpckr = Element:Colorpicker(Colorpicker, function(color, transparency)
-        Colorpicker:Update(color, transparency)
-        Colorpicker.Default = color
-        Colorpicker.Transparency = transparency
-        pcall(Colorpicker.Callback, color, transparency)
+        if CanCallback then
+            Colorpicker:Update(color, transparency)
+            Colorpicker.Default = color
+            Colorpicker.Transparency = transparency
+            pcall(Colorpicker.Callback, color, transparency)
+        end
     end)
     
     Colorpicker:Update(Colorpicker.Default, Colorpicker.Transparency)
 
     
     Colorpicker.UIElements.Colorpicker.MouseButton1Click:Connect(function()
-        clrpckr.ColorpickerFrame:Open()
+        if CanCallback then
+            clrpckr.ColorpickerFrame:Open()
+        end
     end)
     
     return Colorpicker.__type, Colorpicker

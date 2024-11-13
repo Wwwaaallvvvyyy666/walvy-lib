@@ -11,6 +11,8 @@ return function(Config)
         UIElements = {}
     }
     
+    local CanHover = true
+    
     Element.UIElements.Main = New("TextButton", {
         Size = UDim2.new(1,0,0,0),
         AutomaticSize = "Y",
@@ -65,6 +67,27 @@ return function(Config)
             New("UICorner", {
                 CornerRadius = UDim.new(0,6),
             }),
+        }),
+        New("Frame", {
+            Size = UDim2.new(1,Element.UIPadding*2,1,Element.UIPadding*2+6),
+            BackgroundColor3 = Color3.new(0,0,0),
+            Position = UDim2.new(0.5,0,0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundTransparency = 1,
+            ZIndex = 999999,
+            Name = "Lock"
+        }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,6),
+            }),
+            New("ImageLabel", {
+                Image = "rbxassetid://120011858138977",
+                AnchorPoint = Vector2.new(0.5,0.5),
+                Position = UDim2.new(0.5,0,0.5,0),
+                Size = UDim2.new(0,26,0,26),
+                ImageTransparency = 1,
+                BackgroundTransparency = 1,
+            })
         }),
         New("UIPadding", {
             PaddingTop = UDim.new(0,Element.UIPadding+3),
@@ -124,10 +147,14 @@ return function(Config)
     
     if Element.Hover then
         Element.UIElements.Main.MouseEnter:Connect(function()
-            Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 0.97}):Play()
+            if CanHover then
+                Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 0.97}):Play()
+            end
         end)
         Element.UIElements.Main.MouseLeave:Connect(function()
-            Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 1}):Play()
+            if CanHover then
+                Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 1}):Play()
+            end
         end)
     end
     
@@ -155,6 +182,18 @@ return function(Config)
                 Parent = Element.UIElements.Main.Title
             })
         end
+    end
+    function Element:Lock()
+        Tween(Element.UIElements.Main.Lock, .08, {BackgroundTransparency = .6}):Play()
+        Tween(Element.UIElements.Main.Lock.ImageLabel, .08, {ImageTransparency = 0}):Play()
+        Element.UIElements.Main.Lock.Active = true
+        CanHover = false
+    end
+    function Element:Unlock()
+        Tween(Element.UIElements.Main.Lock, .08, {BackgroundTransparency = 1}):Play()
+        Tween(Element.UIElements.Main.Lock.ImageLabel, .08, {ImageTransparency = 1}):Play()
+        Element.UIElements.Main.Lock.Active = false
+        CanHover = true
     end
     
     return Element

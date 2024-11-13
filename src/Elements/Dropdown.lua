@@ -19,6 +19,7 @@ function Element:New(Config)
         __type = "Dropdown",
         Title = Config.Title or "Dropdown",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or false,
         Values = Config.Values or {},
         Value = Config.Value,
         AllowNone = Config.AllowNone,
@@ -30,6 +31,9 @@ function Element:New(Config)
         Opened = false,
         Tabs = {}
     }
+    
+    local CanCallback = true
+    
     Dropdown.DropdownFrame = require("../Components/Element")({
         Title = Dropdown.Title,
         Desc = Dropdown.Desc,
@@ -334,7 +338,9 @@ function Element:New(Config)
     end
     
     Dropdown.UIElements.Dropdown.MouseButton1Click:Connect(function()
-        Dropdown:Open()
+        if CanCallback then
+            Dropdown:Open()
+        end
     end)
     
     UserInputService.InputBegan:Connect(function(Input)

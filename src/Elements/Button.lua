@@ -8,9 +8,13 @@ function Element:New(Config)
         __type = "Button",
         Title = Config.Title or "Button",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or false,
         Callback = Config.Callback or function() end,
         UIElements = {}
     }
+    
+    local CanCallback = true
+    
     Button.ButtonFrame = require("../Components/Element")({
         Title = Button.Title,
         Desc = Button.Desc,
@@ -32,10 +36,26 @@ function Element:New(Config)
             ImageColor3 = "Text"
         }
     })
+    
+    function Button:Lock()
+        CanCallback = false
+        return Button.ButtonFrame:Lock()
+    end
+    function Button:Unlock()
+        CanCallback = true
+        return Button.ButtonFrame:Unlock()
+    end
+    
+    if Button.Locked then
+        Button:Lock()
+    end
+
     Button.ButtonFrame.UIElements.Main.MouseButton1Click:Connect(function()
-        task.spawn(function()
-            pcall(Button.Callback)
-        end)
+        if CanCallback then
+            task.spawn(function()
+                pcall(Button.Callback)
+            end)
+        end
     end)
     return Button.__type, Button
 end

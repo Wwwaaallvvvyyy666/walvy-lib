@@ -43,6 +43,13 @@ local NotificationTab = Window:Tab({
     Icon = "bell",
 })
 
+local BlockedElementsTab = Window:Tab({
+    Title = "Blocked Elements",
+    Icon = "rbxassetid://120011858138977",
+})
+
+local Divider = Window:Divider()
+
 local WindowTab = Window:Tab({
     Title = "Window and File Configuration",
     Icon = "settings",
@@ -516,3 +523,109 @@ WindowTab:Button({
         filesDropdown:Refresh(ListFiles())
     end
 })
+
+
+
+
+
+
+----
+
+
+
+
+local Button = BlockedElementsTab:Button({
+    Title = "Blocked Button",
+    Desc = "Blocked Button Desc",
+    Locked = true, --
+    Callback = function()
+        WindUI:Notify({
+            Title = "Hui",
+            Duration = 2,
+        })
+    end
+})
+
+local Toggle = BlockedElementsTab:Toggle({
+    Title = "Blocked Toggle",
+    Callback = function(state)
+        print(state)
+    end,
+})
+Toggle:Lock()
+
+local Slider = BlockedElementsTab:Slider({
+    Title = "Blocked Slider",
+    Locked = true,
+    Step = 1,
+    Value = {
+        Min = 20,
+        Max = 120,
+        Default = 70,
+    },
+    Callback = function(value)
+        game.Workspace.Camera.FieldOfView = value
+    end
+})
+
+local Keybind = BlockedElementsTab:Keybind({
+    Title = "Blocked Keybind",
+    Value = "F",
+    Locked = true,
+    CanChange = true,
+    Callback = function(k)
+        print(k)
+    end
+})
+
+local Input = BlockedElementsTab:Input({
+    Title = "Blocked Input",
+    Value = "",
+    Locked = true,
+    PlaceholderText = "Enter your message...",
+    ClearTextOnFocus = false,
+    Callback = function(Text)
+        WindUI:Notify({
+            Title = "Input message 2",
+            Content = "Message: " .. Text,
+            Duration = 5,
+        })
+    end
+})
+
+local Dropdown = MainTab:Dropdown({
+    Title = "Blocked Dropdown",
+    Multi = false,
+    Value = "Tab 1",
+    Locked = true,
+    AllowNone = true,
+    Values = {
+        "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10",
+        "Tab 11", "Tab 12", "Tab 13", "Tab 14", "Tab 15", "Tab 16", "Tab 17", "Tab 18", "Tab 19", "Tab 20"
+    },
+    Callback = function(Tab)
+        WindUI:Notify({
+            Title = "Dropdown Select",
+            Content = "Selected: " .. Tab,
+            Duration = 2,
+        })
+    end
+})
+
+BlockedElementsTab:Section({Title = "Unlocked"})
+
+local Colorpicker = BlockedElementsTab:Colorpicker({
+    Title = "Blocked Colorpicker",
+    Locked = true,
+    Default = Color3.fromRGB(255, 129, 0),
+    Callback = function(color)
+        WindUI:Notify({
+            Title = "Colorpicker Callback",
+            Content = "Color: \nR: " .. math.floor(color.R * 255) .. "\nG: " .. math.floor(color.G * 255) .. "\nB: " .. math.floor(color.B * 255),
+            Duration = 6,
+        })
+    end
+})
+
+--- Unlock
+Colorpicker:Unlock()

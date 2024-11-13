@@ -14,12 +14,16 @@ function Element:New(Config)
         __type = "Keybind",
         Title = Config.Title or "Keybind",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or false,
         Value = Config.Value or "F",
         Callback = Config.Callback or function() end,
         CanChange = Config.CanChange or true,
         Picking = false,
         UIElements = {},
     }
+    
+    local CanCallback = true
+    
     Keybind.KeybindFrame = require("../Components/Element")({
         Title = Keybind.Title,
         Desc = Keybind.Desc,
@@ -68,43 +72,60 @@ function Element:New(Config)
         })
     })
 
+    function Keybind:Lock()
+        CanCallback = false
+        return Keybind.KeybindFrame:Lock()
+    end
+    function Keybind:Unlock()
+        CanCallback = true
+        return Keybind.KeybindFrame:Unlock()
+    end
+    
+    if Keybind.Locked then
+        Keybind:Lock()
+    end
+
     Keybind.KeybindFrame.UIElements.Main.MouseButton1Click:Connect(function()
-        if Keybind.CanChange then
-            Keybind.Picking = true
-            Keybind.UIElements.Keybind.Text = "..."
+        if CanCallback then
+            if Keybind.CanChange then
+                Keybind.Picking = true
+                Keybind.UIElements.Keybind.Text = "..."
+                
+                task.wait(0.2)
+                
+                local Event
+                Event = UserInputService.InputBegan:Connect(function(Input)
+                    local Key
             
-            task.wait(0.2)
+                    if Input.UserInputType == Enum.UserInputType.Keyboard then
+	                    Key = Input.KeyCode.Name
+                    elseif Input.UserInputType == Enum.UserInputType.MouseButton1 then
+	                    Key = "MouseLeft"
+                    elseif Input.UserInputType == Enum.UserInputType.MouseButton2 then
+	                    Key = "MouseRight"
+                    end
             
-            local Event
-		    Event = UserInputService.InputBegan:Connect(function(Input)
-			    local Key
-    
-			    if Input.UserInputType == Enum.UserInputType.Keyboard then
-				    Key = Input.KeyCode.Name
-			    elseif Input.UserInputType == Enum.UserInputType.MouseButton1 then
-				    Key = "MouseLeft"
-			    elseif Input.UserInputType == Enum.UserInputType.MouseButton2 then
-				    Key = "MouseRight"
-			    end
-    
-			    local EndedEvent
-			    EndedEvent = UserInputService.InputEnded:Connect(function(Input)
-				    if Input.KeyCode.Name == Key or Key == "MouseLeft" and Input.UserInputType == Enum.UserInputType.MouseButton1 or Key == "MouseRight" and Input.UserInputType == Enum.UserInputType.MouseButton2 then
-					    Keybind.Picking = false
-					    
-					    Keybind.UIElements.Keybind.Text = Key
-					    Keybind.Value = Key
-					
-					    Event:Disconnect()
-					    EndedEvent:Disconnect()
-				    end
-			    end)
-		    end)
-		end
+                    local EndedEvent
+                    EndedEvent = UserInputService.InputEnded:Connect(function(Input)
+	                    if Input.KeyCode.Name == Key or Key == "MouseLeft" and Input.UserInputType == Enum.UserInputType.MouseButton1 or Key == "MouseRight" and Input.UserInputType == Enum.UserInputType.MouseButton2 then
+		                    Keybind.Picking = false
+		    
+		                    Keybind.UIElements.Keybind.Text = Key
+		                    Keybind.Value = Key
+		
+		                    Event:Disconnect()
+		                    EndedEvent:Disconnect()
+	                    end
+                    end)
+                end)
+            end
+        end
     end) 
     UserInputService.InputBegan:Connect(function(input)
-        if input.KeyCode.Name == Keybind.Value then
-            pcall(Keybind.Callback, input.KeyCode.Name)
+        if CanCallback then
+            if input.KeyCode.Name == Keybind.Value then
+                pcall(Keybind.Callback, input.KeyCode.Name)
+            end
         end
     end)
     return Keybind.__type, Keybind

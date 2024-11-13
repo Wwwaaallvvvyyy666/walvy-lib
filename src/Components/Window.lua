@@ -272,8 +272,12 @@ return function(Config)
         })
         
         RunService.RenderStepped:Connect(function(deltaTime)
-            uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
-            Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
+            if uiGradient then
+                uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
+            end
+            if Glow and Glow.UIGradient then
+                Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
+            end
         end)
         
         OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
@@ -607,7 +611,27 @@ return function(Config)
     function Window:SelectTab(Tab)
         TabModule:SelectTab(Tab)
     end
-
+    
+    function Window:Divider()
+        local Divider = New("Frame", {
+            Size = UDim2.new(1,0,0,1),
+            Position = UDim2.new(0.5,0,0,0),
+            AnchorPoint = Vector2.new(0.5,0),
+            BackgroundTransparency = .8,
+            ThemeTag = {
+                BackgroundColor3 = "Text"
+            }
+        })
+        New("Frame", {
+            Parent = Window.UIElements.SideBar,
+            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,0),
+            BackgroundTransparency = 1,
+        }, {
+            Divider
+        })
+    end
+    
     local DialogModule = require("./Dialog").Init(Window)
     function Window:Dialog(DialogConfig)
         local DialogTable = {

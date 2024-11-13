@@ -10,6 +10,7 @@ function Element:New(Config)
         __type = "Slider",
         Title = Config.Title or "Slider",
         Desc = Config.Desc or nil,
+        Locked = Config.Locked or nil,
         Value = Config.Value or {},
         Step = Config.Step or 1,
         Callback = Config.Callback or function() end,
@@ -23,7 +24,9 @@ function Element:New(Config)
     
     local LastValue = Value
     local delta = (Value - (Slider.Value.Min or 0)) / ((Slider.Value.Max or 100) - (Slider.Value.Min or 0))
-
+    
+    local CanCallback = true
+    
     Slider.SliderFrame = require("../Components/Element")({
         Title = Slider.Title,
         Desc = Slider.Desc,
@@ -104,42 +107,57 @@ function Element:New(Config)
             LayoutOrder = -1,
         })
     })
+
+    function Slider:Lock()
+        CanCallback = false
+        return Slider.SliderFrame:Lock()
+    end
+    function Slider:Unlock()
+        CanCallback = true
+        return Slider.SliderFrame:Unlock()
+    end
+    
+    if Slider.Locked then
+        Slider:Lock()
+    end
     
     Slider.UIElements.SliderContainer.InputBegan:Connect(function(input)
-        if not Slider.IsFocusing and not HoldingSlider and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
-            isTouch = (input.UserInputType == Enum.UserInputType.Touch)
-            
-            Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = false
-            HoldingSlider = true
-            
-            moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
-                local inputPosition
-                if isTouch then
-                    inputPosition = input.Position.X
-                else
-                    inputPosition = game:GetService("UserInputService"):GetMouseLocation().X
-                end
+        if CanCallback then
+            if not Slider.IsFocusing and not HoldingSlider and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+                isTouch = (input.UserInputType == Enum.UserInputType.Touch)
+                
+                Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = false
+                HoldingSlider = true
+                
+                moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
+                    local inputPosition
+                    if isTouch then
+                        inputPosition = input.Position.X
+                    else
+                        inputPosition = game:GetService("UserInputService"):GetMouseLocation().X
+                    end
+        
+                    local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.Size.X.Offset, 0, 1)
+                    Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
     
-                local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.Size.X.Offset, 0, 1)
-                Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
-
-                if Value ~= LastValue then
-                    Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
-                    Slider.UIElements.SliderContainer.TextLabel.Text = Value
-                    LastValue = Value
-                    task.spawn(Slider.Callback, Value)
-                end
-            end)
-            
-            releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
-                if (endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch) and input == endInput then
-                    moveconnection:Disconnect()
-                    releaseconnection:Disconnect()
-                    HoldingSlider = false
-                    
-                    Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = true
-                end
-            end)
+                    if Value ~= LastValue then
+                        Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
+                        Slider.UIElements.SliderContainer.TextLabel.Text = Value
+                        LastValue = Value
+                        task.spawn(Slider.Callback, Value)
+                    end
+                end)
+                
+                releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
+                    if (endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch) and input == endInput then
+                        moveconnection:Disconnect()
+                        releaseconnection:Disconnect()
+                        HoldingSlider = false
+                        
+                        Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = true
+                    end
+                end)
+            end
         end
     end)
     

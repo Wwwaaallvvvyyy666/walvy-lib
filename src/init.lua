@@ -356,7 +356,7 @@ function WindUI:CreateWindow(Config)
         ButtonFrame.MouseButton1Click:Connect(function()
             local Key = Input.Frame.TextBox.Text
             if Key and Key == Config.KeySystem.Key then
-                KeyDialog:Close()
+                KeyDialog:Close()()
                 Tween(Blur, .1, {ImageTransparency = 1}):Play()
                 CanLoadWindow = true
                 if Config.KeySystem.SaveKey and Config.Folder then

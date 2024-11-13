@@ -1,3 +1,5 @@
+local UserInputService = game:GetService("UserInputService")
+
 local Creator = require("../Creator")
 local New = Creator.New
 local Tween = Creator.Tween
@@ -70,7 +72,19 @@ function TabModule.New(Config)
             Image = Creator.Icon(Tab.Icon),
             Size = UDim2.new(0,20,0,20),
             LayoutOrder = 1,
-            ImageColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
+            ThemeTag = {
+                ImageColor3 = "Text"
+            },
+            BackgroundTransparency = 1,
+            Parent = Tab.UIElements.Main,
+        })
+        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-22,0,0)
+    elseif Tab.Icon and string.find(Tab.Icon, "rbxassetid://") then
+        local Icon = New("ImageLabel", {
+            ImageTransparency = 0.4,
+            Image = Tab.Icon,
+            Size = UDim2.new(0,20,0,20),
+            LayoutOrder = 1,
             ThemeTag = {
                 ImageColor3 = "Text"
             },
@@ -84,11 +98,11 @@ function TabModule.New(Config)
         Size = UDim2.new(1,0,1,0),
         BackgroundTransparency = 1,
         ScrollBarThickness = 0,
+        ElasticBehavior = "Never",
         CanvasSize = UDim2.new(0,0,0,0),
         AutomaticCanvasSize = "Y",
-        Visible = false,
+        --Visible = false,
         ScrollingDirection = "Y",
-        Parent = Window.UIElements.MainBar
     }, {
         New("UIPadding", {
             PaddingTop = UDim.new(0,Window.UIPadding),
@@ -102,20 +116,122 @@ function TabModule.New(Config)
         })
     })
 
-    TabModule.Containers[TabIndex] = Tab.UIElements.ContainerFrame
+    local Slider = New("Frame", {
+        Size = UDim2.new(0,3,1,0),
+        BackgroundTransparency = 1,
+        Position = UDim2.new(1,-Window.UIPadding/3,0,0),
+        AnchorPoint = Vector2.new(1,0),
+    })
+
+    local Thumb = New("ImageLabel", {
+        Size = UDim2.new(1,0,0,0),
+        --Image = "rbxassetid://18747052224",
+        --ScaleType = "Crop",
+        BackgroundTransparency = .65,
+        --ImageTransparency = .65,
+        ThemeTag = {
+            BackgroundColor3 = "Text"
+        },
+        Parent = Slider
+    }, {
+        New("UICorner", {
+            CornerRadius = UDim.new(1,0)
+        })
+    })
+
+    Tab.UIElements.ContainerFrameCanvas = New("Frame", {
+        Size = UDim2.new(1,0,1,0),
+        BackgroundTransparency = 1,
+        Visible = false,
+        Parent = Window.UIElements.MainBar
+    }, {
+        Tab.UIElements.ContainerFrame,
+        --Slider  -- Soon
+    })
+
+    TabModule.Containers[TabIndex] = Tab.UIElements.ContainerFrameCanvas
 	TabModule.Tabs[TabIndex] = Tab
 	
 	Tab.UIElements.Main.MouseButton1Click:Connect(function()
 	    TabModule:SelectTab(TabIndex)
 	end)
 	
+    
+    
+    local function updateSliderSize()
+        local container = Tab.UIElements.ContainerFrame
+        local visibleRatio = container.AbsoluteWindowSize.Y / container.AbsoluteCanvasSize.Y
+        
+        Thumb.Size = UDim2.new(1, 0, visibleRatio, 0)
+        
+        if visibleRatio >= 1 then
+            Thumb.Visible = false
+        end
+        if visibleRatio < 1 then
+            Thumb.Visible = true
+        end
+    end
+    
+    local function updateScrollingFramePosition()
+        local thumbPosition = Thumb.Position.Y.Scale
+        Tab.UIElements.ContainerFrame.CanvasPosition = Vector2.new(
+            0,
+            thumbPosition * (Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y)
+        )
+    end
+    
+    local function onInputChanged(input)
+        local sliderSize = Slider.AbsoluteSize.Y
+        local sliderPosition = Slider.AbsolutePosition.Y
+        local newThumbPosition = (input.Position.Y - sliderPosition) / sliderSize
+    
+        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+        updateScrollingFramePosition()
+    end
+    
+    Thumb.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            local connection
+            connection = UserInputService.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    onInputChanged(input)
+                end
+            end)
+    
+            local releaseConnection
+            releaseConnection = UserInputService.InputEnded:Connect(function(endInput)
+                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+                    connection:Disconnect()
+                    releaseConnection:Disconnect()
+                end
+            end)
+        end
+    end)
+    
+    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+        local canvasPosition = Tab.UIElements.ContainerFrame.CanvasPosition.Y
+        local canvasSize = Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y
+        local newThumbPosition = canvasPosition / canvasSize
+    
+        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+    end)
+    
+    Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y)
+    end)
+    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
+    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
+    
+    updateSliderSize()
+	
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Parent = Tab.UIElements.ContainerFrame,
             Theme = TabModule.Window.Theme,
             TextOffset = 0,
@@ -125,10 +241,11 @@ function TabModule.New(Config)
         return Paragraph
     end
     function Tab:Button(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Button, Content = require("../Elements/Button"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Callback = ElementConfig.Callback,
             Theme = TabModule.Window.Theme,
             Parent = Tab.UIElements.ContainerFrame
@@ -145,10 +262,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Toggle(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Toggle, Content = require("../Elements/Toggle"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
             Theme = TabModule.Window.Theme,
@@ -166,10 +284,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Slider(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Slider, Content = require("../Elements/Slider"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Step = ElementConfig.Step,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
@@ -188,10 +307,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Keybind(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Keybind, Content = require("../Elements/Keybind"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
             Theme = TabModule.Window.Theme,
@@ -209,10 +329,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Input(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Input, Content = require("../Elements/Input"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Value = ElementConfig.Value,
             PlaceholderText = ElementConfig.PlaceholderText,
             ClearTextOnFocus = ElementConfig.ClearTextOnFocus,
@@ -232,10 +353,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Dropdown(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Dropdown, Content = require("../Elements/Dropdown"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             AllowNone = ElementConfig.AllowNone,
             Value = ElementConfig.Value,
             Values = ElementConfig.Values,
@@ -257,10 +379,11 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Colorpicker(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Dropdown, Content = require("../Elements/Colorpicker"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
+            Locked = ElementConfig.Locked,
             Default = ElementConfig.Default,
             Transparency = ElementConfig.Transparency,
             Callback = ElementConfig.Callback,
@@ -280,7 +403,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Section(ElementConfig)
-        task.wait(0.01)
+        task.wait(.04)
         local Section, Content = require("../Elements/Section"):New({
             Title = ElementConfig.Title,
             TextXAlignment = ElementConfig.TextXAlignment,

@@ -8,7 +8,7 @@ On this page
 ```lua
 local Tab = Window:Tab({
     Title = "Main",
-    Icon = "folder", -- lucide icons
+    Icon = "folder", -- lucide or rbxassetid
 })
 ```
 

@@ -58,6 +58,11 @@ export default {
                         link: '/documentation/tab',
                         activeMatch: '/documentation/tab',
                     },
+                    {
+                        text: 'Divider',
+                        link: '/documentation/divider',
+                        activeMatch: '/documentation/divider',
+                    },
                 ],
             },
             {
