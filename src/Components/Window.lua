@@ -65,7 +65,9 @@ return function(Config)
     }, {
         New("ImageLabel", {
             Size = UDim2.new(0,70,0,70),
-            Image = Creator.Icon("expand"),
+            Image = Creator.Icon("expand")[1],
+            ImageRectOffset = Creator.Icon("expand")[2].ImageRectPosition,
+            ImageRectSize = Creator.Icon("expand")[2]._Size,
             BackgroundTransparency = 1,
             Position = UDim2.new(0.5,0,0.5,0),
             AnchorPoint = Vector2.new(0.5,0.5),
@@ -134,7 +136,9 @@ return function(Config)
     })
 
     local CloseButton = New("ImageButton", {
-        Image = Creator.Icon("x"),
+        Image = Creator.Icon("x")[1],
+        ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("x")[2]._Size,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -145,7 +149,9 @@ return function(Config)
     })
 
     local MinimizeButton = New("ImageButton", {
-        Image = Creator.Icon("minus"),
+        Image = Creator.Icon("minus")[1],
+        ImageRectOffset = Creator.Icon("minus")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("minus")[2]._Size,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -168,9 +174,10 @@ return function(Config)
     local OpenButtonContainer
     local OpenButton
     local OpenButtonIcon
+    local Glow
     
     if not IsPC then
-        OpenButtonIcon= New("ImageLabel", {
+        OpenButtonIcon = New("ImageLabel", {
             Image = "",
             Size = UDim2.new(0,22,0,22),
             Position = UDim2.new(0.5,0,0.5,0),
@@ -178,6 +185,14 @@ return function(Config)
             AnchorPoint = Vector2.new(0.5,0.5),
             BackgroundTransparency = 1,
             Name = "Icon"
+        })
+    
+        OpenButtonTitle = New("TextLabel", {
+            Text = Window.Title,
+            TextSize = 17,
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+            BackgroundTransparency = 1,
+            AutomaticSize = "XY",
         })
         
         OpenButtonContainer = New("Frame", {
@@ -199,7 +214,7 @@ return function(Config)
             ZIndex = 99,
         }, {
             New("UIScale", {
-                Scale = 1,
+                Scale = 1.05,
             }),
 		    New("UICorner", {
                 CornerRadius = UDim.new(1,0)
@@ -215,7 +230,9 @@ return function(Config)
                 })
             }),
             New("ImageLabel", {
-                Image = Creator.Icon("grab"),
+                Image = Creator.Icon("grab")[1],
+                ImageRectOffset = Creator.Icon("grab")[2].ImageRectPosition,
+                ImageRectSize = Creator.Icon("grab")[2]._Size,
                 Size = UDim2.new(0,20,0,20),
                 BackgroundTransparency = 1,
                 Position = UDim2.new(0,0,0.5,0),
@@ -241,13 +258,7 @@ return function(Config)
                     FillDirection = "Horizontal",
                     VerticalAlignment = "Center",
                 }),
-                New("TextLabel", {
-                    Text = Window.Title,
-                    TextSize = 17,
-                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                    BackgroundTransparency = 1,
-                    AutomaticSize = "XY",
-                }),
+                OpenButtonTitle,
             }),
             New("UIPadding", {
                 PaddingTop = UDim.new(0,0),
@@ -258,7 +269,7 @@ return function(Config)
         })
         local uiGradient = OpenButton.UIStroke.UIGradient
     
-        local Glow = New("ImageLabel", {
+        Glow = New("ImageLabel", {
             Image = "rbxassetid://93831937596979", -- UICircle Glow
             ScaleType = "Slice",
             SliceCenter = Rect.new(375,375,375,375),
@@ -497,15 +508,16 @@ return function(Config)
                     ImageColor3 = "Text"
                 }
             })
-            if Creator.Icon(Window.Icon) then
-                ImageLabel.Image = Creator.Icon(Window.Icon)
-                OpenButtonIcon.Image = Creator.Icon(Window.Icon)
+            if Creator.Icon(Window.Icon)[2] then
+                ImageLabel.Image = Creator.Icon(Window.Icon)[1]
+                ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+                ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2]._Size
+                OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
+                OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+                OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2]._Size
             end
             if string.find(Window.Icon,"http") then
-                if not isfile(Window.Folder .. "/Assets/Icon.png") then
-                    if not isfolder("WindUI" .. Window.Folder) then
-                        makefolder("WindUI" .. Window.Folder)
-                    end
+                if not isfile("WindUI" .. Window.Folder .. "/Assets/Icon.png") then
                     local response = request({
                         Url = Window.Icon,
                         Method = "GET",
@@ -519,7 +531,7 @@ return function(Config)
                 OpenButtonIcon.Image = Window.Icon
             end
         else
-            OpenButtonIcon:Destroy()
+            OpenButtonIcon.Visible = false
         end
     end)
     
@@ -606,6 +618,24 @@ return function(Config)
         --task.wait(1.38583)
         Window:Open()
     end)
+    
+    function Window:EditOpenButton(OpenButtonConfig)
+        local OpenButtonModule = {
+            Title = OpenButtonConfig.Title or Window.Title,
+            Icon = OpenButtonConfig.Icon or Window.Icon,
+            Color = OpenButtonConfig.Color 
+                or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
+        }
+        
+        OpenButtonTitle.Text = OpenButtonModule.Title
+        
+        OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
+        OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
+        OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
+        
+        OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
+        Glow.UIGradient.Color = OpenButtonModule.Color
+    end
     
     local TabModule = require("./Tab").Init(Window)
     function Window:Tab(TabConfig)

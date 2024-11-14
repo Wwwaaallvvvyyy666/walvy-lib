@@ -17,6 +17,6 @@ local Tab = Window:Tab({
 Window:SelectTab(2) -- Number of Tab
 ```
 
-::: warning
-Lucide icons are used in the tabs. Some icons have not been added to the library.
+::: warning INFO
+1534 Lucide Icons are used in this UI Library
 :::

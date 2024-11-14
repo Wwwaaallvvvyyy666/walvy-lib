@@ -77,7 +77,9 @@ function NotificationModule.New(Config)
     if Notification.CanClose then
         CloseButton = New("ImageButton", {
             Size = UDim2.new(0,18,0,18),
-            Image = Creator.Icon("x"),
+            Image = Creator.Icon("x")[1],
+            ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
+            ImageRectSize = Creator.Icon("x")[2]._Size,
             Position = UDim2.new(1,-NotificationModule.UIPadding, 0, NotificationModule.UIPadding),
             AnchorPoint = Vector2.new(1,0),
             ThemeTag = {

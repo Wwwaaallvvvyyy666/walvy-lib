@@ -2,7 +2,7 @@ local WindUI = require("./src/init")
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
-    --Icon = "image", -- Url or rbxassetid or lucide
+    Icon = "door-open", -- Url or rbxassetid or lucide
     Author = ".ftgs", -- Author & Creator
     Folder = "CloudHub", -- Folder name for saving data (And key)
     Size = UDim2.fromOffset(580, 460), -- UI Size
@@ -16,6 +16,15 @@ local Window = WindUI:CreateWindow({
     Theme = "Dark", -- UI Theme
     SideBarWidth = 170, -- UI Sidebar Width (number)
     HasOutline = false, -- Adds Oultines to the window
+})
+
+Window:EditOpenButton({
+    Title = "Open Button",
+    Icon = "door-closed",
+    Color = ColorSequence.new(
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    )
 })
 
 -- Tabs
@@ -46,6 +55,13 @@ local NotificationTab = Window:Tab({
 local BlockedElementsTab = Window:Tab({
     Title = "Blocked Elements",
     Icon = "rbxassetid://120011858138977",
+})
+
+local Divider = Window:Divider()
+
+local BlockedElementsTab = Window:Tab({
+    Title = "Tab with new Icon",
+    Icon = "book-user",
 })
 
 local Divider = Window:Divider()

@@ -38,6 +38,18 @@ local Window = WindUI:CreateWindow({
 })
 ```
 
+### Customizing Open-Button
+```lua
+Window:EditOpenButton({
+    Title = "Open Button",
+    Icon = "door-closed",
+    Color = ColorSequence.new(
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    )
+})
+```
+
 ## Notification
 
 ### Create default Notification

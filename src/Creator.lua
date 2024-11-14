@@ -9,7 +9,7 @@ local RenderStepped = RunService.Heartbeat
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
-local Icons = require("./Icons")
+local Icons = require("../Lucide/Icons/init")
 
 local Creator = {
     Font = "rbxassetid://12187365364", -- Inter
@@ -102,7 +102,14 @@ function Creator.UpdateTheme()
 end
 
 function Creator.Icon(Icon)
-    return Icons.assets["lucide-" .. Icon]
+    if not isfile("WindUI/Assets/spritesheet-new.png") then
+        local response = request({
+            Url = "https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/Lucide/Icons/spritesheet-new.png",
+            Method = "GET",
+        }).Body
+        writefile("WindUI/Assets/spritesheet-new.png", response)
+    end
+    return { getcustomasset("WindUI/Assets/spritesheet-new.png"), Icons[Icon] }
 end
 
 function Creator.New(Name, Properties, Children)

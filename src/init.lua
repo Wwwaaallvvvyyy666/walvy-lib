@@ -97,7 +97,9 @@ function WindUI:CreateWindow(Config)
         
         local CloseButton = New("ImageButton", {
             Size = UDim2.new(0,22,0,22),
-            Image = Creator.Icon("x"),
+            Image = Creator.Icon("x")[1],
+            ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
+            ImageRectSize = Creator.Icon("x")[2]._Size,
             BackgroundTransparency = 1,
             AnchorPoint = Vector2.new(1,0),
             Position = UDim2.new(1,0,0,0),

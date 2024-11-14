@@ -66,10 +66,12 @@ function TabModule.New(Config)
 	        PaddingBottom = UDim.new(0,6),
 	    })
 	})
-	if Tab.Icon and Creator.Icon(Tab.Icon) then
+	if Tab.Icon and Creator.Icon(Tab.Icon)[2] then
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
-            Image = Creator.Icon(Tab.Icon),
+            Image = Creator.Icon(Tab.Icon)[1],
+            ImageRectOffset = Creator.Icon(Tab.Icon)[2].ImageRectPosition,
+            ImageRectSize = Creator.Icon(Tab.Icon)[2]._Size,
             Size = UDim2.new(0,20,0,20),
             LayoutOrder = 1,
             ThemeTag = {
@@ -155,74 +157,72 @@ function TabModule.New(Config)
 	Tab.UIElements.Main.MouseButton1Click:Connect(function()
 	    TabModule:SelectTab(TabIndex)
 	end)
-	
     
-    
-    local function updateSliderSize()
-        local container = Tab.UIElements.ContainerFrame
-        local visibleRatio = container.AbsoluteWindowSize.Y / container.AbsoluteCanvasSize.Y
+    -- local function updateSliderSize()
+    --     local container = Tab.UIElements.ContainerFrame
+    --     local visibleRatio = container.AbsoluteWindowSize.Y / container.AbsoluteCanvasSize.Y
         
-        Thumb.Size = UDim2.new(1, 0, visibleRatio, 0)
+    --     Thumb.Size = UDim2.new(1, 0, visibleRatio, 0)
         
-        if visibleRatio >= 1 then
-            Thumb.Visible = false
-        end
-        if visibleRatio < 1 then
-            Thumb.Visible = true
-        end
-    end
+    --     if visibleRatio >= 1 then
+    --         Thumb.Visible = false
+    --     end
+    --     if visibleRatio < 1 then
+    --         Thumb.Visible = true
+    --     end
+    -- end
     
-    local function updateScrollingFramePosition()
-        local thumbPosition = Thumb.Position.Y.Scale
-        Tab.UIElements.ContainerFrame.CanvasPosition = Vector2.new(
-            0,
-            thumbPosition * (Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y)
-        )
-    end
+    -- local function updateScrollingFramePosition()
+    --     local thumbPosition = Thumb.Position.Y.Scale
+    --     Tab.UIElements.ContainerFrame.CanvasPosition = Vector2.new(
+    --         0,
+    --         thumbPosition * (Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y)
+    --     )
+    -- end
     
-    local function onInputChanged(input)
-        local sliderSize = Slider.AbsoluteSize.Y
-        local sliderPosition = Slider.AbsolutePosition.Y
-        local newThumbPosition = (input.Position.Y - sliderPosition) / sliderSize
+    -- local function onInputChanged(input)
+    --     local sliderSize = Slider.AbsoluteSize.Y
+    --     local sliderPosition = Slider.AbsolutePosition.Y
+    --     local newThumbPosition = (input.Position.Y - sliderPosition) / sliderSize
     
-        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
-        updateScrollingFramePosition()
-    end
+    --     Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+    --     updateScrollingFramePosition()
+    -- end
     
-    Thumb.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            local connection
-            connection = UserInputService.InputChanged:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                    onInputChanged(input)
-                end
-            end)
+    -- Thumb.InputBegan:Connect(function(input)
+    --     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    --         local connection
+    --         connection = UserInputService.InputChanged:Connect(function(input)
+    --             if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+    --                 onInputChanged(input)
+    --             end
+    --         end)
     
-            local releaseConnection
-            releaseConnection = UserInputService.InputEnded:Connect(function(endInput)
-                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
-                    connection:Disconnect()
-                    releaseConnection:Disconnect()
-                end
-            end)
-        end
-    end)
+    --         local releaseConnection
+    --         releaseConnection = UserInputService.InputEnded:Connect(function(endInput)
+    --             if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+    --                 connection:Disconnect()
+    --                 releaseConnection:Disconnect()
+    --             end
+    --         end)
+    --     end
+    -- end)
     
-    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-        local canvasPosition = Tab.UIElements.ContainerFrame.CanvasPosition.Y
-        local canvasSize = Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y
-        local newThumbPosition = canvasPosition / canvasSize
+    -- Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+    --     local canvasPosition = Tab.UIElements.ContainerFrame.CanvasPosition.Y
+    --     local canvasSize = Tab.UIElements.ContainerFrame.AbsoluteCanvasSize.Y - Tab.UIElements.ContainerFrame.AbsoluteWindowSize.Y
+    --     local newThumbPosition = canvasPosition / canvasSize
     
-        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
-    end)
+    --     Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+    -- end)
     
-    Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y)
-    end)
-    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
-    Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
+    -- Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+    --     Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y)
+    -- end)
+    -- Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
+    -- Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
     
-    updateSliderSize()
+    -- updateSliderSize()
 	
 	-- WTF
 	
@@ -430,7 +430,9 @@ function TabModule.New(Config)
             }), 
             New("ImageLabel", {
                 Size = UDim2.new(0,48,0,48),
-                Image = Creator.Icon("frown"),
+                Image = Creator.Icon("frown")[1],
+                ImageRectOffset = Creator.Icon("frown")[2].ImageRectPosition,
+                ImageRectSize = Creator.Icon("frown")[2]._Size,
                 ThemeTag = {
                     ImageColor3 = "Text"
                 },
