@@ -21,7 +21,7 @@ An Open source and customizable UI library for Roblox, featuring a dark theme an
 - Dawid 
 
 
-### [Discord Server](https://discord.gg/VGws6ms6)
+### [Discord Server](https://discord.gg/ctYGD2xB3r)
 
 🚀 Installation
 

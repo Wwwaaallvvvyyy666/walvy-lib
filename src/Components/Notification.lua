@@ -4,8 +4,8 @@ local Tween = Creator.Tween
 
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
-    UICorner = 10,
-    UIPadding = 15,
+    UICorner = 14,
+    UIPadding = 14,
     ButtonPadding = 9,
     Holder = nil,
     NotificationIndex = 0,
@@ -64,12 +64,12 @@ function NotificationModule.New(Config)
     if Notification.Duration then
         Duration = New("Frame", {
             Name = "Duration",
-            Size = UDim2.new(1,0,1,0),
+            Size = UDim2.new(1,0,0,4),
             Position = UDim2.new(0,0,0,0),
             ThemeTag = {
                 BackgroundColor3 = "Outline"
             },
-            BackgroundTransparency = .9,
+            BackgroundTransparency = .7,
             ZIndex = 999,
         })
     end
@@ -190,7 +190,7 @@ function NotificationModule.New(Config)
                     ThemeTag = {
                         Color = "Outline"
                     },
-                    Transparency = .8,
+                    Transparency = .86,
                 }),
                 New("Frame", {
                     Size = UDim2.new(1,0,1,0),
@@ -220,11 +220,11 @@ function NotificationModule.New(Config)
                     Buttons,
                     New("UIListLayout", {
                         SortOrder = "LayoutOrder",
-                        Padding = UDim.new(0,11)
+                        Padding = UDim.new(0,2)
                     })
                 }),
                 New("Frame", {
-                    BackgroundTransparency = 0.15,
+                    BackgroundTransparency = 0.23,
                     Size = UDim2.new(1,0,1,0),
                     ThemeTag = {
                         BackgroundColor3 = "Accent",
@@ -272,12 +272,12 @@ function NotificationModule.New(Config)
     
     function Notification:Close()
         if not Notification.Closed then
-            Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
             Notification.Closed = true
+            Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
             task.spawn(function()
                 task.wait(.3)
                 Notification.UIElements.MainContainer.Frame.Frame:Destroy()
-                Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
+                Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,-8)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
                 task.wait(.35)
                 Notification.UIElements.MainContainer:Destroy()
             end)
@@ -286,7 +286,7 @@ function NotificationModule.New(Config)
     
     task.spawn(function()
         if Duration then
-            Tween(Duration, Notification.Duration, {Size = UDim2.new(0,0,1,0)}, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut):Play()
+            Tween(Duration, Notification.Duration, {Size = UDim2.new(0,0,0,4)}, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut):Play()
         
             task.wait(Notification.Duration)
         
