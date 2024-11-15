@@ -20,7 +20,7 @@ local Window = WindUI:CreateWindow({
 
 Window:EditOpenButton({
     Title = "Open Button",
-    Icon = "door-closed",
+    --Icon = "door-closed",
     Color = ColorSequence.new(
         Color3.fromHex("FF0F7B"), 
         Color3.fromHex("F89B29")
