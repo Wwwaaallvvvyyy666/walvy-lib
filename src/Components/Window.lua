@@ -631,7 +631,7 @@ return function(Config)
             OpenButtonTitle.Text = OpenButtonModule.Title
         end
         
-        if Creator.Icon(OpenButtonModule.Icon)[2] then
+        if Creator.Icon(OpenButtonModule.Icon)[2] and OpenButtonIcon then
             OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
             OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
             OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
