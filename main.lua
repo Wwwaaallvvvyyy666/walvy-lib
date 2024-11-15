@@ -33,7 +33,7 @@ Window:EditOpenButton({
 
 local MainTab = Window:Tab({
     Title = "Main",
-    Icon = "folder",
+    Icon = "house",
 })
 
 Window:SelectTab(1)

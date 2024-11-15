@@ -627,11 +627,15 @@ return function(Config)
                 or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
         }
         
-        OpenButtonTitle.Text = OpenButtonModule.Title
+        if OpenButtonTitle then
+            OpenButtonTitle.Text = OpenButtonModule.Title
+        end
         
-        OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
-        OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
-        OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
+        if Creator.Icon(OpenButtonModule.Icon)[2] then
+            OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
+            OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
+            OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
+        end
         
         OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
         Glow.UIGradient.Color = OpenButtonModule.Color
