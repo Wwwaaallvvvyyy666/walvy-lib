@@ -66,7 +66,7 @@ function TabModule.New(Config)
 	        PaddingBottom = UDim.new(0,6),
 	    })
 	})
-	if Tab.Icon and Creator.Icon(Tab.Icon)[2] then
+	if Tab.Icon and Creator.Icon(Tab.Icon) then
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
             Image = Creator.Icon(Tab.Icon)[1],

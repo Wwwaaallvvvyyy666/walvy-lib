@@ -9,7 +9,7 @@ local RenderStepped = RunService.Heartbeat
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
-local Icons = require("../Lucide/Icons/init")
+local Icons = require("../Lucide/Icons/icons")
 
 local Creator = {
     Font = "rbxassetid://12187365364", -- Inter
@@ -19,29 +19,29 @@ local Creator = {
         ScreenGui = {
             ResetOnSpawn = false,
             ZIndexBehavior = "Sibling",
-            },
+        },
         CanvasGroup = {
             BorderSizePixel = 0,
             BackgroundColor3 = Color3.new(1,1,1),
-            },
+        },
         Frame = {
             BorderSizePixel = 0,
             BackgroundColor3 = Color3.new(1,1,1),
-            },
+        },
         TextLabel = {
             BackgroundColor3 = Color3.new(1,1,1),
             BorderSizePixel = 0,
             Text = "",
             TextColor3 = Color3.new(1,1,1),
             TextSize = 14,
-            }, TextButton = {
+        }, TextButton = {
             BackgroundColor3 = Color3.new(1,1,1),
             BorderSizePixel = 0,
             Text = "",
             AutoButtonColor= false,
             TextColor3 = Color3.new(1,1,1),
             TextSize = 14,
-            },
+        },
         TextBox = {
             BackgroundColor3 = Color3.new(1, 1, 1),
             BorderColor3 = Color3.new(0, 0, 0),
@@ -49,22 +49,22 @@ local Creator = {
             Text = "",
             TextColor3 = Color3.new(0, 0, 0),
             TextSize = 14,
-            },
+        },
         ImageLabel = {
             BackgroundTransparency = 1,
             BackgroundColor3 = Color3.new(1, 1, 1),
             BorderSizePixel = 0,
-            },
+        },
         ImageButton = {
             BackgroundColor3 = Color3.new(1, 1, 1),
             BorderSizePixel = 0,
             AutoButtonColor = false,
-            },
+        },
         UIListLayout = {
             SortOrder = "LayoutOrder",
-            }
-            }
-            }
+        }
+    },
+}
             
 function Creator.SetTheme(Theme)
     Creator.Theme = Theme
@@ -102,14 +102,16 @@ function Creator.UpdateTheme()
 end
 
 function Creator.Icon(Icon)
-    if not isfile("WindUI/Assets/spritesheet-new.png") then
-        local response = request({
-            Url = "https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/Lucide/Icons/spritesheet-new.png",
-            Method = "GET",
-        }).Body
-        writefile("WindUI/Assets/spritesheet-new.png", response)
+    local Lucide = {
+        ["1"] = "rbxassetid://105711979102844",
+        ["2"] = "rbxassetid://93444111820847",
+        ["3"] = "rbxassetid://128003747944019",
+        ["4"] = "rbxassetid://136997801454266",
+    }
+    if Icons[Icon] then
+        return { Lucide[tostring(Icons[Icon].Image)], Icons[Icon] }
     end
-    return { getcustomasset("WindUI/Assets/spritesheet-new.png"), Icons[Icon] }
+    return nil
 end
 
 function Creator.New(Name, Properties, Children)

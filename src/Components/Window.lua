@@ -508,7 +508,7 @@ return function(Config)
                     ImageColor3 = "Text"
                 }
             })
-            if Creator.Icon(Window.Icon)[2] then
+            if Creator.Icon(Window.Icon) then
                 ImageLabel.Image = Creator.Icon(Window.Icon)[1]
                 ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
                 ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2]._Size
@@ -620,6 +620,7 @@ return function(Config)
     end)
     
     function Window:EditOpenButton(OpenButtonConfig)
+        task.wait()
         local OpenButtonModule = {
             Title = OpenButtonConfig.Title or Window.Title,
             Icon = OpenButtonConfig.Icon or Window.Icon,
@@ -631,7 +632,7 @@ return function(Config)
             OpenButtonTitle.Text = OpenButtonModule.Title
         end
         
-        if Creator.Icon(OpenButtonModule.Icon)[2] and OpenButtonIcon then
+        if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
             OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
             OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
             OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
