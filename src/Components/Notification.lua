@@ -99,8 +99,8 @@ function NotificationModule.New(Config)
 
     if Notification.Callback then
         Buttons = New("Frame", {
-            Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,30),
+            --AutomaticSize = "Y",
             BackgroundTransparency = 1,
             LayoutOrder = 5,
         }, {
@@ -113,8 +113,8 @@ function NotificationModule.New(Config)
         
         for _,Button in next, ButtonsTable do
             local ButtonText = New("TextButton", {
-                Size = UDim2.new(1 / #ButtonsTable, -(((#ButtonsTable - 1) * 11/2) / #ButtonsTable), 0, 0),
-                AutomaticSize = "Y",
+                Size = UDim2.new(1 / #ButtonsTable, -(((#ButtonsTable - 1) * 11/2) / #ButtonsTable), 0, 30),
+                --AutomaticSize = "Y",
                 ThemeTag = {
                     BackgroundColor3 = "Text",
                     TextColor3 = Button == "Confirm" and "Accent" or "Text"
@@ -159,6 +159,11 @@ function NotificationModule.New(Config)
         end
     end
     
+    local UIListLayout = New("UIListLayout", {
+        SortOrder = "LayoutOrder",
+        Padding = UDim.new(0,2)
+    })
+    
     Notification.UIElements.MainContainer = New("Frame", {
         Size = UDim2.new(1,0,0,0),
         Parent = Config.Holder,
@@ -174,9 +179,9 @@ function NotificationModule.New(Config)
         }, {
             Blur,
             CloseButton,
-            New("CanvasGroup", {
+            New("Frame", {
                 Size = UDim2.new(1,0,0,0),
-                AutomaticSize = "Y",
+                --AutomaticSize = "Y",
                 BackgroundTransparency = 1,
                 Name = "Frame",
                 ZIndex = 2
@@ -212,20 +217,18 @@ function NotificationModule.New(Config)
                         FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
                         BackgroundTransparency = 1,
                         TextWrapped = true,
-                        AutomaticSize = "Y",
+                        --AutomaticSize = "Y",
                         Size = UDim2.new(1,-18-NotificationModule.UIPadding,0,0),
                         TextXAlignment = "Left",
                         LayoutOrder = 1,
                     }),
                     Buttons,
-                    New("UIListLayout", {
-                        SortOrder = "LayoutOrder",
-                        Padding = UDim.new(0,2)
-                    })
+                    UIListLayout,
                 }),
                 New("Frame", {
                     BackgroundTransparency = 0.23,
                     Size = UDim2.new(1,0,1,0),
+                    Name = "Background",
                     ThemeTag = {
                         BackgroundColor3 = "Accent",
                     },
@@ -237,9 +240,19 @@ function NotificationModule.New(Config)
             })
         })
     })
+    
+    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        --Notification.UIElements.MainContainer.Frame.Frame.Frame.Size = UDim2.new(0,UIListLayout.AbsoluteContentSize.X, 0, UIListLayout.AbsoluteContentSize.Y)
+        Notification.UIElements.MainContainer.Frame.Frame.Size = UDim2.new(1,0,0, UIListLayout.AbsoluteContentSize.Y + (NotificationModule.UIPadding+2)*2)
+        Notification.UIElements.MainContainer.Size = UDim2.new(1, 0, 0, UIListLayout.AbsoluteContentSize.Y + (NotificationModule.UIPadding+2)*2)
+    end)
+    
+    Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel.Size = UDim2.new(1,-18-NotificationModule.UIPadding, 0, Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel.TextBounds.Y)
+    end)
 
     if Notification.Content then
-        New("TextLabel", {
+        local Desc = New("TextLabel", {
             Text = Notification.Content,
             ThemeTag = {
                 TextColor3 = "Text"
@@ -249,38 +262,38 @@ function NotificationModule.New(Config)
             TextTransparency = .4,
             TextWrapped = true,
             BackgroundTransparency = 1,
-            AutomaticSize = "Y",
+            --AutomaticSize = "Y",
             Size = UDim2.new(1,-18-NotificationModule.UIPadding,0,0),
             TextXAlignment = "Left",
             LayoutOrder = 1,
             Parent = Notification.UIElements.MainContainer.Frame.Frame.Frame,
         })
+        
+        Desc:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Desc.Size = UDim2.new(1,-18-NotificationModule.UIPadding, 0, Desc.TextBounds.Y)
+        end)
     end
     
-    task.spawn(function()
-        Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(0,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-        if NotificationModule.NotificationIndex ~= 1 then
-            Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-                Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-            end)
-        else
-            Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-                Notification.UIElements.MainContainer.Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)
-            end)
-        end
-    end)
-    
+    Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(0,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
+    if NotificationModule.NotificationIndex ~= 1 then
+        Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+            Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
+        end)
+    else
+        Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+            Notification.UIElements.MainContainer.Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)
+        end)
+    end
+
     function Notification:Close()
         if not Notification.Closed then
             Notification.Closed = true
             Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-            task.spawn(function()
-                task.wait(.3)
-                Notification.UIElements.MainContainer.Frame.Frame:Destroy()
-                Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,-8)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-                task.wait(.35)
-                Notification.UIElements.MainContainer:Destroy()
-            end)
+            task.wait(.3)
+            Notification.UIElements.MainContainer.Frame.Frame:Destroy()
+            Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,-8)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
+            task.wait(.35)
+            Notification.UIElements.MainContainer:Destroy()
         end
     end
     

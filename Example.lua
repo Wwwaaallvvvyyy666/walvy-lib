@@ -20,7 +20,7 @@ local Window = WindUI:CreateWindow({
 
 Window:EditOpenButton({
     Title = "Open Button",
-    Icon = "door-closed",
+    --Icon = "door-closed",
     Color = ColorSequence.new(
         Color3.fromHex("FF0F7B"), 
         Color3.fromHex("F89B29")
@@ -33,7 +33,7 @@ Window:EditOpenButton({
 
 local MainTab = Window:Tab({
     Title = "Main",
-    Icon = "folder",
+    Icon = "house",
 })
 
 Window:SelectTab(1)
@@ -59,7 +59,7 @@ local BlockedElementsTab = Window:Tab({
 
 local Divider = Window:Divider()
 
-local BlockedElementsTab = Window:Tab({
+local TabWithNewIcon = Window:Tab({
     Title = "Tab with new Icon",
     Icon = "book-user",
 })
@@ -71,6 +71,14 @@ local WindowTab = Window:Tab({
     Icon = "settings",
 })
 
+local Divider = Window:Divider()
+
+for i=1, 20 do
+    Window:Tab({
+        Title = "Just A Tab",
+        Image = "Grid"
+    })
+end
 
 -- Main Tab
 

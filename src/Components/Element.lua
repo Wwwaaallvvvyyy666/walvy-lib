@@ -15,7 +15,7 @@ return function(Config)
     
     Element.UIElements.Main = New("TextButton", {
         Size = UDim2.new(1,0,0,0),
-        AutomaticSize = "Y",
+        --AutomaticSize = "Y",
         BackgroundTransparency = 0.98,
         BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
         ThemeTag = {
@@ -26,8 +26,8 @@ return function(Config)
             CornerRadius = UDim.new(0,6),
         }),
         New("Frame", {
-            Size = UDim2.new(0,0,0,0),
-            AutomaticSize = "XY",
+            Size = UDim2.new(1,0,0,0),
+            --AutomaticSize = "XY",
             --AnchorPoint = Vector2.new(0,0.5),
             --Position = UDim2.new(0,0,0.5,0),
             BackgroundTransparency = 1,
@@ -50,7 +50,7 @@ return function(Config)
                 Size = UDim2.new(1,-Config.TextOffset,0,0),
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 BackgroundTransparency = 1,
-                AutomaticSize = "Y"
+                --AutomaticSize = "Y"
             })
         }),
         New("Frame", {
@@ -106,9 +106,13 @@ return function(Config)
         })
     })
 
+    Element.UIElements.Main.Title.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Element.UIElements.Main.Title.Title.Size = UDim2.new(1,-Config.TextOffset,0,Element.UIElements.Main.Title.Title.TextBounds.Y)
+    end)
+
     Element.UIElements.MainContainer = New("Frame", {
         Size = UDim2.new(1,0,0,0),
-        AutomaticSize = "Y",
+        --AutomaticSize = "Y",
         BackgroundTransparency = 1,
         Parent = Config.Parent,
     }, {
@@ -120,6 +124,27 @@ return function(Config)
             PaddingBottom = UDim.new(0,1),
         })
     })
+    
+    Element.UIElements.Main.Title.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Element.UIElements.Main.Size = UDim2.new(
+            1,
+            0,
+            0,
+            Element.UIElements.Main.Title.UIListLayout.AbsoluteContentSize.Y + (Element.UIPadding+3)*2
+        )
+        Element.UIElements.Main.Title.Size = UDim2.new(
+            1,
+            0,
+            0,
+            Element.UIElements.Main.Title.UIListLayout.AbsoluteContentSize.Y
+        )
+        Element.UIElements.MainContainer.Size = UDim2.new(
+            1,
+            0,
+            0,
+            Element.UIElements.Main.AbsoluteSize.Y
+        )
+    end)
     
     local Desc
     
@@ -137,9 +162,12 @@ return function(Config)
             Size = UDim2.new(1,-Config.TextOffset,0,0),
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
-            AutomaticSize = "Y",
+            --AutomaticSize = "Y",
             Parent = Element.UIElements.Main.Title
         })
+        Desc:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Desc.Size = UDim2.new(1,-Config.TextOffset,0,Desc.TextBounds.Y)
+        end)
     else
         Element.UIElements.Main.Title.AnchorPoint = Vector2.new(0,0.5)
         Element.UIElements.Main.Title.Position = UDim2.new(0,0,0.5,0)
@@ -178,9 +206,12 @@ return function(Config)
                 Size = UDim2.new(1,-Config.TextOffset,0,0),
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 BackgroundTransparency = 1,
-                AutomaticSize = "Y",
+                --AutomaticSize = "Y",
                 Parent = Element.UIElements.Main.Title
             })
+            Desc:GetPropertyChangedSignal("TextBounds"):Connect(function()
+                Desc.Size = UDim2.new(1,-Config.TextOffset,0,Desc.TextBounds.Y)
+            end)
         end
     end
     function Element:Lock()

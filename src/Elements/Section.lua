@@ -16,7 +16,7 @@ function Element:New(Config)
     Section.UIElements.Main = New("TextLabel", {
         BackgroundTransparency = 1,
         TextXAlignment = Section.TextXAlignment,
-        AutomaticSize = "Y",
+        --AutomaticSize = "Y",
         TextSize = Section.TextSize,
         ThemeTag = {
             TextColor3 = "Text",
@@ -31,6 +31,10 @@ function Element:New(Config)
             PaddingBottom = UDim.new(0,2),
         })
     })
+
+    Section.UIElements.Main:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Section.UIElements.Main.Size = UDim2.new(1,0,0,Section.UIElements.Main.TextBounds.Y)
+    end)
 
     function Section:SetTitle(Title)
         Section.UIElements.Main.Text = Title

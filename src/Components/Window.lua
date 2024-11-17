@@ -29,7 +29,8 @@ return function(Config)
 		CanDropdown = true,
 		Closed = false,
 		HasOutline = Config.HasOutline or false,
-		SuperParent = Config.Parent
+		SuperParent = Config.Parent,
+		Destroyed = false
     }
     
     if Window.Folder then
@@ -78,11 +79,44 @@ return function(Config)
         })
     })
 
+    
+    local Slider = New("Frame", {
+        Size = UDim2.new(0,3,1,0),
+        BackgroundTransparency = 1,
+        Position = UDim2.new(1,-Window.UIPadding/3,0,0),
+        AnchorPoint = Vector2.new(1,0),
+    })
+    
+    local Hitbox = New("Frame", {
+        Size = UDim2.new(1,12,1,12),
+        Position = UDim2.new(0.5,0,0.5,0),
+        AnchorPoint = Vector2.new(0.5,0.5),
+        BackgroundTransparency = 1,
+        Active = true,
+    })
+
+    local Thumb = New("ImageLabel", {
+        Size = UDim2.new(1,0,0,0),
+        --Image = "rbxassetid://18747052224",
+        --ScaleType = "Crop",
+        BackgroundTransparency = .85,
+        --ImageTransparency = .65,
+        ThemeTag = {
+            BackgroundColor3 = "Text"
+        },
+        Parent = Slider
+    }, {
+        New("UICorner", {
+            CornerRadius = UDim.new(1,0)
+        }),
+        Hitbox
+    })
+
     Window.UIElements.SideBar = New("ScrollingFrame", {
-        Size = UDim2.new(0,Window.SideBarWidth,1,-Window.UIPadding*4),
-        Position = UDim2.new(0,0,0,Window.UIPadding*4),
+        Size = UDim2.new(1,-Window.UIPadding+2,1,0),
         BackgroundTransparency = 1,
         ScrollBarThickness = 0,
+        ElasticBehavior = "Never",
         CanvasSize = UDim2.new(0,0,0,0),
         AutomaticCanvasSize = "Y",
         ScrollingDirection = "Y",
@@ -90,7 +124,7 @@ return function(Config)
         New("UIPadding", {
             PaddingTop = UDim.new(0,Window.UIPadding),
             PaddingLeft = UDim.new(0,Window.UIPadding+4),
-            PaddingRight = UDim.new(0,Window.UIPadding+4),
+            --PaddingRight = UDim.new(0,Window.UIPadding+4),
             PaddingBottom = UDim.new(0,Window.UIPadding),
         }),
         New("UIListLayout", {
@@ -98,10 +132,95 @@ return function(Config)
             Padding = UDim.new(0,8)
         })
     })
+    
+    Window.UIElements.SideBarContainer = New("Frame", {
+        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-Window.UIPadding*4),
+        Position = UDim2.new(0,0,0,Window.UIPadding*4),
+        BackgroundTransparency = 1,
+    }, {
+        Window.UIElements.SideBar,
+        Slider,
+    })
+
+    
+    local function updateSliderSize()
+        local container = Window.UIElements.SideBar
+        local visibleRatio = math.clamp(container.AbsoluteWindowSize.Y / container.AbsoluteCanvasSize.Y, 0, 1)
+    
+        Thumb.Size = UDim2.new(1, 0, visibleRatio, 0)
+        Thumb.Visible = visibleRatio < 1
+    end
+        
+    local function updateScrollingFramePosition()
+        local thumbPosition = Thumb.Position.Y.Scale
+        local canvasSize = math.max(Window.UIElements.SideBar.AbsoluteCanvasSize.Y - Window.UIElements.SideBar.AbsoluteWindowSize.Y, 1)
+    
+        Window.UIElements.SideBar.CanvasPosition = Vector2.new(
+            0,
+            thumbPosition * canvasSize
+        )
+    end
+    
+    local offset = 0
+
+    local function onInputChanged(input)
+        local sliderSize = Slider.AbsoluteSize.Y
+        local sliderPosition = Slider.AbsolutePosition.Y
+    
+        local newThumbPosition = (input.Position.Y - sliderPosition - offset) / sliderSize
+        newThumbPosition = math.clamp(newThumbPosition, 0, 1) 
+    
+        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+        updateScrollingFramePosition()
+    end
+    
+    Hitbox.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            local offset = input.Position.Y - Thumb.AbsolutePosition.Y
+            local connection
+    
+            connection = UserInputService.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    local sliderSize = Slider.AbsoluteSize.Y
+                    local sliderPosition = Slider.AbsolutePosition.Y
+    
+                    local newThumbPosition = (input.Position.Y - sliderPosition - offset) / sliderSize
+                    newThumbPosition = math.clamp(newThumbPosition, 0, 1)
+    
+                    Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+                    updateScrollingFramePosition()
+                end
+            end)
+    
+            local releaseConnection
+            releaseConnection = UserInputService.InputEnded:Connect(function(endInput)
+                if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
+                    connection:Disconnect()
+                    releaseConnection:Disconnect()
+                end
+            end)
+        end
+    end)
+    
+    Window.UIElements.SideBar:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+        local canvasPosition = Window.UIElements.SideBar.CanvasPosition.Y
+        local canvasSize = Window.UIElements.SideBar.AbsoluteCanvasSize.Y - Window.UIElements.SideBar.AbsoluteWindowSize.Y
+        local newThumbPosition = canvasPosition / canvasSize
+    
+        Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+    end)
+    
+    Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y - Window.UIPadding/2)
+    end)
+    Window.UIElements.SideBar:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
+    Window.UIElements.SideBar:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
+    
+    updateSliderSize()
 
     Window.UIElements.MainBar = New("Frame", {
-        Size = UDim2.new(1,-Window.UIElements.SideBar.AbsoluteSize.X,1,-Window.UIPadding*4),
-        Position = UDim2.new(0,Window.UIElements.SideBar.AbsoluteSize.X,0,Window.UIPadding*4),
+        Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-Window.UIPadding*4),
+        Position = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,Window.UIPadding*4),
         BackgroundTransparency = 1,
     })
     
@@ -192,8 +311,12 @@ return function(Config)
             TextSize = 17,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
-            AutomaticSize = "XY",
+            --AutomaticSize = "XY",
         })
+    
+        OpenButtonTitle:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            OpenButtonTitle.Size = UDim2.new(0,OpenButtonTitle.TextBounds.X,0,OpenButtonTitle.TextBounds.Y)
+        end)
         
         OpenButtonContainer = New("Frame", {
             Size = UDim2.new(0,0,0,0),
@@ -206,7 +329,7 @@ return function(Config)
         })
         OpenButton = New("TextButton", {
             Size = UDim2.new(0,0,0,44),
-            AutomaticSize = "XY",
+            --AutomaticSize = "XY",
             Parent = OpenButtonContainer,
             Active = false,
             BackgroundColor3 = Color3.new(0,0,0),
@@ -246,7 +369,7 @@ return function(Config)
                 BackgroundTransparency = .86,
             }),
             New("TextButton",{
-                AutomaticSize = "XY",
+                --AutomaticSize = "XY",
                 Active = true,
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0,0,1,0),
@@ -267,6 +390,24 @@ return function(Config)
                 PaddingBottom = UDim.new(0,0),
             })
         })
+        
+        OpenButton.TextButton.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            OpenButton.Size = UDim2.new(
+                0,
+                20+20+16+1+16+ OpenButton.TextButton.UIListLayout.AbsoluteContentSize.X,
+                0,
+                44
+            )
+            OpenButton.TextButton.Size = UDim2.new(0,OpenButton.TextButton.UIListLayout.AbsoluteContentSize.X,1,0)
+            OpenButtonContainer.Size = UDim2.new(
+                0, OpenButton.AbsoluteSize.X,
+                0, OpenButton.AbsoluteSize.Y
+            )
+        end)
+        
+        OpenButton.TextButton.Size = UDim2.new(0,OpenButton.TextButton.TextBounds.X,1,0)
+        
+        
         local uiGradient = OpenButton.UIStroke.UIGradient
     
         Glow = New("ImageLabel", {
@@ -286,20 +427,22 @@ return function(Config)
         })
         
         RunService.RenderStepped:Connect(function(deltaTime)
-            if uiGradient then
-                uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
-            end
-            if Glow and Glow.UIGradient then
-                Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
+            if not Window.Destroyed then
+                if uiGradient then
+                    uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
+                end
+                if Glow and Glow.UIGradient then
+                    Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
+                end
             end
         end)
         
-        OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-            OpenButtonContainer.Size = UDim2.new(
-                0, OpenButton.AbsoluteSize.X,
-                0, OpenButton.AbsoluteSize.Y
-            )
-        end)
+        -- OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        --     OpenButtonContainer.Size = UDim2.new(
+        --         0, OpenButton.AbsoluteSize.X,
+        --         0, OpenButton.AbsoluteSize.Y
+        --     )
+        -- end)
         
         OpenButton.TextButton.MouseEnter:Connect(function()
             Tween(OpenButton.UIScale, .1, {Scale = .95}):Play()
@@ -333,6 +476,20 @@ return function(Config)
             },
         })
     end
+    
+    local WindowTitle = New("TextLabel", {
+        Text = Window.Title,
+        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+        BackgroundTransparency = 1,
+        --AutomaticSize = "XY",
+        Name = "Title",
+        TextXAlignment = "Left",
+        TextSize = 16,
+        TextColor3 = Color3.fromHex(Config.Theme.Text),
+        ThemeTag = {
+            TextColor3 = "Text"
+        }
+    })
     
     Window.UIElements.Main = New("Frame", {
         Size = UDim2.new(
@@ -377,7 +534,7 @@ return function(Config)
             New("UICorner", {
                 CornerRadius = UDim.new(0,Window.UICorner)
             }),
-            Window.UIElements.SideBar,
+            Window.UIElements.SideBarContainer,
             Window.UIElements.MainBar,
             Outline2,
             New("Frame", { -- Topbar
@@ -393,7 +550,7 @@ return function(Config)
                     BackgroundColor3 = Color3.fromHex(Config.Theme.Outline),
                 }),]]
                 New("Frame", { -- Topbar Left Side
-                    AutomaticSize = "X",
+                    --AutomaticSize = "X",
                     Size = UDim2.new(0,0,1,0),
                     BackgroundTransparency = 1,
                     Name = "Left"
@@ -405,9 +562,10 @@ return function(Config)
                         VerticalAlignment = "Center",
                     }),
                     New("Frame", {
-                        AutomaticSize = "XY",
+                        --AutomaticSize = "XY",
                         BackgroundTransparency = 1,
                         Name = "Title",
+                        Size = UDim2.new(0,0,1,0),
                         LayoutOrder= 2,
                     }, {
                         New("UIListLayout", {
@@ -416,25 +574,14 @@ return function(Config)
                             FillDirection = "Vertical",
                             VerticalAlignment = "Top",
                         }),
-                        New("TextLabel", {
-                            Text = Window.Title,
-                            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                            BackgroundTransparency = 1,
-                            AutomaticSize = "XY",
-                            TextXAlignment = "Left",
-                            TextSize = 16,
-                            TextColor3 = Color3.fromHex(Config.Theme.Text),
-                            ThemeTag = {
-                                TextColor3 = "Text"
-                            }
-                        }),
+                        WindowTitle,
                     }),
                     New("UIPadding", {
                         PaddingLeft = UDim.new(0,4)
                     })
                 }),
                 New("Frame", { -- Topbar Right Side
-                    AutomaticSize = "XY",
+                    --AutomaticSize = "XY",
                     BackgroundTransparency = 1,
                     Position = UDim2.new(1,0,0.5,0),
                     AnchorPoint = Vector2.new(1,0.5)
@@ -480,12 +627,12 @@ return function(Config)
     end
     
     if Window.Author then
-        New("TextLabel", {
+        local Author = New("TextLabel", {
             Text = "by " .. Window.Author,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
             TextTransparency = 0.4,
-            AutomaticSize = "XY",
+            --AutomaticSize = "XY",
             Parent = Window.UIElements.Main.Main.Topbar.Left.Title,
             TextXAlignment = "Left",
             TextSize = 14,
@@ -495,7 +642,19 @@ return function(Config)
                 TextColor3 = "Text"
             }
         })
+        Author:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Author.Size = UDim2.new(0,Author.TextBounds.X,0,Author.TextBounds.Y)
+        end)
     end
+    WindowTitle:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        WindowTitle.Size = UDim2.new(0,WindowTitle.TextBounds.X,0,WindowTitle.TextBounds.Y)
+    end)
+    Window.UIElements.Main.Main.Topbar.Frame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Window.UIElements.Main.Main.Topbar.Frame.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.X,0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.Y)
+    end)
+    Window.UIElements.Main.Main.Topbar.Left.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Window.UIElements.Main.Main.Topbar.Left.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Left.UIListLayout.AbsoluteContentSize.X,1,0)
+    end)
     
     task.spawn(function()
         if Window.Icon then
@@ -568,6 +727,7 @@ return function(Config)
         end)
         
         function Close:Destroy()
+            Window.Destroyed = true
             task.wait(0.25)
             Config.Parent.Parent:Destroy()
         end
@@ -664,8 +824,8 @@ return function(Config)
         })
         New("Frame", {
             Parent = Window.UIElements.SideBar,
-            AutomaticSize = "Y",
-            Size = UDim2.new(1,0,0,0),
+            --AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,1),
             BackgroundTransparency = 1,
         }, {
             Divider
@@ -690,7 +850,7 @@ return function(Config)
         })
     
         New("UISizeConstraint", {
-			MinSize = Vector2.new(50, 20),
+			MinSize = Vector2.new(300, 20),
 			MaxSize = Vector2.new(620, math.huge),
 			Parent = Dialog.UIElements.Main,
 		})
@@ -703,7 +863,7 @@ return function(Config)
             TextWrapped = true,
             RichText = true,
             Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "Y",
+            --AutomaticSize = "Y",
             ThemeTag = {
                 TextColor3 = "Text"
             },
@@ -720,7 +880,7 @@ return function(Config)
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 TextXAlignment = "Left",
                 Size = UDim2.new(1,0,0,0),
-                AutomaticSize = "Y",
+                --AutomaticSize = "Y",
                 LayoutOrder = 2,
                 ThemeTag = {
                     TextColor3 = "Text"
@@ -728,7 +888,17 @@ return function(Config)
                 BackgroundTransparency = 1,
                 Parent = Dialog.UIElements.Main
             })
+            Content:GetPropertyChangedSignal("TextBounds"):Connect(function()
+                Content.Size = UDim2.new(1,0,0,Content.TextBounds.Y)
+            end)
         end
+        
+        Dialog.UIElements.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            Dialog.UIElements.Main.Size = UDim2.new(0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.X,0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.Y+Dialog.UIPadding*2)
+        end)
+        Dialog.UIElements.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Dialog.UIElements.Title.Size = UDim2.new(1,0,0,Dialog.UIElements.Title.TextBounds.Y)
+        end)
         
         New("Frame", {
             Name = "Line",
@@ -742,8 +912,8 @@ return function(Config)
         })
         
         local ButtonsContent = New("Frame", {
-            Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,30),
+            --AutomaticSize = "Y",
             BackgroundTransparency = 1,
             Parent = Dialog.UIElements.Main,
             LayoutOrder = 4,
@@ -766,8 +936,8 @@ return function(Config)
                 },
                 BackgroundTransparency = .93,
                 Parent = ButtonsContent,
-                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 0),
-                AutomaticSize = "Y",
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 30),
+                --AutomaticSize = "Y",
             }, {
                 New("UICorner", {
                     CornerRadius = UDim.new(0, Dialog.UICorner-7),

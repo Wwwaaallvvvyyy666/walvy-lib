@@ -40,6 +40,8 @@ function Element:Colorpicker(Config, OnApply)
     local ColorpickerModule = require("../Components/Dialog").Init(Config.Window)
     local ColorpickerFrame = ColorpickerModule.Create()
     
+    ColorpickerFrame.UIElements.Main.Size = UDim2.new(0,Colorpicker.Transparency and 356+30 or 356,0,325)
+    
     Colorpicker.ColorpickerFrame = ColorpickerFrame
     
     ColorpickerFrame:Close()
@@ -52,13 +54,17 @@ function Element:Colorpicker(Config, OnApply)
         FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
         TextXAlignment = "Left",
         Size = UDim2.new(1,0,0,0),
-        AutomaticSize = "Y",
+        --AutomaticSize = "Y",
         ThemeTag = {
             TextColor3 = "Text"
         },
         BackgroundTransparency = 1,
         Parent = ColorpickerFrame.UIElements.Main
     })
+    
+    Colorpicker.UIElements.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Colorpicker.UIElements.Title.Size = UDim2.new(1,0,0,Colorpicker.UIElements.Title.TextBounds.Y)
+    end)
 
     local SatCursor = New("ImageLabel", {
 		Size = UDim2.new(0, 18, 0, 18),
@@ -90,7 +96,7 @@ function Element:Colorpicker(Config, OnApply)
 	})
 	
 	Colorpicker.UIElements.Inputs = New("Frame", {
-	    AutomaticSize = "XY",
+	    --AutomaticSize = "XY",
 	    Position = UDim2.fromOffset(Colorpicker.Transparency and 160+10+10+20+20+10 or 160+10+10+20, 40),
 	    BackgroundTransparency = 1,
 	    Parent = ColorpickerFrame.UIElements.Main
@@ -100,6 +106,10 @@ function Element:Colorpicker(Config, OnApply)
 		    FillDirection = "Vertical",
 	    })
 	})
+	
+	Colorpicker.UIElements.Inputs.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Colorpicker.UIElements.Inputs.Size = UDim2.new(0,Colorpicker.UIElements.Inputs.UIListLayout.AbsoluteContentSize.X,0,Colorpicker.UIElements.Inputs.UIListLayout.AbsoluteContentSize.Y)
+    end)
 	
 	local OldColorFrame = New("Frame", {
 		BackgroundColor3 = Colorpicker.Default,
@@ -211,8 +221,8 @@ function Element:Colorpicker(Config, OnApply)
 	
 	function CreateInput(Title, Value)
 	    local Container = New("Frame", {
-	        Size = UDim2.new(0,120,0,0),
-	        AutomaticSize = "Y",
+	        Size = UDim2.new(0,120,0,28),
+	        --AutomaticSize = "Y",
 	        BackgroundTransparency = 1,
 	        Parent = Colorpicker.UIElements.Inputs
 	    }, {
@@ -233,7 +243,7 @@ function Element:Colorpicker(Config, OnApply)
                 New("TextBox", {
                     MultiLine = false,
                     Size = UDim2.new(1,-40,0,0),
-                    AutomaticSize = "Y",
+                    --AutomaticSize = "Y",
                     BackgroundTransparency = 1,
                     Position = UDim2.new(0,0,0.5,0),
                     AnchorPoint = Vector2.new(0,0.5),
@@ -261,7 +271,7 @@ function Element:Colorpicker(Config, OnApply)
 	                AnchorPoint = Vector2.new(1,0.5),
 	                Size = UDim2.new(0,0,0,0),
 	                TextTransparency = .4,
-	                AutomaticSize = "XY",
+	                --AutomaticSize = "XY",
 	            }),
                 New("UICorner", {
                     CornerRadius = UDim.new(0,Element.UICorner)
@@ -282,6 +292,14 @@ function Element:Colorpicker(Config, OnApply)
                 })
             })
 	    })
+	
+	    Container.Frame.TextBox:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Container.Frame.TextBox.Size = UDim2.new(1,-40,0,Container.Frame.TextBox.TextBounds.Y)
+        end)
+	    Container.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+            Container.Frame.TextLabel.Size = UDim2.new(0,Container.Frame.TextLabel.TextBounds.X,0,Container.Frame.TextLabel.TextBounds.Y)
+        end)
+	    
 	    return Container
 	end
 	
@@ -304,8 +322,8 @@ function Element:Colorpicker(Config, OnApply)
 	end
 	
 	local ButtonsContent = New("Frame", {
-        Size = UDim2.new(1,0,0,0),
-        AutomaticSize = "Y",
+        Size = UDim2.new(1,0,0,30),
+        --AutomaticSize = "Y",
         Position = UDim2.new(0,0,0,40+8+182+24),
         BackgroundTransparency = 1,
         Parent = ColorpickerFrame.UIElements.Main,
@@ -341,8 +359,8 @@ function Element:Colorpicker(Config, OnApply)
             BackgroundTransparency = .9,
             ZIndex = 999999,
             Parent = ButtonsContent,
-            Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 8) / #Buttons), 0, 0),
-            AutomaticSize = "Y",
+            Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 8) / #Buttons), 0, 30),
+            --AutomaticSize = "Y",
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),

@@ -106,7 +106,7 @@ function Element:New(Config)
         Size = UDim2.new(1,0,1,0)
     }, {
         New("UISizeConstraint", {
-			MinSize = Vector2.new(170, 0),
+			MinSize = Vector2.new(190, 0),
 		}),
         New("UICorner", {
             CornerRadius = UDim.new(0,Element.MenuCorner)
@@ -212,8 +212,8 @@ function Element:New(Config)
                 UIElements = {},
             }
             TabMain.UIElements.TabItem = New("TextButton", {
-                Size = UDim2.new(1,0,0,0),
-                AutomaticSize = "Y",
+                Size = UDim2.new(1,0,0,34),
+                --AutomaticSize = "Y",
                 BackgroundTransparency = 1,
                 Parent = Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame,
                 Text = Tab,

@@ -59,7 +59,7 @@ local BlockedElementsTab = Window:Tab({
 
 local Divider = Window:Divider()
 
-local BlockedElementsTab = Window:Tab({
+local TabWithNewIcon = Window:Tab({
     Title = "Tab with new Icon",
     Icon = "book-user",
 })
@@ -71,6 +71,14 @@ local WindowTab = Window:Tab({
     Icon = "settings",
 })
 
+local Divider = Window:Divider()
+
+for i=1, 20 do
+    Window:Tab({
+        Title = "Just A Tab",
+        Image = "Grid"
+    })
+end
 
 -- Main Tab
 

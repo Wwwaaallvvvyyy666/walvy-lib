@@ -40,7 +40,7 @@ function Element:New(Config)
         TextColor3 = Color3.fromHex(Config.Theme.Text),
         TextSize = 15,
         TextXAlignment = "Right",
-        AutomaticSize = "XY",
+        --AutomaticSize = "XY",
         FontFace = Font.new(Creator.Font),
         Parent = Keybind.KeybindFrame.UIElements.Main,
         Size = UDim2.new(0,0,0,0),
@@ -71,6 +71,10 @@ function Element:New(Config)
             PaddingBottom = UDim.new(0,Element.UIPadding),
         })
     })
+    
+    Keybind.UIElements.Keybind:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Keybind.UIElements.Keybind.Size = UDim2.new(0,Keybind.UIElements.Keybind.TextBounds.X+(Element.UIPadding*2),0,Keybind.UIElements.Keybind.TextBounds.Y+(Element.UIPadding*2))
+    end)
 
     function Keybind:Lock()
         CanCallback = false
