@@ -2,7 +2,7 @@
 
 <img src="docs/ui.png" width="100%">
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Footagesus/WindUI/releases)
+[![Version](https://img.shields.io/badge/version-1.2.9-blue.svg)](https://github.com/Footagesus/WindUI/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 An Open source and customizable UI library for Roblox, featuring a dark theme and flexible color options to create visually engaging interfaces for your script hub.
