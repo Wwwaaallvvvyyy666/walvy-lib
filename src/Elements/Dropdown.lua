@@ -238,7 +238,7 @@ function Element:New(Config)
         
         
             if Dropdown.Multi then
-                TabMain.Selected = table.find(Dropdown.Value, TabMain.Name)
+                TabMain.Selected = table.find(Dropdown.Value or {}, TabMain.Name)
             else
                 TabMain.Selected = Dropdown.Value == TabMain.Name
             end

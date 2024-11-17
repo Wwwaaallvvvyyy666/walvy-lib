@@ -134,7 +134,7 @@ function TabModule.New(Config)
     end)
 
     local Slider = New("Frame", {
-        Size = UDim2.new(0,3,1,0),
+        Size = UDim2.new(0,2,1,0),
         BackgroundTransparency = 1,
         Position = UDim2.new(1,-Window.UIPadding/3,0,0),
         AnchorPoint = Vector2.new(1,0),
