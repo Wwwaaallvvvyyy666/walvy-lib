@@ -39,7 +39,7 @@ function Element:New(Config)
         Desc = Dropdown.Desc,
         Parent = Config.Parent,
         Theme = Config.Theme,
-        TextOffset = 70,
+        TextOffset = 160,
         Hover = false,
     })
     
@@ -252,7 +252,7 @@ function Element:New(Config)
             local function Callback()
                 Dropdown:Display()
                 task.spawn(function()
-                    pcall(Dropdown.Callback, Dropdown.Value)
+                    Dropdown.Callback(Dropdown.Value)
                 end)
             end
             

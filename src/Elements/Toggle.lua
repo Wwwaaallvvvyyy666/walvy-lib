@@ -120,7 +120,7 @@ function Element:New(Config)
         end
 
         task.spawn(function()
-            pcall(Toggle.Callback, Toggled)
+            Toggle.Callback(Toggled)
         end)
         
         Toggled = not Toggled

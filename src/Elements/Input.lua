@@ -27,7 +27,7 @@ function Element:New(Config)
         Desc = Input.Desc,
         Parent = Config.Parent,
         Theme = Config.Theme,
-        TextOffset = 70,
+        TextOffset = 160,
         Hover = false,
     })
     
@@ -110,7 +110,7 @@ function Element:New(Config)
     
     Input.UIElements.Input.TextBox.FocusLost:Connect(function()
         if CanCallback then
-            pcall(Input.Callback, Input.UIElements.Input.TextBox.Text)
+            Input.Callback(Input.UIElements.Input.TextBox.Text)
             Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
         end
     end)

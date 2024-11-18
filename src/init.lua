@@ -77,6 +77,8 @@ function WindUI:CreateWindow(Config)
         local KeyDialogInit = require("./Components/Dialog").Init(WindUI.ScreenGui.KeySystem)
         local KeyDialog = KeyDialogInit.Create(true)
         
+        KeyDialog.UIElements.Main.AutomaticSize = "XY"
+        
         local Blur = New("ImageLabel", {
             Image = "rbxassetid://8992230677",
             ImageColor3 = Color3.new(0,0,0),

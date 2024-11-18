@@ -32,7 +32,7 @@ function Element:New(Config)
         Desc = Slider.Desc,
         Parent = Config.Parent,
         Theme = Config.Theme,
-        TextOffset = 85,
+        TextOffset = 160,
         Hover = false,
     })
     
@@ -121,7 +121,7 @@ function Element:New(Config)
         Slider:Lock()
     end
     
-    Slider.UIElements.SliderContainer.InputBegan:Connect(function(input)
+    function Slider:Set(Value, input)
         if CanCallback then
             if not Slider.IsFocusing and not HoldingSlider and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
                 isTouch = (input.UserInputType == Enum.UserInputType.Touch)
@@ -144,7 +144,7 @@ function Element:New(Config)
                         Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
                         Slider.UIElements.SliderContainer.TextLabel.Text = Value
                         LastValue = Value
-                        task.spawn(Slider.Callback, Value)
+                        Slider.Callback(Value)
                     end
                 end)
                 
@@ -159,6 +159,10 @@ function Element:New(Config)
                 end)
             end
         end
+    end
+    
+    Slider.UIElements.SliderContainer.InputBegan:Connect(function(input)
+        Slider:Set(Value, input)
     end)
     
     return Slider.__type, Slider

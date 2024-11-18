@@ -29,7 +29,7 @@ function Element:New(Config)
         Desc = Keybind.Desc,
         Parent = Config.Parent,
         Theme = Config.Theme,
-        TextOffset = 44,
+        TextOffset = 85,
         Hover = Keybind.CanChange,
     })
     
@@ -128,7 +128,7 @@ function Element:New(Config)
     UserInputService.InputBegan:Connect(function(input)
         if CanCallback then
             if input.KeyCode.Name == Keybind.Value then
-                pcall(Keybind.Callback, input.KeyCode.Name)
+                Keybind.Callback(input.KeyCode.Name)
             end
         end
     end)

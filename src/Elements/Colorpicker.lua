@@ -343,7 +343,7 @@ function Element:Colorpicker(Config, OnApply)
 	    },
 	    {
 	        Title = "Apply",
-	        Callback = function() pcall(OnApply, Color3.fromHSV(Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib), Colorpicker.Transparency) end
+	        Callback = function() OnApply(Color3.fromHSV(Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib), Colorpicker.Transparency) end
 	    }
 	}
 	
@@ -397,7 +397,7 @@ function Element:Colorpicker(Config, OnApply)
         ButtonFrame.MouseButton1Click:Connect(function()
             ColorpickerFrame:Close()
             task.spawn(function()
-                pcall(Button.Callback)
+                Button.Callback()
             end)
         end)
 	end
@@ -714,7 +714,7 @@ function Element:New(Config)
             Colorpicker:Update(color, transparency)
             Colorpicker.Default = color
             Colorpicker.Transparency = transparency
-            pcall(Colorpicker.Callback, color, transparency)
+            Colorpicker.Callback(color, transparency)
         end
     end)
     

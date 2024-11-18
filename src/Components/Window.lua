@@ -14,7 +14,9 @@ return function(Config)
         Author = Config.Author,
         Icon = Config.Icon,
         Folder = Config.Folder,
-        Size = Config.Size or UDim2.fromOffset(560, 460),
+        Size = Config.Size and UDim2.new(
+                    0, math.clamp(Config.Size.X.Offset, 480, 700),
+                    0, math.clamp(Config.Size.Y.Offset, 350, 520)) or UDim.new(0,580,0,460),
         ToggleKey = Config.ToggleKey or Enum.KeyCode.G,
         Transparent = Config.Transparent or false,
         Position = UDim2.new(
@@ -492,9 +494,7 @@ return function(Config)
     })
     
     Window.UIElements.Main = New("Frame", {
-        Size = UDim2.new(
-                    0, math.clamp(Window.Size.X.Offset, 400, 700),
-                    0, math.clamp(Window.Size.Y.Offset, 350, 520)),
+        Size = Window.Size,
         Position = Window.Position,
         BackgroundTransparency = 1,
         Parent = Config.Parent,
@@ -1032,7 +1032,7 @@ return function(Config)
                 
                 Tween(Window.UIElements.Main, 0.06, {
                     Size = UDim2.new(
-                    0, math.clamp(newSize.X.Offset, 400, 700),
+                    0, math.clamp(newSize.X.Offset, 480, 700),
                     0, math.clamp(newSize.Y.Offset, 350, 520)
                 )}):Play()
             end

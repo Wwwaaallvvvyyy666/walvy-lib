@@ -55,7 +55,7 @@ function Element:New(Config)
     Button.ButtonFrame.UIElements.Main.MouseButton1Click:Connect(function()
         if CanCallback then
             task.spawn(function()
-                pcall(Button.Callback)
+                Button.Callback()
             end)
         end
     end)

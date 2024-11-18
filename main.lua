@@ -14,7 +14,7 @@ local Window = WindUI:CreateWindow({
     }, 
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
-    SideBarWidth = 170, -- UI Sidebar Width (number)
+    SideBarWidth = 200, -- UI Sidebar Width (number)
     HasOutline = false, -- Adds Oultines to the window
 })
 
