@@ -292,10 +292,10 @@ return function(Config)
         IsPC = nil
     end
     
-    local OpenButtonContainer
-    local OpenButton
-    local OpenButtonIcon
-    local Glow
+    local OpenButtonContainer = nil
+    local OpenButton = nil
+    local OpenButtonIcon = nil
+    local Glow = nil
     
     if not IsPC then
         OpenButtonIcon = New("ImageLabel", {
@@ -408,7 +408,7 @@ return function(Config)
         })
         
         RunService.RenderStepped:Connect(function(deltaTime)
-            if Window.UIElements.Main and OpenButtonContainer then
+            if Window.UIElements.Main and OpenButtonContainer and OpenButtonContainer.Parent ~= nil then
                 if uiGradient then
                     uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
                 end
@@ -723,7 +723,7 @@ return function(Config)
             end
         end)
         
-        local NotifiedText = IsPC and "Press " .. Window.Name .. " to open the Window" or "Click the Button to open the Window"
+        local NotifiedText = IsPC and "Press " .. Window.ToggleKey.Name .. " to open the Window" or "Click the Button to open the Window"
         
         if not Notified then
             Notified = not Notified
@@ -765,9 +765,16 @@ return function(Config)
             local OpenButtonModule = {
                 Title = OpenButtonConfig.Title or Window.Title,
                 Icon = OpenButtonConfig.Icon or Window.Icon,
+                OnlyMobile = OpenButtonConfig.OnlyMobile or true,
                 Color = OpenButtonConfig.Color 
                     or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
             }
+            
+            if OpenButtonModule.OnlyMobile then
+                IsPC = UserInputService.KeyboardEnabled or not UserInputService.TouchEnabled
+            else
+                IsPC = false
+            end
             
             if OpenButtonTitle then
                 OpenButtonTitle.Text = OpenButtonModule.Title
