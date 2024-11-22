@@ -54,12 +54,12 @@ function WindUI:Notify(Config)
 end
 
 
-function Window:AddTheme(LTheme)
+function WindUI:AddTheme(LTheme)
     Themes[LTheme.Name] = LTheme
     return LTheme
 end
 
-function Window:SetTheme(Value)
+function WindUI:SetTheme(Value)
 if Themes[Value] then
     WindUI.Theme = Themes[Value]
     Creator.SetTheme(Themes[Value])
@@ -70,16 +70,16 @@ end
 return nil
 end
 
-function Window:GetThemes()
+function WindUI:GetThemes()
     return Themes
 end
-function Window:GetCurrentTheme()
+function WindUI:GetCurrentTheme()
     return WindUI.Theme.Name
 end
-function Window:GetTransparency()
+function WindUI:GetTransparency()
     return WindUI.Transparent or false
 end
-function Window:GetWindowSize()
+function WindUI:GetWindowSize()
     return Window.UIElements.Main.Size
 end
 

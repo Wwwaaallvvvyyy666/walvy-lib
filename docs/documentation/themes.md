@@ -5,7 +5,7 @@ On this page
 
 ## Load own theme
 ```lua
-Window:AddTheme({
+WindUI:AddTheme({
     Name = "Halloween",
     
     Accent = "#331400",
@@ -18,5 +18,5 @@ Window:AddTheme({
 
 ## Use your theme
 ```lua
-Window:SetTheme("Halloween")
+WindUI:SetTheme("Halloween")
 ```

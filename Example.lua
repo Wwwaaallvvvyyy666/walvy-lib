@@ -401,7 +401,7 @@ local Button = NotificationTab:Button({
 
 ---- 1. Add Theme
 
-Window:AddTheme({
+WindUI:AddTheme({
     Name = "Halloween",
     
     Accent = "#331400",
@@ -415,7 +415,7 @@ Window:AddTheme({
 
 ---- 2. Use Theme
 
-Window:SetTheme("Dark")
+WindUI:SetTheme("Dark")
 
 ---- 3. Load Themes
 
@@ -463,7 +463,7 @@ local themeDropdown = WindowTab:Dropdown({
     Value = nil,
     Values = themeValues,
     Callback = function(theme)
-        Window:SetTheme(theme)
+        WindUI:SetTheme(theme)
     end
 })
 themeDropdown:Select(Window:GetCurrentTheme())
