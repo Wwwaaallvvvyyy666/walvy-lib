@@ -761,25 +761,27 @@ return function(Config)
     
     function Window:EditOpenButton(OpenButtonConfig)
         task.wait()
-        local OpenButtonModule = {
-            Title = OpenButtonConfig.Title or Window.Title,
-            Icon = OpenButtonConfig.Icon or Window.Icon,
-            Color = OpenButtonConfig.Color 
-                or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
-        }
+        if OpenButton and OpenButton.Parent ~= nil then
+            local OpenButtonModule = {
+                Title = OpenButtonConfig.Title or Window.Title,
+                Icon = OpenButtonConfig.Icon or Window.Icon,
+                Color = OpenButtonConfig.Color 
+                    or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
+            }
+            
+            if OpenButtonTitle then
+                OpenButtonTitle.Text = OpenButtonModule.Title
+            end
+            
+            if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
+                OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
+                OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
+                OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
+            end
         
-        if OpenButtonTitle then
-            OpenButtonTitle.Text = OpenButtonModule.Title
+            OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
+            Glow.UIGradient.Color = OpenButtonModule.Color
         end
-        
-        if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
-            OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
-            OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
-            OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
-        end
-        
-        OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
-        Glow.UIGradient.Color = OpenButtonModule.Color
     end
     
     local TabModule = require("./Tab").Init(Window)
