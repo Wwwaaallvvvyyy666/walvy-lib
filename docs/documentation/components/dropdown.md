@@ -24,20 +24,20 @@ local Dropdown = Tab:Dropdown({
 
 ### Edit Dropdown
 - SetTitle()
-```lua
-Dropdown:SetTitle("New Title!")
-```
+    ```lua
+    Dropdown:SetTitle("New Title!")
+    ```
 - SetDesc()
-```lua
-Dropdown:SetDesc("New Description!")
-```
+    ```lua
+    Dropdown:SetDesc("New Description!")
+    ```
 
 - Refresh()
-```lua
-Dropdown:Refresh({
-    "Tab 1", "Tab 2"
-})
-```
+    ```lua
+    Dropdown:Refresh({
+        "Tab 1", "Tab 2"
+    })
+    ```
 
 - Select()
 

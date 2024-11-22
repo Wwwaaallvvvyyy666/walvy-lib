@@ -46,7 +46,7 @@ function Element:New(Config)
         New("TextBox", {
             MultiLine = false,
             Size = UDim2.new(1,0,0,0),
-            --AutomaticSize = "Y",
+            AutomaticSize = "Y",
             BackgroundTransparency = 1,
             Position = UDim2.new(0,0,0.5,0),
             AnchorPoint = Vector2.new(0,0.5),
@@ -83,9 +83,9 @@ function Element:New(Config)
         })
     })
     
-    Input.UIElements.Input.TextBox:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        Input.UIElements.Input.TextBox.Size = UDim2.new(1,0,0,Input.UIElements.Input.TextBox.TextBounds.Y)
-    end)
+    -- Input.UIElements.Input.TextBox:GetPropertyChangedSignal("TextBounds"):Connect(function()
+    --     Input.UIElements.Input.TextBox.Size = UDim2.new(1,0,0,Input.UIElements.Input.TextBox.TextBounds.Y)
+    -- end)
 
     function Input:Lock()
         CanCallback = false

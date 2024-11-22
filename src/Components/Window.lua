@@ -228,7 +228,7 @@ return function(Config)
     
     local Gradient = New("Frame", {
         Size = UDim2.new(1,0,1,0),
-        BackgroundTransparency = 1, -- Window.Transparent and 0.15 or 0
+        BackgroundTransparency = 1, -- Window.Transparent and 0.25 or 0
         ZIndex = 3,
         Name = "Gradient"
     }, {
@@ -313,12 +313,8 @@ return function(Config)
             TextSize = 17,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
-            --AutomaticSize = "XY",
+            AutomaticSize = "XY",
         })
-    
-        OpenButtonTitle:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            OpenButtonTitle.Size = UDim2.new(0,OpenButtonTitle.TextBounds.X,0,OpenButtonTitle.TextBounds.Y)
-        end)
         
         OpenButtonContainer = New("Frame", {
             Size = UDim2.new(0,0,0,0),
@@ -331,7 +327,7 @@ return function(Config)
         })
         OpenButton = New("TextButton", {
             Size = UDim2.new(0,0,0,44),
-            --AutomaticSize = "XY",
+            AutomaticSize = "XY",
             Parent = OpenButtonContainer,
             Active = false,
             BackgroundColor3 = Color3.new(0,0,0),
@@ -371,7 +367,7 @@ return function(Config)
                 BackgroundTransparency = .86,
             }),
             New("TextButton",{
-                --AutomaticSize = "XY",
+                AutomaticSize = "XY",
                 Active = true,
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0,0,1,0),
@@ -393,24 +389,7 @@ return function(Config)
             })
         })
         
-        OpenButton.TextButton.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            OpenButton.Size = UDim2.new(
-                0,
-                20+20+16+1+16+ OpenButton.TextButton.UIListLayout.AbsoluteContentSize.X,
-                0,
-                44
-            )
-            OpenButton.TextButton.Size = UDim2.new(0,OpenButton.TextButton.UIListLayout.AbsoluteContentSize.X,1,0)
-            OpenButtonContainer.Size = UDim2.new(
-                0, OpenButton.AbsoluteSize.X,
-                0, OpenButton.AbsoluteSize.Y
-            )
-        end)
-        
-        OpenButton.TextButton.Size = UDim2.new(0,OpenButton.TextButton.TextBounds.X,1,0)
-        
-        
-        local uiGradient = OpenButton.UIStroke.UIGradient
+        local uiGradient = OpenButton and OpenButton.UIStroke.UIGradient or nil
     
         Glow = New("ImageLabel", {
             Image = "rbxassetid://93831937596979", -- UICircle Glow
@@ -429,25 +408,25 @@ return function(Config)
         })
         
         RunService.RenderStepped:Connect(function(deltaTime)
-            if not Window.Destroyed then
+            if Window.UIElements.Main and OpenButtonContainer then
                 if uiGradient then
                     uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
                 end
-                if Glow and Glow.UIGradient then
+                if Glow and Glow.Parent ~= nil and Glow.UIGradient then
                     Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
                 end
             end
         end)
         
-        -- OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-        --     OpenButtonContainer.Size = UDim2.new(
-        --         0, OpenButton.AbsoluteSize.X,
-        --         0, OpenButton.AbsoluteSize.Y
-        --     )
-        -- end)
+        OpenButton:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+            OpenButtonContainer.Size = UDim2.new(
+                0, OpenButton.AbsoluteSize.X,
+                0, OpenButton.AbsoluteSize.Y
+            )
+        end)
         
         OpenButton.TextButton.MouseEnter:Connect(function()
-            Tween(OpenButton.UIScale, .1, {Scale = .95}):Play()
+            Tween(OpenButton.UIScale, .1, {Scale = .99}):Play()
         end)
         OpenButton.TextButton.MouseLeave:Connect(function()
             Tween(OpenButton.UIScale, .1, {Scale = 1.05}):Play()
@@ -483,7 +462,7 @@ return function(Config)
         Text = Window.Title,
         FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
         BackgroundTransparency = 1,
-        --AutomaticSize = "XY",
+        AutomaticSize = "XY",
         Name = "Title",
         TextXAlignment = "Left",
         TextSize = 16,
@@ -505,7 +484,7 @@ return function(Config)
         Gradient,
         New("Frame", {
             BackgroundColor3 = Color3.fromHex(Config.Theme.Accent),
-            BackgroundTransparency = 1, -- Window.Transparent and 0.15 or 0
+            BackgroundTransparency = 1, -- Window.Transparent and 0.25 or 0
             Size = UDim2.new(1,0,1,0),
             Name = "Background",
             ThemeTag = {
@@ -550,7 +529,7 @@ return function(Config)
                     BackgroundColor3 = Color3.fromHex(Config.Theme.Outline),
                 }),]]
                 New("Frame", { -- Topbar Left Side
-                    --AutomaticSize = "X",
+                    AutomaticSize = "X",
                     Size = UDim2.new(0,0,1,0),
                     BackgroundTransparency = 1,
                     Name = "Left"
@@ -562,7 +541,7 @@ return function(Config)
                         VerticalAlignment = "Center",
                     }),
                     New("Frame", {
-                        --AutomaticSize = "XY",
+                        AutomaticSize = "XY",
                         BackgroundTransparency = 1,
                         Name = "Title",
                         Size = UDim2.new(0,0,1,0),
@@ -581,7 +560,7 @@ return function(Config)
                     })
                 }),
                 New("Frame", { -- Topbar Right Side
-                    --AutomaticSize = "XY",
+                    AutomaticSize = "XY",
                     BackgroundTransparency = 1,
                     Position = UDim2.new(1,0,0.5,0),
                     AnchorPoint = Vector2.new(1,0.5)
@@ -632,7 +611,7 @@ return function(Config)
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
             TextTransparency = 0.4,
-            --AutomaticSize = "XY",
+            AutomaticSize = "XY",
             Parent = Window.UIElements.Main.Main.Topbar.Left.Title,
             TextXAlignment = "Left",
             TextSize = 14,
@@ -642,19 +621,19 @@ return function(Config)
                 TextColor3 = "Text"
             }
         })
-        Author:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            Author.Size = UDim2.new(0,Author.TextBounds.X,0,Author.TextBounds.Y)
-        end)
+        -- Author:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        --     Author.Size = UDim2.new(0,Author.TextBounds.X,0,Author.TextBounds.Y)
+        -- end)
     end
-    WindowTitle:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        WindowTitle.Size = UDim2.new(0,WindowTitle.TextBounds.X,0,WindowTitle.TextBounds.Y)
-    end)
-    Window.UIElements.Main.Main.Topbar.Frame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        Window.UIElements.Main.Main.Topbar.Frame.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.X,0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.Y)
-    end)
-    Window.UIElements.Main.Main.Topbar.Left.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        Window.UIElements.Main.Main.Topbar.Left.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Left.UIListLayout.AbsoluteContentSize.X,1,0)
-    end)
+    -- WindowTitle:GetPropertyChangedSignal("TextBounds"):Connect(function()
+    --     WindowTitle.Size = UDim2.new(0,WindowTitle.TextBounds.X,0,WindowTitle.TextBounds.Y)
+    -- end)
+    -- Window.UIElements.Main.Main.Topbar.Frame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    --     Window.UIElements.Main.Main.Topbar.Frame.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.X,0,Window.UIElements.Main.Main.Topbar.Frame.UIListLayout.AbsoluteContentSize.Y)
+    -- end)
+    -- Window.UIElements.Main.Main.Topbar.Left.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    --     Window.UIElements.Main.Main.Topbar.Left.Size = UDim2.new(0,Window.UIElements.Main.Main.Topbar.Left.UIListLayout.AbsoluteContentSize.X,1,0)
+    -- end)
     
     task.spawn(function()
         if Window.Icon then
@@ -697,7 +676,7 @@ return function(Config)
     function Window:Open()
         Window.Closed = false
         
-        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and 0.15 or 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and 0.25 or 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
@@ -751,6 +730,7 @@ return function(Config)
             Config.WindUI:Notify({
                 Title = "Minimize",
                 Content = "You've closed the Window. " .. NotifiedText,
+                Icon = "eye-off",
                 Duration = 5,
             })
         end
@@ -804,7 +784,6 @@ return function(Config)
     
     local TabModule = require("./Tab").Init(Window)
     function Window:Tab(TabConfig)
-        RunService.Heartbeat:Wait()
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
     
@@ -863,7 +842,7 @@ return function(Config)
             TextWrapped = true,
             RichText = true,
             Size = UDim2.new(1,0,0,0),
-            --AutomaticSize = "Y",
+            AutomaticSize = "Y",
             ThemeTag = {
                 TextColor3 = "Text"
             },
@@ -880,7 +859,7 @@ return function(Config)
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 TextXAlignment = "Left",
                 Size = UDim2.new(1,0,0,0),
-                --AutomaticSize = "Y",
+                AutomaticSize = "Y",
                 LayoutOrder = 2,
                 ThemeTag = {
                     TextColor3 = "Text"
@@ -893,12 +872,12 @@ return function(Config)
             end)
         end
         
-        Dialog.UIElements.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            Dialog.UIElements.Main.Size = UDim2.new(0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.X,0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.Y+Dialog.UIPadding*2)
-        end)
-        Dialog.UIElements.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            Dialog.UIElements.Title.Size = UDim2.new(1,0,0,Dialog.UIElements.Title.TextBounds.Y)
-        end)
+        -- Dialog.UIElements.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        --     Dialog.UIElements.Main.Size = UDim2.new(0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.X,0,Dialog.UIElements.UIListLayout.AbsoluteContentSize.Y+Dialog.UIPadding*2)
+        -- end)
+        -- Dialog.UIElements.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        --     Dialog.UIElements.Title.Size = UDim2.new(1,0,0,Dialog.UIElements.Title.TextBounds.Y)
+        -- end)
         
         New("Frame", {
             Name = "Line",
@@ -913,7 +892,7 @@ return function(Config)
         
         local ButtonsContent = New("Frame", {
             Size = UDim2.new(1,0,0,30),
-            --AutomaticSize = "Y",
+            AutomaticSize = "Y",
             BackgroundTransparency = 1,
             Parent = Dialog.UIElements.Main,
             LayoutOrder = 4,
@@ -936,8 +915,8 @@ return function(Config)
                 },
                 BackgroundTransparency = .93,
                 Parent = ButtonsContent,
-                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 30),
-                --AutomaticSize = "Y",
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 00),
+                AutomaticSize = "Y",
             }, {
                 New("UICorner", {
                     CornerRadius = UDim.new(0, Dialog.UICorner-7),

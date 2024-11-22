@@ -7,7 +7,7 @@ return function(Config)
         Title = Config.Title or "Element",
         Desc = Config.Desc or nil,
         Hover = Config.Hover,
-        UIPadding = 11,
+        UIPadding = 12,
         UIElements = {}
     }
     
@@ -97,7 +97,7 @@ return function(Config)
             PaddingBottom = UDim.new(0,Element.UIPadding+3),
         }),
         New("UIStroke", {
-            Thickness = 0.8,
+            Thickness = 0.6,
             Color = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 Color = "Text",
@@ -119,10 +119,10 @@ return function(Config)
     }, {
         Element.UIElements.Main,
         New("UIPadding", {
-            PaddingTop = UDim.new(0,1),
-            PaddingLeft = UDim.new(0,1),
-            PaddingRight = UDim.new(0,1),
-            PaddingBottom = UDim.new(0,1),
+            PaddingTop = UDim.new(0,2),
+            PaddingLeft = UDim.new(0,2),
+            PaddingRight = UDim.new(0,2),
+            PaddingBottom = UDim.new(0,2),
         })
     })
     

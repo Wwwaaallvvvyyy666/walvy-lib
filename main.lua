@@ -356,6 +356,7 @@ local Button = NotificationTab:Button({
         WindUI:Notify({
             Title = "Notification",
             Content = "Content",
+            Icon = "eye",
             Duration = 5,
         })
     end,
@@ -365,34 +366,44 @@ local Button = NotificationTab:Button({
     Desc = "Long Notify Button Desc",
     Callback = function()
         WindUI:Notify({
-            Title = "Notification LONG AND BIG",
-            Content = "Content LON GGGGG EEE RRR AND BIGGER ",
+            Title = "Notification LONG AND BIG a a a a a ",
+            Content = "Content LON GGGGG EEE RRR AND BIGGER aaaaaaaaa",
+            Icon = "droplet",
             Duration = 200,
         })
     end,
 })
-local Button = NotificationTab:Button({
-    Title = "Notification with buttons",
-    Desc = "Notify with buttons and Callback",
-    Callback = function()
-        local Notification
-        Notification = WindUI:Notify({
-            Title = "Question",
-            Content = "Would you like to die?",
-            CanClose = false, -- dont allow to close the notification
-            --Duration = 5, -- removing duration
-            Callback = function(Button)  -- Callback
-                if Button == "Confirm" then
-                    game.Players.LocalPlayer.Character.Humanoid.Health = 0
-                else
-                    print("Canceled..")
-                end
-                -- Closing Notification
-                Notification:Close()
-            end
-        })
-    end,
-})
+
+-- Outdated
+
+-- local Button = NotificationTab:Button({
+--     Title = "Notification with buttons",
+--     Desc = "Notify with buttons and Callback",
+--     Callback = function()
+--         local Notification
+--         Notification = WindUI:Notify({
+--             Title = "Question",
+--             Content = "Would you like to die?",
+--             Icon = "circle-help",
+--             CanClose = false, -- dont allow to close the notification
+--             --Duration = 5, -- removing duration
+--             Buttons = {  -- Buttons
+--                 {
+--                     Name = "Yes",
+--                     Callback = function() 
+--                         game.Players.LocalPlayer.Character.Humanoid.Health = 0 
+--                     end
+--                 },
+--                 {
+--                     Name = "Nope",
+--                     Callback = function() 
+--                         print("Cancelled...")
+--                     end
+--                 },
+--             }
+--         })
+--     end,
+-- })
 
 
 -- Window Tab

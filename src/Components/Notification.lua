@@ -4,7 +4,7 @@ local Tween = Creator.Tween
 
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
-    UICorner = 14,
+    UICorner = 12,
     UIPadding = 14,
     ButtonPadding = 9,
     Holder = nil,
@@ -37,9 +37,10 @@ function NotificationModule.New(Config)
     local Notification = {
         Title = Config.Title or "Notification",
         Content = Config.Content or nil,
-        Duration = Config.Duration,
-        Callback = Config.Callback,
-        CanClose = Config.CanClose,
+        Icon = Config.Icon or nil,
+        Duration = Config.Duration or 5,
+        Buttons = Config.Buttons or {},
+        CanClose = true,
         UIElements = {},
         Closed = false,
     }
@@ -49,260 +50,216 @@ function NotificationModule.New(Config)
     NotificationModule.NotificationIndex = NotificationModule.NotificationIndex + 1
     NotificationModule.Notifications[NotificationModule.NotificationIndex] = Notification
     
-    local Blur 
-    -- local Blur = New("ImageLabel", {
-    --     Image = "rbxassetid://8992230677",
-    --     ImageColor3 = Color3.new(0,0,0),
-    --     ImageTransparency = .75,
-    --     Size = UDim2.new(1,120,1,116),
-    --     Position = UDim2.new(0,-120/2,0,-116/2),
-    --     ScaleType = "Slice",
-    --     SliceCenter = Rect.new(99,99,99,99),
-    --     BackgroundTransparency = 1,
-    -- })
-    local Duration
-    if Notification.Duration then
-        Duration = New("Frame", {
-            Name = "Duration",
-            Size = UDim2.new(1,0,0,4),
-            Position = UDim2.new(0,0,0,0),
-            ThemeTag = {
-                BackgroundColor3 = "Outline"
-            },
-            BackgroundTransparency = .7,
-            ZIndex = 999,
-        })
-    end
-    local CloseButton
-    if Notification.CanClose then
-        CloseButton = New("ImageButton", {
-            Size = UDim2.new(0,18,0,18),
-            Image = Creator.Icon("x")[1],
-            ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon("x")[2]._Size,
-            Position = UDim2.new(1,-NotificationModule.UIPadding, 0, NotificationModule.UIPadding),
-            AnchorPoint = Vector2.new(1,0),
-            ThemeTag = {
-                ImageColor3 = "Text"
-            },
-            BackgroundTransparency = 1,
-            ZIndex = 999,
-        })
-    end
-
-    local ButtonsTable = {
-        "Confirm",
-        "Cancel"
-    }
+    local UICorner = New("UICorner", {
+        CornerRadius = UDim.new(0,NotificationModule.UICorner),
+    })
     
-    local Buttons
+    local UIStroke = New("UIStroke", {
+        ThemeTag = {
+            Color = "Text"
+        },
+        Transparency = .9,
+        Thickness = .6,
+    })
+    
+    local Icon
 
-    if Notification.Callback then
-        Buttons = New("Frame", {
-            Size = UDim2.new(1,0,0,30),
-            --AutomaticSize = "Y",
-            BackgroundTransparency = 1,
-            LayoutOrder = 5,
-        }, {
-            New("UIListLayout", {
-                SortOrder = "LayoutOrder",
-                FillDirection = "Horizontal",
-                Padding = UDim.new(0,11/2)
-            })
-        })
-        
-        for _,Button in next, ButtonsTable do
-            local ButtonText = New("TextButton", {
-                Size = UDim2.new(1 / #ButtonsTable, -(((#ButtonsTable - 1) * 11/2) / #ButtonsTable), 0, 30),
-                --AutomaticSize = "Y",
+    if Notification.Icon then
+        if Creator.Icon(Notification.Icon) and Creator.Icon(Notification.Icon)[2] then
+            Icon = New("ImageLabel", {
+                Size = UDim2.new(0,28,0,28),
+                Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
+                BackgroundTransparency = 1,
+                Image = Creator.Icon(Notification.Icon)[1],
+                ImageRectSize = Creator.Icon(Notification.Icon)[2]._Size,
+                ImageRectOffset = Creator.Icon(Notification.Icon)[2].ImageRectPosition,
                 ThemeTag = {
-                    BackgroundColor3 = "Text",
-                    TextColor3 = Button == "Confirm" and "Accent" or "Text"
-                },
-                BackgroundTransparency = Button == "Confirm" and 0.15 or .9,
-                Text = Button,
-                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                TextSize = 15,
-                Parent = Buttons,
-                LayoutOrder = Button == "Confirm" and 0 or 1
-            }, {
-                New("UICorner", {
-                    CornerRadius = UDim.new(0,NotificationModule.UICorner-6),
-                }),
-                New("UIPadding", {
-                    PaddingTop = UDim.new(0,NotificationModule.ButtonPadding),
-                    PaddingLeft = UDim.new(0,NotificationModule.ButtonPadding),
-                    PaddingRight = UDim.new(0,NotificationModule.ButtonPadding),
-                    PaddingBottom = UDim.new(0,NotificationModule.ButtonPadding),
-                }),
-                New("Frame", {
-                    Size = UDim2.new(1,NotificationModule.ButtonPadding*2,1,NotificationModule.ButtonPadding*2),
-                    BackgroundColor3 = Color3.new(0,0,0),
-                    BackgroundTransparency = 1,
-                    Position = UDim2.new(0.5,0,0.5,0),
-                    AnchorPoint = Vector2.new(0.5,0.5)
-                }, {
-                    New("UICorner", {
-                        CornerRadius = UDim.new(0,NotificationModule.UICorner-6),
-                    })
-                })
+                    ImageColor3 = "Text"
+                }
             })
-            ButtonText.MouseButton1Click:Connect(function()
-                pcall(Notification.Callback, Button)
-            end)
-            ButtonText.MouseEnter:Connect(function()
-                Tween(ButtonText.Frame, 0.1, {BackgroundTransparency = 0.85}):Play()
-            end)
-            ButtonText.MouseLeave:Connect(function()
-                Tween(ButtonText.Frame, 0.1, {BackgroundTransparency = 1}):Play()
-            end)
+        elseif string.find(Notification.Icon, "rbxassetid") then
+            Icon = New("ImageLabel", {
+                Size = UDim2.new(0,28,0,28),
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
+                Image = Notification.Icon
+            })
         end
     end
     
-    local UIListLayout = New("UIListLayout", {
-        SortOrder = "LayoutOrder",
-        Padding = UDim.new(0,2)
-    })
-    
-    Notification.UIElements.MainContainer = New("Frame", {
-        Size = UDim2.new(1,0,0,0),
-        Parent = Config.Holder,
-        AnchorPoint = Vector2.new(0,0),
-        --AutomaticSize = "Y",
-        BackgroundTransparency = 1,
-    }, {
-        New("Frame", {
-            Size = UDim2.new(1,0,1,0),
+    local CloseButton
+    if Notification.CanClose then
+        CloseButton = New("ImageButton", {
+            Image = Creator.Icon("x")[1],
+            ImageRectSize = Creator.Icon("x")[2]._Size,
+            ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
             BackgroundTransparency = 1,
-            AnchorPoint = Vector2.new(0,1),
-            Position = UDim2.new(2,0,1,0),
-        }, {
-            Blur,
-            CloseButton,
-            New("Frame", {
-                Size = UDim2.new(1,0,0,0),
-                --AutomaticSize = "Y",
-                BackgroundTransparency = 1,
-                Name = "Frame",
-                ZIndex = 2
-            }, {
-                Duration,
-                New("UICorner", {
-                    CornerRadius = UDim.new(0,NotificationModule.UICorner),
-                }),
-                New("UIStroke", {
-                    Thickness = 0.6,
-                    ThemeTag = {
-                        Color = "Outline"
-                    },
-                    Transparency = .86,
-                }),
-                New("Frame", {
-                    Size = UDim2.new(1,0,1,0),
-                    BackgroundTransparency = 1,
-                    ZIndex = 999,
-                }, {
-                    New("UIPadding", {
-                        PaddingTop = UDim.new(0,NotificationModule.UIPadding+2),
-                        PaddingLeft = UDim.new(0,NotificationModule.UIPadding),
-                        PaddingRight = UDim.new(0,NotificationModule.UIPadding),
-                        PaddingBottom = UDim.new(0,NotificationModule.UIPadding+2),
-                    }),
-                    New("TextLabel", {
-                        Text = Notification.Title,
-                        ThemeTag = {
-                            TextColor3 = "Text"
-                        },
-                        TextSize = 16,
-                        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
-                        BackgroundTransparency = 1,
-                        TextWrapped = true,
-                        --AutomaticSize = "Y",
-                        Size = UDim2.new(1,-18-NotificationModule.UIPadding,0,0),
-                        TextXAlignment = "Left",
-                        LayoutOrder = 1,
-                    }),
-                    Buttons,
-                    UIListLayout,
-                }),
-                New("Frame", {
-                    BackgroundTransparency = 0.23,
-                    Size = UDim2.new(1,0,1,0),
-                    Name = "Background",
-                    ThemeTag = {
-                        BackgroundColor3 = "Accent",
-                    },
-                }, {
-                    New("UICorner", {
-                        CornerRadius = UDim.new(0,NotificationModule.UICorner),
-                    }),
-                }),
-            })
+            Size = UDim2.new(0,20,0,20),
+            Position = UDim2.new(1,-NotificationModule.UIPadding,0,NotificationModule.UIPadding),
+            AnchorPoint = Vector2.new(1,0)
         })
+    end
+    
+    local Duration = New("Frame", {
+        Size = UDim2.new(1,0,0,3),
+        BackgroundTransparency = .9,
+        ThemeTag = {
+            BackgroundColor3 = "Text",
+        }
     })
     
-    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        --Notification.UIElements.MainContainer.Frame.Frame.Frame.Size = UDim2.new(0,UIListLayout.AbsoluteContentSize.X, 0, UIListLayout.AbsoluteContentSize.Y)
-        Notification.UIElements.MainContainer.Frame.Frame.Size = UDim2.new(1,0,0, UIListLayout.AbsoluteContentSize.Y + (NotificationModule.UIPadding+2)*2)
-        Notification.UIElements.MainContainer.Size = UDim2.new(1, 0, 0, UIListLayout.AbsoluteContentSize.Y + (NotificationModule.UIPadding+2)*2)
-    end)
-    
-    Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel.Size = UDim2.new(1,-18-NotificationModule.UIPadding, 0, Notification.UIElements.MainContainer.Frame.Frame.Frame.TextLabel.TextBounds.Y)
-    end)
-
-    if Notification.Content then
-        local Desc = New("TextLabel", {
-            Text = Notification.Content,
+    local TextContainer = New("Frame", {
+        Size = UDim2.new(1,
+            Notification.Icon and -28-NotificationModule.UIPadding or 0,
+            1,0),
+        Position = UDim2.new(1,0,0,0),
+        AnchorPoint = Vector2.new(1,0),
+        BackgroundTransparency = 1,
+        AutomaticSize = "Y",
+    }, {
+        New("UIPadding", {
+            PaddingTop = UDim.new(0,NotificationModule.UIPadding),
+            PaddingLeft = UDim.new(0,NotificationModule.UIPadding),
+            PaddingRight = UDim.new(0,NotificationModule.UIPadding),
+            PaddingBottom = UDim.new(0,NotificationModule.UIPadding),
+        }),
+        New("TextLabel", {
+            AutomaticSize = "Y",
+            Size = UDim2.new(1,-30-NotificationModule.UIPadding,0,0),
+            TextWrapped = true,
+            TextXAlignment = "Left",
+            RichText = true,
+            BackgroundTransparency = 1,
+            TextSize = 16,
             ThemeTag = {
                 TextColor3 = "Text"
             },
-            TextSize = 15,
-            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-            TextTransparency = .4,
-            TextWrapped = true,
-            BackgroundTransparency = 1,
-            --AutomaticSize = "Y",
-            Size = UDim2.new(1,-18-NotificationModule.UIPadding,0,0),
-            TextXAlignment = "Left",
-            LayoutOrder = 1,
-            Parent = Notification.UIElements.MainContainer.Frame.Frame.Frame,
+            Text = Notification.Title,
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold)
+        }),
+        New("UIListLayout", {
+            Padding = UDim.new(0,NotificationModule.UIPadding/3)
         })
-        
-        Desc:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            Desc.Size = UDim2.new(1,-18-NotificationModule.UIPadding, 0, Desc.TextBounds.Y)
-        end)
+    })
+    
+    if Notification.Content then
+        New("TextLabel", {
+            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,0),
+            TextWrapped = true,
+            TextXAlignment = "Left",
+            RichText = true,
+            BackgroundTransparency = 1,
+            TextTransparency = .4,
+            TextSize = 15,
+            ThemeTag = {
+                TextColor3 = "Text"
+            },
+            Text = Notification.Content,
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+            Parent = TextContainer
+        })
     end
     
-    Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(0,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-    if NotificationModule.NotificationIndex ~= 1 then
-        Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-            Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-        end)
-    else
-        Notification.UIElements.MainContainer.Frame.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-            Notification.UIElements.MainContainer.Size = UDim2.new(1,0,0,Notification.UIElements.MainContainer.Frame.Frame.AbsoluteSize.Y)
-        end)
-    end
+    -- local ButtonsContainer
+    -- if typeof(Notification.Buttons) == "table" and #Notification.Buttons > 0 then
+    --     ButtonsContainer = New("Frame", {
+    --         Position = UDim2.new(0.5,0,0,TextContainer.UIListLayout.AbsoluteContentSize.Y+(NotificationModule.UIPadding*2)),
+    --         Size = UDim2.new(1,-NotificationModule.UIPadding*2,0,0),
+    --         AnchorPoint = Vector2.new(0.5,0),
+    --         AutomaticSize = "Y",
+    --         BackgroundTransparency = 1,
+    --     }, {
+    --         New("UIListLayout", {
+    --             Padding = UDim.new(0,10),
+    --             FillDirection = "Horizontal"
+    --         })
+    --     })
+    --     TextContainer.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    --         ButtonsContainer.Position = UDim2.new(0.5,0,0,TextContainer.UIListLayout.AbsoluteContentSize.Y+(NotificationModule.UIPadding*2))
+    --     end)
+    --     for _,Data in next, Notification.Buttons do
+    --         local ButtonData = New("TextButton", {
+    --             Size = UDim2.new(1 / #Notification.Buttons, -(((#Notification.Buttons - 1) * 10) / #Notification.Buttons), 0, 0),
+    --             AutomaticSize = "Y",
+    --             ThemeTag = {
+    --                 BackgroundColor3 = "Text",
+    --                 TextColor3 = "Accent"
+    --             },
+    --             Parent = ButtonsContainer,
+    --             Text = Data.Name,
+    --             TextWrapped = true,
+    --             RichText = true,
+    --             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+    --             TextSize = 16,
+    --         }, {
+    --             New("UICorner", {
+    --                 CornerRadius = UDim.new(0,NotificationModule.UICorner-6)
+    --             }),
+    --             New("UIPadding", {
+    --                 PaddingTop = UDim.new(0,NotificationModule.ButtonPadding),
+    --                 PaddingLeft = UDim.new(0,NotificationModule.ButtonPadding),
+    --                 PaddingRight = UDim.new(0,NotificationModule.ButtonPadding),
+    --                 PaddingBottom = UDim.new(0,NotificationModule.ButtonPadding),
+    --             })
+    --         })
+            
+    --         ButtonData.MouseButton1Click:Connect(function()
+    --             if Data.Callback then
+    --                 Data.Callback()
+    --             end
+    --             Notification:Close()
+    --         end)
+    --     end
+    -- end
+    
+    local Main = New("CanvasGroup", {
+        Size = UDim2.new(1,0,0,0),
+        Position = UDim2.new(2,0,1,0),
+        AnchorPoint = Vector2.new(0,1),
+        AutomaticSize = "Y",
+        BackgroundTransparency = .4,
+        ThemeTag = {
+            BackgroundColor3 = "Accent"
+        },
+    }, {
+        UIStroke, UICorner,
+        TextContainer,
+        Icon, CloseButton,
+        Duration,
+        --ButtonsContainer,
+    })
 
+    local MainContainer = New("Frame", {
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1,0,0,0),
+        Parent = Config.Holder
+    }, {
+        Main
+    })
+    
     function Notification:Close()
         if not Notification.Closed then
             Notification.Closed = true
-            Tween(Notification.UIElements.MainContainer.Frame, 0.4, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-            task.wait(.3)
-            Notification.UIElements.MainContainer.Frame.Frame:Destroy()
-            Tween(Notification.UIElements.MainContainer, 0.2, {Size = UDim2.new(1,0,0,-8)}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut):Play()
-            task.wait(.35)
-            Notification.UIElements.MainContainer:Destroy()
+            Tween(MainContainer, 0.45, {Size = UDim2.new(1, 0, 0, -8)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(Main, 0.45, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            task.wait(.45)
+            MainContainer:Destroy()
         end
     end
     
     task.spawn(function()
-        if Duration then
-            Tween(Duration, Notification.Duration, {Size = UDim2.new(0,0,0,4)}, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut):Play()
-        
+        task.wait()
+        Tween(MainContainer, 0.45, {Size = UDim2.new(
+            1,
+            0,
+            0,
+            Main.AbsoluteSize.Y
+        )}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Main, 0.45, {Position = UDim2.new(0,0,1,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        if Notification.Duration then
+            Tween(Duration, Notification.Duration, {Size = UDim2.new(0,0,0,3)}, Enum.EasingStyle.Linear,Enum.EasingDirection.InOut):Play()
             task.wait(Notification.Duration)
-        
             Notification:Close()
         end
     end)

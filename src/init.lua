@@ -45,8 +45,9 @@ function WindUI:Notify(Config)
         Title = Config.Title,
         Content = Config.Content,
         Duration = Config.Duration,
+        Icon = Config.Icon,
         CanClose = Config.CanClose,
-        Callback = Config.Callback ,
+        Buttons = Config.Buttons ,
         Window = WindUI.Window,
         Holder = Holder,
     })
@@ -465,7 +466,7 @@ function WindUI:CreateWindow(Config)
     
     function Window:ToggleTransparency(Value)
         WindUI.Transparent = Value
-        Window.UIElements.Main.Background.BackgroundTransparency = Value and 0.15 or 0
+        Window.UIElements.Main.Background.BackgroundTransparency = Value and 0.25 or 0
         Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
             NumberSequenceKeypoint.new(0, 1), 
             NumberSequenceKeypoint.new(1, Value and 0.85 or 0.7),

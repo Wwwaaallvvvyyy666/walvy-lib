@@ -34,3 +34,6 @@ Colorpicker:Update(
     0.8 -- Transparency (Add only if transparency is enabled in the colorpicker)
 )
 ```
+
+
+> More soon...

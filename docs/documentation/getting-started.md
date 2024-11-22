@@ -61,7 +61,8 @@ local Notification = WindUI:Notify({
 })
 ```
 
-### Create Notification with Buttons
+### Create Notification with Buttons <Badge type="danger">Outdated</Badge>
+::: details Doesn't work
 ```lua
 local Notification
 Notification = WindUI:Notify({
@@ -80,6 +81,7 @@ Notification = WindUI:Notify({
     end
 })
 ```
+:::
 
 ### Close Notification
 ```lua
@@ -113,7 +115,6 @@ Dialog:Open()
 
 ### Connect Dialog to Button
 
-::: danger DO NOT MAKE THIS
 ```lua
 local Button = MainTab:Button({
     Title = "Button Main",
@@ -146,35 +147,3 @@ local Button = MainTab:Button({
     end,
 })
 ```
-:::
-
-::: tip Make this!
-```lua {1-18}
-local Dialog = Window:Dialog({
-    Title = "Dialog haha",
-    Content = "Dialog Content",
-    Buttons = {
-        {
-            Title = "Confirm",
-            Callback = function()
-                print("confirm")
-            end
-        },
-        {
-            Title = "Cancel",
-            Callback = function()
-                print("cancel")
-            end
-        }
-    }
-})
-
-local Button = MainTab:Button({
-    Title = "Button Main",
-    Desc = "Button Desc",
-    Callback = function()
-        Dialog:Open()
-    end,
-})
-```
-:::

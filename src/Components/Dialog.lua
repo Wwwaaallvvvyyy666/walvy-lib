@@ -43,7 +43,7 @@ function DialogModule.Create(Key)
         Visible = false, -- true
         GroupTransparency = 1, -- 0
         BackgroundTransparency = 0,
-        --AutomaticSize = "XY",
+        AutomaticSize = "XY",
         Parent = Key and DialogModule.Window or Dialog.UIElements.FullScreen,
         Position = UDim2.new(0.5,0,0.5,0),
         AnchorPoint = Vector2.new(0.5,0.5),

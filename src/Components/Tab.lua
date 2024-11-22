@@ -30,52 +30,52 @@ function TabModule.New(Config)
     local Window = TabModule.Window
     
     TabModule.TabCount = TabModule.TabCount + 1
-	local TabIndex = TabModule.TabCount
-	Tab.Index = TabIndex
-	
-	Tab.UIElements.Main = New("TextButton", {
-	    BackgroundTransparency = 1,
-	    Size = UDim2.new(1,0,0,0),
-	    --AutomaticSize = "Y",
-	    Parent = Config.Parent
-	}, {
-	    New("UIListLayout", {
-	        SortOrder = "LayoutOrder",
-	        Padding = UDim.new(0,10),
-	        FillDirection = "Horizontal",
-	        VerticalAlignment = "Center",
-	    }),
-	    New("TextLabel", {
-	        Text = Tab.Title,
-	        TextColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
-	        ThemeTag = {
-	            TextColor3 = "Text"
-	        },
-	        TextTransparency = 0.4,
-	        TextSize = 15,
-	        Size = UDim2.new(1,0,0,0),
-	        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-	        TextWrapped = true,
-	        RichText = true,
-	        --AutomaticSize = "Y",
-	        LayoutOrder = 2,
-	        TextXAlignment = "Left",
-	        BackgroundTransparency = 1,
-	    }),
-	    New("UIPadding", {
-	        PaddingTop = UDim.new(0,6),
-	        PaddingBottom = UDim.new(0,6),
-	    })
-	})
-	
-	local TextOffset = 0
-	
-	Tab.UIElements.Main.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
-	    Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,0,0,Tab.UIElements.Main.TextLabel.TextBounds.Y)
-	    Tab.UIElements.Main.Size = UDim2.new(1,TextOffset,0,Tab.UIElements.Main.TextLabel.TextBounds.Y+6+6)
-	end)
-	
-	if Tab.Icon and Creator.Icon(Tab.Icon) then
+  	local TabIndex = TabModule.TabCount
+  	Tab.Index = TabIndex
+  	
+  	Tab.UIElements.Main = New("TextButton", {
+  	    BackgroundTransparency = 1,
+  	    Size = UDim2.new(1,0,0,0),
+  	    AutomaticSize = "Y",
+  	    Parent = Config.Parent
+  	}, {
+  	    New("UIListLayout", {
+  	        SortOrder = "LayoutOrder",
+  	        Padding = UDim.new(0,10),
+  	        FillDirection = "Horizontal",
+  	        VerticalAlignment = "Center",
+  	    }),
+  	    New("TextLabel", {
+  	        Text = Tab.Title,
+  	        TextColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
+  	        ThemeTag = {
+  	            TextColor3 = "Text"
+  	        },
+  	        TextTransparency = 0.4,
+  	        TextSize = 15,
+  	        Size = UDim2.new(1,0,0,0),
+  	        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+  	        TextWrapped = true,
+  	        RichText = true,
+  	        --AutomaticSize = "Y",
+  	        LayoutOrder = 2,
+  	        TextXAlignment = "Left",
+  	        BackgroundTransparency = 1,
+  	    }),
+  	    New("UIPadding", {
+  	        PaddingTop = UDim.new(0,6),
+  	        PaddingBottom = UDim.new(0,6),
+  	    })
+  	})
+  	
+  	local TextOffset = 0
+  	
+--	Tab.UIElements.Main.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+--	    Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,0,0,Tab.UIElements.Main.TextLabel.TextBounds.Y)
+--	    Tab.UIElements.Main.Size = UDim2.new(1,TextOffset,0,Tab.UIElements.Main.TextLabel.TextBounds.Y+6+6)
+--	end)
+  	
+  	if Tab.Icon and Creator.Icon(Tab.Icon) then
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
             Image = Creator.Icon(Tab.Icon)[1],
@@ -261,7 +261,6 @@ function TabModule.New(Config)
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
-        task.wait(.04)
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
@@ -275,7 +274,7 @@ function TabModule.New(Config)
         return Paragraph
     end
     function Tab:Button(ElementConfig)
-        task.wait(.04)
+        
         local Button, Content = require("../Elements/Button"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -296,7 +295,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Toggle(ElementConfig)
-        task.wait(.04)
+        
         local Toggle, Content = require("../Elements/Toggle"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -318,7 +317,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Slider(ElementConfig)
-        task.wait(.04)
+        
         local Slider, Content = require("../Elements/Slider"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -341,7 +340,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Keybind(ElementConfig)
-        task.wait(.04)
+        
         local Keybind, Content = require("../Elements/Keybind"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -363,7 +362,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Input(ElementConfig)
-        task.wait(.04)
+        
         local Input, Content = require("../Elements/Input"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -387,7 +386,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Dropdown(ElementConfig)
-        task.wait(.04)
+        
         local Dropdown, Content = require("../Elements/Dropdown"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -413,7 +412,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Colorpicker(ElementConfig)
-        task.wait(.04)
+        
         local Dropdown, Content = require("../Elements/Colorpicker"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
@@ -437,7 +436,7 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Section(ElementConfig)
-        task.wait(.04)
+        
         local Section, Content = require("../Elements/Section"):New({
             Title = ElementConfig.Title,
             TextXAlignment = ElementConfig.TextXAlignment,
