@@ -54,6 +54,34 @@ function WindUI:Notify(Config)
 end
 
 
+function Window:AddTheme(LTheme)
+    Themes[LTheme.Name] = LTheme
+    return LTheme
+end
+
+function Window:SetTheme(Value)
+if Themes[Value] then
+    WindUI.Theme = Themes[Value]
+    Creator.SetTheme(Themes[Value])
+    Creator.UpdateTheme()
+    
+    return Themes[Value]
+end
+return nil
+end
+
+function Window:GetThemes()
+    return Themes
+end
+function Window:GetCurrentTheme()
+    return WindUI.Theme.Name
+end
+function Window:GetTransparency()
+    return WindUI.Transparent or false
+end
+function Window:GetWindowSize()
+    return Window.UIElements.Main.Size
+end
 
 
 
@@ -434,34 +462,7 @@ function WindUI:CreateWindow(Config)
     WindUI.Transparent = Config.Transparent
     WindUI.Window = Window
     
-    function Window:AddTheme(LTheme)
-        Themes[LTheme.Name] = LTheme
-        return LTheme
-    end
     
-    function Window:SetTheme(Value)
-    if Themes[Value] then
-	    WindUI.Theme = Themes[Value]
-	    Creator.SetTheme(Themes[Value])
-	    Creator.UpdateTheme()
-	    
-	    return Themes[Value]
-    end
-    return nil
-    end
-    
-    function Window:GetThemes()
-        return Themes
-    end
-    function Window:GetCurrentTheme()
-        return WindUI.Theme.Name
-    end
-    function Window:GetTransparency()
-        return WindUI.Transparent or false
-    end
-    function Window:GetWindowSize()
-        return Window.UIElements.Main.Size
-    end
     
     
     function Window:ToggleTransparency(Value)
