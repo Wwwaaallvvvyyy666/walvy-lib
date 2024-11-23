@@ -173,10 +173,14 @@ function Creator.Drag(UIElement)
     
     local function update(input)
         local delta = input.Position - dragStart
-        UIElement.Position = UDim2.new(
+        -- UIElement.Position = UDim2.new(
+        --     startPos.X.Scale, startPos.X.Offset + delta.X,
+        --     startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        -- )
+        Creator.Tween(UIElement, 0.05, {Position = UDim2.new(
             startPos.X.Scale, startPos.X.Offset + delta.X,
             startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            )
+        )}):Play()
     end
     
     UIElement.InputBegan:Connect(function(input)

@@ -70,13 +70,17 @@ local WindowTab = Window:Tab({
     Title = "Window and File Configuration",
     Icon = "settings",
 })
+local CreateThemeTab = Window:Tab({
+    Title = "Create theme",
+    Icon = "palette",
+})
 
 local Divider = Window:Divider()
 
 for i=1, 20 do
     Window:Tab({
-        Title = "Just A Tab",
-        Image = "Grid"
+        Title = "Just An Empty Tab",
+        Image = "grid"
     })
 end
 
@@ -107,6 +111,51 @@ local Paragraph1 = MainTab:Paragraph({
 })
 local Paragraph = MainTab:Paragraph({
     Title = "Paragraph without content",
+})
+
+MainTab:Section({ Title = "Code" })
+
+MainTab:Code({
+    Title = "main.lua",
+    Code = [[-- This is a simple Lua script
+local message = "hi"
+print(message)
+
+-- Condition check
+if message == "hi" then
+    print("Hello, world!")
+end
+
+local function pisun(a,b)
+    return print(a,b)
+end
+
+pisun("hello", "world")]],
+})
+
+MainTab:Code({
+    Title = "Example.lua",
+    Code = [[local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+
+local Window = WindUI:CreateWindow({
+    Title = "WindUI Library", -- UI Title
+    Icon = "image", -- Url or rbxassetid or lucide
+    Author = ".ftgs", -- Author & Creator
+    Folder = "CloudHub", -- Folder name for saving data (And key)
+    Size = UDim2.fromOffset(580, 460), -- UI Size
+    KeySystem = { -- Creates key system
+        Key = "1234", -- key
+        Note = "The Key is 1234", -- Note
+        URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
+        SaveKey = true, -- Saves the key in the folder specified above
+    }, 
+    Transparent = true,-- UI Transparency
+    Theme = "Dark", -- UI Theme
+    SideBarWidth = 170, -- UI Sidebar Width (number)
+    HasOutline = true, -- Adds Oultines to the window
+})
+
+]],
 })
 
 Paragraph1:SetTitle("New Title!")
@@ -412,7 +461,7 @@ local Button = NotificationTab:Button({
 
 ---- 1. Add Theme
 
-Window:AddTheme({
+WindUI:AddTheme({
     Name = "Halloween",
     
     Accent = "#331400",
@@ -426,7 +475,7 @@ Window:AddTheme({
 
 ---- 2. Use Theme
 
-Window:SetTheme("Dark")
+WindUI:SetTheme("Dark")
 
 ---- 3. Load Themes
 
@@ -463,7 +512,7 @@ end
 WindowTab:Section({ Title = "Window" })
 
 local themeValues = {}
-for name, _ in pairs(Window:GetThemes()) do
+for name, _ in pairs(WindUI:GetThemes()) do
     table.insert(themeValues, name)
 end
 
@@ -474,17 +523,17 @@ local themeDropdown = WindowTab:Dropdown({
     Value = nil,
     Values = themeValues,
     Callback = function(theme)
-        Window:SetTheme(theme)
+        WindUI:SetTheme(theme)
     end
 })
-themeDropdown:Select(Window:GetCurrentTheme())
+themeDropdown:Select(WindUI:GetCurrentTheme())
 
 local ToggleTransparency = WindowTab:Toggle({
     Title = "Toggle Window Transparency",
     Callback = function(e)
         Window:ToggleTransparency(e)
     end,
-    Value = Window:GetTransparency()
+    Value = WindUI:GetTransparency()
 })
 
 WindowTab:Section({ Title = "Save" })
@@ -502,7 +551,7 @@ WindowTab:Button({
     Title = "Save File",
     Callback = function()
         if fileNameInput ~= "" then
-            SaveFile(fileNameInput, { Transparent = Window:GetTransparency(), Theme = Window:GetCurrentTheme() })
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
         end
     end
 })
@@ -537,7 +586,7 @@ WindowTab:Button({
                     Window:ToggleTransparency(data.Transparent)
                     ToggleTransparency:SetValue(data.Transparent)
                 end
-                if data.Theme then Window:SetTheme(data.Theme) end
+                if data.Theme then WindUI:SetTheme(data.Theme) end
             end
         end
     end
@@ -547,7 +596,7 @@ WindowTab:Button({
     Title = "Overwrite File",
     Callback = function()
         if fileNameInput ~= "" then
-            SaveFile(fileNameInput, { Transparent = Window:GetTransparency(), Theme = Window:GetCurrentTheme() })
+            SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
         end
     end
 })
@@ -567,6 +616,32 @@ WindowTab:Button({
 ----
 
 
+
+BlockedElementsTab:Code({
+    Title = "Blocked_Example.lua",
+    Locked = true,
+    Code = [[local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+
+local Window = WindUI:CreateWindow({
+    Title = "WindUI Library", -- UI Title
+    Icon = "image", -- Url or rbxassetid or lucide
+    Author = ".ftgs", -- Author & Creator
+    Folder = "CloudHub", -- Folder name for saving data (And key)
+    Size = UDim2.fromOffset(580, 460), -- UI Size
+    KeySystem = { -- Creates key system
+        Key = "1234", -- key
+        Note = "The Key is 1234", -- Note
+        URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
+        SaveKey = true, -- Saves the key in the folder specified above
+    }, 
+    Transparent = true,-- UI Transparency
+    Theme = "Dark", -- UI Theme
+    SideBarWidth = 170, -- UI Sidebar Width (number)
+    HasOutline = true, -- Adds Oultines to the window
+})
+
+]],
+})
 
 
 local Button = BlockedElementsTab:Button({
@@ -664,3 +739,72 @@ local Colorpicker = BlockedElementsTab:Colorpicker({
 
 --- Unlock
 Colorpicker:Unlock()
+
+
+---
+
+local currentThemeName = WindUI:GetCurrentTheme()
+local themes = WindUI:GetThemes()
+
+local ThemeAccent = themes[currentThemeName].Accent
+local ThemeOutline = themes[currentThemeName].Outline
+local ThemeText = themes[currentThemeName].Text
+local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+
+function updateTheme()
+    WindUI:AddTheme({
+        Name = currentThemeName,
+        Accent = ThemeAccent,
+        Outline = ThemeOutline,
+        Text = ThemeText,
+        PlaceholderText = ThemePlaceholderText
+    })
+    WindUI:SetTheme(currentThemeName)
+end
+
+local CreateInput = CreateThemeTab:Input({
+    Title = "Theme Name",
+    Value = currentThemeName,
+    Callback = function(name)
+        currentThemeName = name
+    end
+})
+
+CreateThemeTab:Colorpicker({
+    Title = "Background Color",
+    Default = Color3.fromHex(ThemeAccent),
+    Callback = function(color)
+        ThemeAccent = color:ToHex()
+    end
+})
+
+CreateThemeTab:Colorpicker({
+    Title = "Outline Color",
+    Default = Color3.fromHex(ThemeOutline),
+    Callback = function(color)
+        ThemeOutline = color:ToHex()
+    end
+})
+
+CreateThemeTab:Colorpicker({
+    Title = "Text Color",
+    Default = Color3.fromHex(ThemeText),
+    Callback = function(color)
+        ThemeText = color:ToHex()
+    end
+})
+
+CreateThemeTab:Colorpicker({
+    Title = "Placeholder Text Color",
+    Default = Color3.fromHex(ThemePlaceholderText),
+    Callback = function(color)
+        ThemePlaceholderText = color:ToHex()
+    end
+})
+
+CreateThemeTab:Button({
+    Title = "Update Theme",
+    Callback = function()
+        updateTheme()
+    end
+})

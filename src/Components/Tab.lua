@@ -6,14 +6,16 @@ local Tween = Creator.Tween
 
 local TabModule = {
     Window = nil,
+    WindUI = nil,
     Tabs = {}, 
     Containers = {},
     SelectedTab = nil,
     TabCount = 0,
 }
 
-function TabModule.Init(Window)
+function TabModule.Init(Window, WindUI)
     TabModule.Window = Window
+    TabModule.WindUI = WindUI
     return TabModule
 end
 
@@ -28,6 +30,7 @@ function TabModule.New(Config)
     }
     
     local Window = TabModule.Window
+    local WindUI = TabModule.WindUI
     
     TabModule.TabCount = TabModule.TabCount + 1
   	local TabIndex = TabModule.TabCount
@@ -411,9 +414,29 @@ function TabModule.New(Config)
         
         return Content
     end
+    function Tab:Code(ElementConfig)
+        local Code, Content = require("../Elements/Code"):New({
+            Title = ElementConfig.Title,
+            Code = ElementConfig.Code,
+            Locked = ElementConfig.Locked,
+            Parent = Tab.UIElements.ContainerFrame,
+            Window = Window,
+            WindUI = WindUI,
+        })
+        Tab.Elements[Code] = Content
+        
+        function Content:SetTitle(Title)
+            Content.CodeFrame:SetTitle(Title)
+        end
+        function Content:SetDesc(Title)
+            Content.CodeFrame:SetDesc(Title)
+        end
+        
+        return Content
+    end
     function Tab:Colorpicker(ElementConfig)
         
-        local Dropdown, Content = require("../Elements/Colorpicker"):New({
+        local Colorpicker, Content = require("../Elements/Colorpicker"):New({
             Title = ElementConfig.Title,
             Desc = ElementConfig.Desc,
             Locked = ElementConfig.Locked,
@@ -424,7 +447,7 @@ function TabModule.New(Config)
             Theme = TabModule.Window.Theme,
             Window = Window
         })
-        Tab.Elements[Dropdown] = Content
+        Tab.Elements[Colorpicker] = Content
         
         function Content:SetTitle(Title)
             Content.ColorpickerFrame:SetTitle(Title)

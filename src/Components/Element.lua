@@ -4,7 +4,7 @@ local Tween = Creator.Tween
 
 return function(Config)
     local Element = {
-        Title = Config.Title or "Element",
+        Title = Config.Title,
         Desc = Config.Desc or nil,
         Hover = Config.Hover,
         UIPadding = 12,
@@ -17,17 +17,16 @@ return function(Config)
         Size = UDim2.new(1,0,0,0),
         AutomaticSize = "Y",
         BackgroundTransparency = 0.98,
-        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
         ThemeTag = {
             BackgroundColor3 = "Text"
         }
     }, {
         New("UICorner", {
-            CornerRadius = UDim.new(0,6),
+            CornerRadius = UDim.new(0,8),
         }),
         New("Frame", {
             Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "XY",
+            AutomaticSize = "Y",
             --AnchorPoint = Vector2.new(0,0.5),
             --Position = UDim2.new(0,0,0.5,0),
             BackgroundTransparency = 1,
@@ -39,13 +38,13 @@ return function(Config)
             }),
             New("TextLabel", {
                 Text = Element.Title,
-                TextColor3 = Color3.fromHex(Config.Theme.Text),
                 ThemeTag = {
                     TextColor3 = "Text"
                 },
                 TextSize = 15, 
                 TextWrapped = true,
                 RichText = true,
+                LayoutOrder = 0,
                 Name = "Title",
                 TextXAlignment = "Left",
                 Size = UDim2.new(1,-Config.TextOffset,0,0),
@@ -54,9 +53,26 @@ return function(Config)
                 AutomaticSize = "Y"
             })
         }),
+        -- New("ImageLabel", {
+        --     Size = UDim2.new(1,Element.UIPadding*2,1,Element.UIPadding*2+6),
+        --     Image = "rbxassetid://110049886226894",
+        --     SliceCenter = Rect.new(512,512,512,512),
+        --     ScaleType = "Slice",
+        --     BackgroundTransparency = 1,
+        --     ImageTransparency = .94,
+        --     Position = UDim2.new(0.5,0,0.5,0),
+        --     AnchorPoint = Vector2.new(0.5,0.5),
+        -- }),
+        New("UIStroke", {
+            Thickness = 0.6,
+            ThemeTag = {
+                Color = "Text",
+            },
+            Transparency = 0.94,
+            ApplyStrokeMode = "Border",
+        }),
         New("Frame", {
             Size = UDim2.new(1,Element.UIPadding*2,1,Element.UIPadding*2+6),
-            BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 BackgroundColor3 = "Text"
             },
@@ -66,7 +82,7 @@ return function(Config)
             Name = "Highlight"
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0,6),
+                CornerRadius = UDim.new(0,8),
             }),
         }),
         New("Frame", {
@@ -79,7 +95,7 @@ return function(Config)
             Name = "Lock"
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0,6),
+                CornerRadius = UDim.new(0,8),
             }),
             New("ImageLabel", {
                 Image = "rbxassetid://120011858138977",
@@ -96,15 +112,6 @@ return function(Config)
             PaddingRight = UDim.new(0,Element.UIPadding),
             PaddingBottom = UDim.new(0,Element.UIPadding+3),
         }),
-        New("UIStroke", {
-            Thickness = 0.6,
-            Color = Color3.fromHex(Config.Theme.Text),
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = 0.94,
-            ApplyStrokeMode = "Border",
-        })
     })
 
     -- Element.UIElements.Main.Title.Title:GetPropertyChangedSignal("TextBounds"):Connect(function()
@@ -119,10 +126,10 @@ return function(Config)
     }, {
         Element.UIElements.Main,
         New("UIPadding", {
-            PaddingTop = UDim.new(0,2),
+            PaddingTop = UDim.new(0,0),
             PaddingLeft = UDim.new(0,2),
             PaddingRight = UDim.new(0,2),
-            PaddingBottom = UDim.new(0,2),
+            PaddingBottom = UDim.new(0,0),
         })
     })
     
@@ -152,7 +159,6 @@ return function(Config)
     if Element.Desc then
         Desc = New("TextLabel", {
             Text = Element.Desc,
-            TextColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 TextColor3 = "Text"
             },
@@ -160,6 +166,8 @@ return function(Config)
             TextSize = 15,
             TextWrapped = true,
             RichText = true,
+            LayoutOrder = 9999,
+            Name = "Desc",
             TextXAlignment = "Left",
             Size = UDim2.new(1,-Config.TextOffset,0,0),
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
@@ -197,7 +205,6 @@ return function(Config)
         else
             Desc = New("TextLabel", {
                 Text = Title,
-                TextColor3 = Color3.fromHex(Config.Theme.Text),
                 ThemeTag = {
                     TextColor3 = "Text"
                 },

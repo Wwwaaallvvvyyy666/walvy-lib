@@ -791,7 +791,7 @@ return function(Config)
         end
     end
     
-    local TabModule = require("./Tab").Init(Window)
+    local TabModule = require("./Tab").Init(Window, Config.WindUI)
     function Window:Tab(TabConfig)
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
