@@ -11,6 +11,8 @@ local Creator = require("./Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
+local LocalPlayer = game:GetService("Players") and game:GetService("Players").LocalPlayer or nil
+
 WindUI.Themes = Themes
 
 local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
@@ -101,10 +103,14 @@ function WindUI:CreateWindow(Config)
     
     Creator.SetTheme(Theme)
     
+    
+    local Filename = LocalPlayer.Name or"Random"
+    
     function KeySystem()
         CanLoadWindow = false
         local KeyDialogInit = require("./Components/Dialog").Init(WindUI.ScreenGui.KeySystem)
         local KeyDialog = KeyDialogInit.Create(true)
+        
         
         KeyDialog.UIElements.Main.AutomaticSize = "XY"
         
@@ -361,7 +367,7 @@ function WindUI:CreateWindow(Config)
         end
         if Config.KeySystem.SaveKey and Config.Folder then
             local WindowTitle = New("TextLabel", {
-                Text = "Your key will be saved in Workspace/" .. Config.Folder .. "/" .. game.Players.LocalPlayer.Name .. ".key",
+                Text = "Your key will be saved in Workspace/" .. Config.Folder .. "/" .. Filename .. ".key",
                 TextSize = 13,
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
                 TextXAlignment = "Left",
@@ -393,7 +399,7 @@ function WindUI:CreateWindow(Config)
                 Tween(Blur, .1, {ImageTransparency = 1}):Play()
                 CanLoadWindow = true
                 if Config.KeySystem.SaveKey and Config.Folder then
-                    writefile(Config.Folder .. "/" .. game.Players.LocalPlayer.Name .. ".key", tostring(Key))
+                    writefile(Config.Folder .. "/" .. Filename .. ".key", tostring(Key))
                 end
                 task.spawn(function()
                     task.wait(0.1)
@@ -433,8 +439,8 @@ function WindUI:CreateWindow(Config)
     end
     
     if Config.KeySystem then
-        if Config.KeySystem.SaveKey then
-            if isfile(Config.Folder .. "/" .. game.Players.LocalPlayer.Name .. ".key") and Config.KeySystem.Key == readfile(Config.Folder .. "/" .. game.Players.LocalPlayer.Name .. ".key" ) then
+        if Config.KeySystem.SaveKey and Config.Folder then
+            if isfile(Config.Folder .. "/" .. Filename .. ".key") and Config.KeySystem.Key == readfile(Config.Folder .. "/" .. Filename .. ".key" ) then
                 CanLoadWindow = true
             else
                 KeySystem()
