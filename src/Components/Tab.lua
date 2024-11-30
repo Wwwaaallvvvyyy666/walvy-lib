@@ -83,7 +83,7 @@ function TabModule.New(Config)
             ImageTransparency = 0.4,
             Image = Creator.Icon(Tab.Icon)[1],
             ImageRectOffset = Creator.Icon(Tab.Icon)[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon(Tab.Icon)[2]._Size,
+            ImageRectSize = Creator.Icon(Tab.Icon)[2].ImageRectSize,
             Size = UDim2.new(0,20,0,20),
             LayoutOrder = 1,
             ThemeTag = {
@@ -488,7 +488,7 @@ function TabModule.New(Config)
                 Size = UDim2.new(0,48,0,48),
                 Image = Creator.Icon("frown")[1],
                 ImageRectOffset = Creator.Icon("frown")[2].ImageRectPosition,
-                ImageRectSize = Creator.Icon("frown")[2]._Size,
+                ImageRectSize = Creator.Icon("frown")[2].ImageRectSize,
                 ThemeTag = {
                     ImageColor3 = "Text"
                 },

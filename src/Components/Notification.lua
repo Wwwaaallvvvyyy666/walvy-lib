@@ -71,7 +71,7 @@ function NotificationModule.New(Config)
                 Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
                 BackgroundTransparency = 1,
                 Image = Creator.Icon(Notification.Icon)[1],
-                ImageRectSize = Creator.Icon(Notification.Icon)[2]._Size,
+                ImageRectSize = Creator.Icon(Notification.Icon)[2].ImageRectSize,
                 ImageRectOffset = Creator.Icon(Notification.Icon)[2].ImageRectPosition,
                 ThemeTag = {
                     ImageColor3 = "Text"
@@ -91,7 +91,7 @@ function NotificationModule.New(Config)
     if Notification.CanClose then
         CloseButton = New("ImageButton", {
             Image = Creator.Icon("x")[1],
-            ImageRectSize = Creator.Icon("x")[2]._Size,
+            ImageRectSize = Creator.Icon("x")[2].ImageRectSize,
             ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
             BackgroundTransparency = 1,
             Size = UDim2.new(0,20,0,20),

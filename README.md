@@ -14,11 +14,13 @@ An Open source and customizable UI library for Roblox, featuring a dark theme an
 - 🌑 **Dark Theme**: Sleek, modern dark theme design.
 - 🎨 **Customizable Colors**: Easily adjustable color settings for a personalized look.
 - ⚙️ **Efficient Scripting**: Uses loadstring for optimized script execution.
+- 🖊️ **Lucide Icons **: Uses suitable lucide icons that make the interface more beautiful
 
 <hr>
 
 ### Credits:
-- Dawid 
+- [Dawid-Scripts](https://github.com/dawid-scripts) (Colorpicker)
+- [Lucide-Icons](https://github.com/lucide-icons/lucide) (Icons)
 
 
 ### [Discord Server](https://discord.gg/ctYGD2xB3r)
@@ -30,11 +32,12 @@ An Open source and customizable UI library for Roblox, featuring a dark theme an
 git clone https://github.com/Footagesus/WindUI.git
 cd WindUI
 ```
-
 2. Install dependencies if required.
-
 
 3. Run `npm run build`
 
-
 [Usage Documentation](https://footagesus.github.io/WindUI/)
+
+<hr>
+> [!NOTE]
+> Last icons update: November 30, 2024

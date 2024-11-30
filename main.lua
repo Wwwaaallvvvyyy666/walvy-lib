@@ -19,8 +19,10 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:EditOpenButton({
-    Title = "Open Button",
-    --Icon = "door-closed",
+    Title = "Open UI Button",
+    Icon = "image-upscale",  -- New icon
+    CornerRadius = UDim.new(0,10),
+    StrokeThickness = 3,
     Color = ColorSequence.new(
         Color3.fromHex("FF0F7B"), 
         Color3.fromHex("F89B29")

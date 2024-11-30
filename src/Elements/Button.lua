@@ -27,7 +27,7 @@ function Element:New(Config)
     Button.UIElements.ButtonIcon = New("ImageLabel",{
         Image = Creator.Icon("mouse-pointer-click")[1],
         ImageRectOffset = Creator.Icon("mouse-pointer-click")[2].ImageRectPosition,
-        ImageRectSize = Creator.Icon("mouse-pointer-click")[2]._Size,
+        ImageRectSize = Creator.Icon("mouse-pointer-click")[2].ImageRectSize,
         BackgroundTransparency = 1,
         Parent = Button.ButtonFrame.UIElements.Main,
         Size = UDim2.new(0,20,0,20),

@@ -9,7 +9,7 @@ local RenderStepped = RunService.Heartbeat
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
-local Icons = require("../Lucide/Icons/icons-96")
+local Icons = require("./Icons")
 
 local Creator = {
     Font = "rbxassetid://12187365364", -- Inter
@@ -108,35 +108,8 @@ function Creator.UpdateTheme(TargetObject, isTween)
 end
 
 function Creator.Icon(Icon)
-    local Lucide = {
-        ["48"] = {
-            ["1"] = "rbxassetid://105711979102844",
-            ["2"] = "rbxassetid://93444111820847",
-            ["3"] = "rbxassetid://128003747944019",
-            ["4"] = "rbxassetid://136997801454266",
-        },
-        ["96"] = {
-            ["1"] = "rbxassetid://84947761793877",
-            ["2"] = "rbxassetid://86377038549543",
-            ["3"] = "rbxassetid://130833646307719",
-            ["4"] = "rbxassetid://107746940539108",
-            ["5"] = "rbxassetid://123303482191617",
-            ["6"] = "rbxassetid://85504715966897",
-            ["7"] = "rbxassetid://82170674947332",
-            ["8"] = "rbxassetid://82764911025597",
-            ["9"] = "rbxassetid://127125107748098",
-            ["10"] = "rbxassetid://86626897067632",
-            ["11"] = "rbxassetid://72617442407925",
-            ["12"] = "rbxassetid://97752888972032",
-            ["13"] = "rbxassetid://111135636157193",
-            ["14"] = "rbxassetid://82933332028816",
-            ["15"] = "rbxassetid://82530935107116",
-            ["16"] = "rbxassetid://134594933824160",
-            
-        }
-    }
-    if Icons[Icon] then
-        return { Lucide["96"][tostring(Icons[Icon].Image)], Icons[Icon] }
+    if Icons.Icons[Icon] then
+        return { Icons.Spritesheets[tostring(Icons.Icons[Icon].Image)], Icons.Icons[Icon] }
     end
     return nil
 end

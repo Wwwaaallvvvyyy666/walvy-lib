@@ -70,7 +70,7 @@ return function(Config)
             Size = UDim2.new(0,70,0,70),
             Image = Creator.Icon("expand")[1],
             ImageRectOffset = Creator.Icon("expand")[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon("expand")[2]._Size,
+            ImageRectSize = Creator.Icon("expand")[2].ImageRectSize,
             BackgroundTransparency = 1,
             Position = UDim2.new(0.5,0,0.5,0),
             AnchorPoint = Vector2.new(0.5,0.5),
@@ -259,7 +259,7 @@ return function(Config)
     local CloseButton = New("ImageButton", {
         Image = Creator.Icon("x")[1],
         ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
-        ImageRectSize = Creator.Icon("x")[2]._Size,
+        ImageRectSize = Creator.Icon("x")[2].ImageRectSize,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -272,7 +272,7 @@ return function(Config)
     local MinimizeButton = New("ImageButton", {
         Image = Creator.Icon("minus")[1],
         ImageRectOffset = Creator.Icon("minus")[2].ImageRectPosition,
-        ImageRectSize = Creator.Icon("minus")[2]._Size,
+        ImageRectSize = Creator.Icon("minus")[2].ImageRectSize,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -353,7 +353,7 @@ return function(Config)
             New("ImageLabel", {
                 Image = Creator.Icon("grab")[1],
                 ImageRectOffset = Creator.Icon("grab")[2].ImageRectPosition,
-                ImageRectSize = Creator.Icon("grab")[2]._Size,
+                ImageRectSize = Creator.Icon("grab")[2].ImageRectSize,
                 Size = UDim2.new(0,20,0,20),
                 BackgroundTransparency = 1,
                 Position = UDim2.new(0,0,0.5,0),
@@ -391,21 +391,21 @@ return function(Config)
         
         local uiGradient = OpenButton and OpenButton.UIStroke.UIGradient or nil
     
-        Glow = New("ImageLabel", {
-            Image = "rbxassetid://93831937596979", -- UICircle Glow
-            ScaleType = "Slice",
-            SliceCenter = Rect.new(375,375,375,375),
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1,21,1,21),
-            Position = UDim2.new(0.5,0,0.5,0),
-            AnchorPoint = Vector2.new(0.5,0.5),
-            ImageTransparency = .5,
-            Parent = OpenButtonContainer,
-        }, {
-            New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff"))
-            })
-        })
+        -- Glow = New("ImageLabel", {
+        --     Image = "rbxassetid://93831937596979", -- UICircle Glow
+        --     ScaleType = "Slice",
+        --     SliceCenter = Rect.new(375,375,375,375),
+        --     BackgroundTransparency = 1,
+        --     Size = UDim2.new(1,21,1,21),
+        --     Position = UDim2.new(0.5,0,0.5,0),
+        --     AnchorPoint = Vector2.new(0.5,0.5),
+        --     ImageTransparency = .5,
+        --     Parent = OpenButtonContainer,
+        -- }, {
+        --     New("UIGradient", {
+        --         Color = ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff"))
+        --     })
+        -- })
         
         RunService.RenderStepped:Connect(function(deltaTime)
             if Window.UIElements.Main and OpenButtonContainer and OpenButtonContainer.Parent ~= nil then
@@ -649,10 +649,10 @@ return function(Config)
             if Creator.Icon(Window.Icon) then
                 ImageLabel.Image = Creator.Icon(Window.Icon)[1]
                 ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2]._Size
+                ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
                 OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
                 OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2]._Size
+                OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
             end
             if string.find(Window.Icon,"http") then
                 if not isfile("WindUI" .. Window.Folder .. "/Assets/Icon.png") then
@@ -766,6 +766,8 @@ return function(Config)
                 Title = OpenButtonConfig.Title or Window.Title,
                 Icon = OpenButtonConfig.Icon or Window.Icon,
                 OnlyMobile = OpenButtonConfig.OnlyMobile or true,
+                CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1,0),
+                StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
                 Color = OpenButtonConfig.Color 
                     or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
             }
@@ -783,11 +785,16 @@ return function(Config)
             if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
                 OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
                 OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
-                OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2]._Size
+                OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectSize
             end
         
             OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
-            Glow.UIGradient.Color = OpenButtonModule.Color
+            if Glow then
+                Glow.UIGradient.Color = OpenButtonModule.Color
+            end
+            
+            OpenButton.UICorner.CornerRadius = OpenButtonConfig.CornerRadius
+            OpenButton.UIStroke.Thickness = OpenButtonConfig.StrokeThickness
         end
     end
     

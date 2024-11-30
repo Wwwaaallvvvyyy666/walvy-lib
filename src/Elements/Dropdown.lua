@@ -83,7 +83,7 @@ function Element:New(Config)
         New("ImageLabel", {
             Image = Creator.Icon("chevron-down")[1],
             ImageRectOffset = Creator.Icon("chevron-down")[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon("chevron-down")[2]._Size,
+            ImageRectSize = Creator.Icon("chevron-down")[2].ImageRectSize,
             Size = UDim2.new(0,18,0,18),
             Position = UDim2.new(1,Element.UIPadding + 18,0.5,0),
             ThemeTag = {

@@ -18,5 +18,7 @@ Window:SelectTab(2) -- Number of Tab
 ```
 
 ::: tip INFO
-1539 Lucide Icons are used in this UI Library
+1541 Lucide Icons are used in this UI Library
+
+Last icons update: November 30, 2024
 :::

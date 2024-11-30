@@ -41,7 +41,7 @@ function Element:New(Config)
     
     local CopyButton = New("ImageButton", {
         Image = Creator.Icon("clipboard")[1],
-        ImageRectSize = Creator.Icon("clipboard")[2]._Size,
+        ImageRectSize = Creator.Icon("clipboard")[2].ImageRectSize,
         ImageRectOffset = Creator.Icon("clipboard")[2].ImageRectPosition,
         BackgroundTransparency = 1,
         Size = UDim2.new(0,14,0,14),
