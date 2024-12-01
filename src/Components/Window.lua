@@ -793,8 +793,8 @@ return function(Config)
                 Glow.UIGradient.Color = OpenButtonModule.Color
             end
             
-            OpenButton.UICorner.CornerRadius = OpenButtonConfig.CornerRadius
-            OpenButton.UIStroke.Thickness = OpenButtonConfig.StrokeThickness
+            OpenButton.UICorner.CornerRadius = OpenButtonModule.CornerRadius
+            OpenButton.UIStroke.Thickness = OpenButtonModule.StrokeThickness
         end
     end
     
