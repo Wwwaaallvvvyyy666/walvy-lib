@@ -267,12 +267,59 @@ function TabModule.New(Config)
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
+            Image = ElementConfig.Image,
+            ImageSize = ElementConfig.ImageSize,
             Locked = ElementConfig.Locked,
             Parent = Tab.UIElements.ContainerFrame,
+            IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false,
             Theme = TabModule.Window.Theme,
             TextOffset = 0,
+            Window = Window,
             Hover = false,
         })
+        if ElementConfig.Buttons and #ElementConfig.Buttons > 0 then
+            local ButtonsContainer = New("Frame", {
+                Size = UDim2.new(1,0,0,0),
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0,0,0,ElementConfig.Image and Paragraph.ImageSize > Paragraph.UIElements.Main.Title.AbsoluteSize.Y and Paragraph.ImageSize+Paragraph.UIPadding or Paragraph.UIElements.Main.Title.AbsoluteSize.Y+Paragraph.UIPadding),
+                AutomaticSize = "Y",
+                Parent = Paragraph.UIElements.Main
+            }, {
+                New("UIListLayout", {
+                    Padding = UDim.new(0,10),
+                    FillDirection = "Horizontal",
+                })
+            })
+            
+            for _,ButtonData in next, ElementConfig.Buttons do
+                local Button = New("TextButton", {
+                    Text = ButtonData.Title,
+                    TextSize = 16,
+                    AutomaticSize = "Y",
+                    ThemeTag = {
+                        TextColor3 = "Accent",
+                        BackgroundColor3 = "Text"
+                    },
+                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                    BackgroundTransparency = 0.1,
+                    Size = UDim2.new(1 / #ElementConfig.Buttons, -(((#ElementConfig.Buttons - 1) * 10) / #ElementConfig.Buttons), 0, 32),
+                    Parent = ButtonsContainer,
+                }, {
+                    New("UICorner", {
+                        CornerRadius = UDim.new(0,8)
+                    })
+                })
+                Button.MouseEnter:Connect(function()
+                    Tween(Button, 0.1, {BackgroundTransparency = .3}):Play()
+                end)
+                Button.MouseButton1Click:Connect(function()
+                    Tween(Button, 0.1, {BackgroundTransparency = .1}):Play()
+                end)
+                Button.MouseButton1Click:Connect(function()
+                    ButtonData.Callback()
+                end)
+            end
+        end
         Tab.Elements["Paragraph"] = Paragraph
         return Paragraph
     end

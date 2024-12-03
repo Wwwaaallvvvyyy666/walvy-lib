@@ -6,8 +6,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "dev": "darklua process main.lua dist/main.lua --config darklua.dev.config.json && lua build/init.lua",
-    "build": "darklua process src/init.lua dist/main.lua --config darklua.config.json && lua build/init.lua"
+    "dev": "npx darklua process main.lua dist/main.lua --config darklua.dev.config.json && lua build/init.lua",
+    "build": "npx darklua process src/init.lua dist/main.lua --config darklua.config.json && lua build/init.lua"
   },
   "devDependencies": {
     "vue": "3.2.44",

@@ -32,7 +32,8 @@ return function(Config)
 		Closed = false,
 		HasOutline = Config.HasOutline or false,
 		SuperParent = Config.Parent,
-		Destroyed = false
+		Destroyed = false,
+		IsFullscreen = false
     }
     
     if Window.Folder then
@@ -260,6 +261,19 @@ return function(Config)
         Image = Creator.Icon("x")[1],
         ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
         ImageRectSize = Creator.Icon("x")[2].ImageRectSize,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1,-6,1,-6),
+        ThemeTag = {
+            ImageColor3 = "Text"
+        },
+        AnchorPoint = Vector2.new(0.5,0.5),
+        Position = UDim2.new(0.5,0,0.5,0),
+    })
+
+    local FullscreenButton = New("ImageButton", {
+        Image = Creator.Icon("square")[1],
+        ImageRectOffset = Creator.Icon("square")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("square")[2].ImageRectSize,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -573,14 +587,21 @@ return function(Config)
                     New("TextButton", {
                         Size = UDim2.new(0,24,0,24),
                         BackgroundTransparency = 1,
-                        LayoutOrder = 1,
+                        LayoutOrder = 3,
                     }, {
                         CloseButton,
                     }),
+                    -- New("TextButton", {
+                    --     Size = UDim2.new(0,24,0,24),
+                    --     BackgroundTransparency = 1,
+                    --     LayoutOrder=2,
+                    -- }, {
+                    --     FullscreenButton,
+                    -- }),
                     New("TextButton", {
                         Size = UDim2.new(0,24,0,24),
                         BackgroundTransparency = 1,
-                        
+                        LayoutOrder=1,
                     }, {
                         MinimizeButton,
                     })
@@ -642,11 +663,11 @@ return function(Config)
                 Size = UDim2.new(0,24,0,24),
                 BackgroundTransparency = 1,
                 LayoutOrder = 1,
-                ThemeTag = {
+                ThemeTag = Creator.Icon(Window.Icon)[2] and {
                     ImageColor3 = "Text"
-                }
+                } or nil
             })
-            if Creator.Icon(Window.Icon) then
+            if Creator.Icon(Window.Icon)[2] then
                 ImageLabel.Image = Creator.Icon(Window.Icon)[1]
                 ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
                 ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
@@ -714,6 +735,36 @@ return function(Config)
         return Close
     end
     
+    local CurrentPos
+    local CurrentSize
+    local iconCopy = Creator.Icon("copy")
+    local iconSquare = Creator.Icon("square")
+    
+    FullscreenButton.MouseButton1Click:Connect(function()
+        local isFullscreen = Window.IsFullscreen
+        Creator.SetDraggable(isFullscreen)
+    
+        if not isFullscreen then
+            CurrentPos = Window.UIElements.Main.Position
+            CurrentSize = Window.UIElements.Main.Size
+            FullscreenButton.Image = iconCopy[1]
+            FullscreenButton.ImageRectOffset = iconCopy[2].ImageRectPosition
+            FullscreenButton.ImageRectSize = iconCopy[2].ImageRectSize
+        else
+            FullscreenButton.Image = iconSquare[1]
+            FullscreenButton.ImageRectOffset = iconSquare[2].ImageRectPosition
+            FullscreenButton.ImageRectSize = iconSquare[2].ImageRectSize
+        end
+        
+        Tween(Window.UIElements.Main, 0.45, {Size = isFullscreen and CurrentSize or UDim2.new(1,-20,1,-20)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+    
+        delay(0.1, function()
+            Tween(Window.UIElements.Main, 0.45, {Position = isFullscreen and CurrentPos or Window.Position}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        end)
+        
+        Window.IsFullscreen = not isFullscreen
+    end)
+        
     MinimizeButton.MouseButton1Click:Connect(function()
         Window:Close()
         task.spawn(function()
@@ -883,9 +934,6 @@ return function(Config)
                 BackgroundTransparency = 1,
                 Parent = Dialog.UIElements.Main
             })
-            Content:GetPropertyChangedSignal("TextBounds"):Connect(function()
-                Content.Size = UDim2.new(1,0,0,Content.TextBounds.Y)
-            end)
         end
         
         -- Dialog.UIElements.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -931,7 +979,7 @@ return function(Config)
                 },
                 BackgroundTransparency = .93,
                 Parent = ButtonsContent,
-                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 00),
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 0),
                 AutomaticSize = "Y",
             }, {
                 New("UICorner", {
@@ -996,21 +1044,23 @@ return function(Config)
     end)
 
     local function startResizing(input)
-        isResizing = true
-        FullScreenIcon.Active = true
-        initialSize = Window.UIElements.Main.Size
-        initialInputPosition = input.Position
-        Tween(FullScreenIcon, 0.2, {BackgroundTransparency = .65}):Play()
-        Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 0}):Play()
-    
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                isResizing = false
-                FullScreenIcon.Active = false
-                Tween(FullScreenIcon, 0.2, {BackgroundTransparency = 1}):Play()
-                Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 1}):Play()
-            end
-        end)
+        if not isFullscreen then
+            isResizing = true
+            FullScreenIcon.Active = true
+            initialSize = Window.UIElements.Main.Size
+            initialInputPosition = input.Position
+            Tween(FullScreenIcon, 0.2, {BackgroundTransparency = .65}):Play()
+            Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 0}):Play()
+        
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    isResizing = false
+                    FullScreenIcon.Active = false
+                    Tween(FullScreenIcon, 0.2, {BackgroundTransparency = 1}):Play()
+                    Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 1}):Play()
+                end
+            end)
+        end
     end
     
     ResizeHandle.InputBegan:Connect(function(input)

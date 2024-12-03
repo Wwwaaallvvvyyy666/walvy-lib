@@ -7,11 +7,53 @@ return function(Config)
         Title = Config.Title,
         Desc = Config.Desc or nil,
         Hover = Config.Hover,
+        Image = Config.Image,
+        ImageSize = Config.ImageSize or 30,
         UIPadding = 12,
         UIElements = {}
     }
     
+    local ImageSize = Element.ImageSize
     local CanHover = true
+    
+    local ImageFrame
+    if Element.Image then
+        local ImageLabel = New("ImageLabel", {
+            Size = UDim2.new(1,0,1,0),
+            BackgroundTransparency = 1,
+            ThemeTag = Creator.Icon(Element.Image) and {
+                ImageColor3 = "Text"
+            } or nil
+        }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,8)
+            })
+        })
+        ImageFrame = New("Frame", {
+            Size = UDim2.new(0,ImageSize,0,ImageSize),
+            AutomaticSize = "XY",
+            BackgroundTransparency = 1,
+        }, {
+            ImageLabel
+        })
+        if Creator.Icon(Element.Image) then
+            ImageLabel.Image = Creator.Icon(Element.Image)[1]
+            ImageLabel.ImageRectOffset = Creator.Icon(Element.Image)[2].ImageRectPosition
+            ImageLabel.ImageRectSize = Creator.Icon(Element.Image)[2].ImageRectSize
+        end
+        if string.find(Element.Image,"http") then
+            if not isfile("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png") then
+                local response = request({
+                    Url = Element.Image,
+                    Method = "GET",
+                }).Body
+                writefile("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png", response)
+            end
+            ImageLabel.Image = getcustomasset("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png")
+        elseif string.find(Element.Image,"rbxassetid") then
+            ImageLabel.Image = Element.Image
+        end
+    end
     
     Element.UIElements.Main = New("TextButton", {
         Size = UDim2.new(1,0,0,0),
@@ -24,11 +66,12 @@ return function(Config)
         New("UICorner", {
             CornerRadius = UDim.new(0,8),
         }),
+        ImageFrame,
         New("Frame", {
-            Size = UDim2.new(1,0,0,0),
+            Size = UDim2.new(1,Element.Image and -(ImageSize+Element.UIPadding),0,0),
             AutomaticSize = "Y",
-            --AnchorPoint = Vector2.new(0,0.5),
-            --Position = UDim2.new(0,0,0.5,0),
+            AnchorPoint = Vector2.new(0,0),
+            Position = UDim2.new(0,Element.Image and ImageSize+Element.UIPadding or 0,0,0),
             BackgroundTransparency = 1,
             Name = "Title"
         }, {
@@ -179,8 +222,9 @@ return function(Config)
         --     Desc.Size = UDim2.new(1,-Config.TextOffset,0,Desc.TextBounds.Y)
         -- end)
     else
-        Element.UIElements.Main.Title.AnchorPoint = Vector2.new(0,0.5)
-        Element.UIElements.Main.Title.Position = UDim2.new(0,0,0.5,0)
+        Element.UIElements.Main.Title.AnchorPoint = Vector2.new(0,Config.IsButtons and 0 or 0.5)
+        Element.UIElements.Main.Title.Size = UDim2.new(1,Element.Image and -(ImageSize+Element.UIPadding),0,0)
+        Element.UIElements.Main.Title.Position = UDim2.new(0,Element.Image and ImageSize+Element.UIPadding or 0,Config.IsButtons and 0 or 0.5,0)
     end
     
     if Element.Hover then
