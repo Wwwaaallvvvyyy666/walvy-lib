@@ -19,8 +19,10 @@ local Window = WindUI:CreateWindow({
 })
 
 Window:EditOpenButton({
-    Title = "Open Button",
-    --Icon = "door-closed",
+    Title = "Open UI Button",
+    Icon = "image-upscale",  -- New icon
+    CornerRadius = UDim.new(0,10),
+    StrokeThickness = 3,
     Color = ColorSequence.new(
         Color3.fromHex("FF0F7B"), 
         Color3.fromHex("F89B29")
@@ -111,6 +113,53 @@ local Paragraph1 = MainTab:Paragraph({
 })
 local Paragraph = MainTab:Paragraph({
     Title = "Paragraph without content",
+})
+local Paragraph2 = MainTab:Paragraph({
+    Title = "Paragraph with Lucide icon.",
+    --Desc = "Paragraph With Lucide icon.",
+    Image = "frown"
+})
+local Paragraph3 = MainTab:Paragraph({
+    Title = "Paragraph with URL image.",
+    --Desc = "Paragraph With Lucide icon.",
+    Image = "https://images.opencollective.com/lucide-icons/9fe79a6/logo/256.png"
+})
+local Paragraph4 = MainTab:Paragraph({
+    Title = "Paragraph with rbxassetid:// image and ImageSize=20",
+    Desc = "BHub is my unsuccessful project",
+    Image = "rbxassetid://13899223441",
+    ImageSize = 20,
+})
+local Paragraph5 = MainTab:Paragraph({
+    Title = "Paragraph with Buttons",
+    Buttons = {
+        {
+            Title = "Button 1",
+            Callback = function() print("hi") end
+        },
+        {
+            Title = "Button 2",
+            Callback = function() print("hi 2") end
+        }
+    }
+})
+local Paragraph6 = MainTab:Paragraph({
+    Title = "Paragraph with Buttons and Image",
+    Image = "car",
+    Buttons = {
+        {
+            Title = "Button 1",
+            Callback = function() print("hi") end
+        },
+        {
+            Title = "Button 2",
+            Callback = function() print("hi 2") end
+        },
+        {
+            Title = "Button 3",
+            Callback = function() print("hi 2") end
+        }
+    }
 })
 
 MainTab:Section({ Title = "Code" })
