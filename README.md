@@ -14,7 +14,7 @@ An Open source and customizable UI library for Roblox, featuring a dark theme an
 - 🌑 **Dark Theme**: Sleek, modern dark theme design.
 - 🎨 **Customizable Colors**: Easily adjustable color settings for a personalized look.
 - ⚙️ **Efficient Scripting**: Uses loadstring for optimized script execution.
-- 🖊️ **Lucide Icons **: Uses suitable lucide icons that make the interface more beautiful
+- 🖊️ **Lucide Icons**: Uses suitable lucide icons that make the interface more beautiful
 
 <hr>
 
@@ -36,8 +36,9 @@ cd WindUI
 
 3. Run `npm run build`
 
-[Usage Documentation](https://footagesus.github.io/WindUI/)
+[Usage Documentation](https://tree-hub.vercel.app/docs/WindUI)
 
 <hr>
+
 > [!NOTE]
-> Last icons update: November 30, 2024
+> Last icons update: December 8 2024
