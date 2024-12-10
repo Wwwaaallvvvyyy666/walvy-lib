@@ -16,7 +16,7 @@ return function(Config)
         Folder = Config.Folder,
         Size = Config.Size and UDim2.new(
                     0, math.clamp(Config.Size.X.Offset, 480, 700),
-                    0, math.clamp(Config.Size.Y.Offset, 350, 520)) or UDim.new(0,580,0,460),
+                    0, math.clamp(Config.Size.Y.Offset, 350, 520)) or UDim2.new(0,580,0,460),
         ToggleKey = Config.ToggleKey or Enum.KeyCode.G,
         Transparent = Config.Transparent or false,
         Position = UDim2.new(
