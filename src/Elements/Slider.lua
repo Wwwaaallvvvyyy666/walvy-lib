@@ -93,14 +93,16 @@ function Element:New(Config)
             VerticalAlignment = "Center",
         }),
         Slider.UIElements.SliderIcon,
-        New("TextLabel", {
+        New("TextBox", {
+            Size = UDim2.new(0,60,0,0),
+            TextXAlignment = "Right",
             Text = tostring(Value),
             TextColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 TextColor3 = "Text"
             },
             TextTransparency = .4,
-            AutomaticSize = "XY",
+            AutomaticSize = "Y",
             TextSize = 15,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
@@ -123,43 +125,58 @@ function Element:New(Config)
     
     function Slider:Set(Value, input)
         if CanCallback then
-            if not Slider.IsFocusing and not HoldingSlider and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
-                isTouch = (input.UserInputType == Enum.UserInputType.Touch)
+            if not Slider.IsFocusing and not HoldingSlider and (not input or (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch)) then
+                Value = math.clamp(Value, Slider.Value.Min or 0, Slider.Value.Max or 100)
                 
-                Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = false
-                HoldingSlider = true
-                
-                moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
-                    local inputPosition
-                    if isTouch then
-                        inputPosition = input.Position.X
-                    else
-                        inputPosition = game:GetService("UserInputService"):GetMouseLocation().X
-                    end
-        
-                    local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.Size.X.Offset, 0, 1)
-                    Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
+                local delta = math.clamp((Value - (Slider.Value.Min or 0)) / ((Slider.Value.Max or 100) - (Slider.Value.Min or 0)), 0, 1)
+                Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
     
-                    if Value ~= LastValue then
-                        Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
-                        Slider.UIElements.SliderContainer.TextLabel.Text = Value
-                        LastValue = Value
-                        Slider.Callback(Value)
-                    end
-                end)
-                
-                releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
-                    if (endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch) and input == endInput then
-                        moveconnection:Disconnect()
-                        releaseconnection:Disconnect()
-                        HoldingSlider = false
-                        
-                        Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = true
-                    end
-                end)
+                if Value ~= LastValue then
+                    Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
+                    Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
+                    LastValue = Value
+                    Slider.Callback(Value)
+                end
+    
+                if input then
+                    isTouch = (input.UserInputType == Enum.UserInputType.Touch)
+                    Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = false
+                    HoldingSlider = true
+                    moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
+                        local inputPosition = isTouch and input.Position.X or game:GetService("UserInputService"):GetMouseLocation().X
+                        local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.Size.X.Offset, 0, 1)
+                        Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
+    
+                        if Value ~= LastValue then
+                            Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
+                            Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
+                            LastValue = Value
+                            Slider.Callback(Value)
+                        end
+                    end)
+                    releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
+                        if (endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch) and input == endInput then
+                            moveconnection:Disconnect()
+                            releaseconnection:Disconnect()
+                            HoldingSlider = false
+                            Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = true
+                        end
+                    end)
+                end
             end
         end
     end
+    
+    Slider.UIElements.SliderContainer.TextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local newValue = tonumber(Slider.UIElements.SliderContainer.TextBox.Text)
+            if newValue then
+                Slider:Set(newValue)
+            else
+                Slider.UIElements.SliderContainer.TextBox.Text = tostring(LastValue)
+            end
+        end
+    end)
     
     Slider.UIElements.SliderContainer.InputBegan:Connect(function(input)
         Slider:Set(Value, input)

@@ -60,10 +60,11 @@ function Element:New(Config)
         RichText = true,
         TextXAlignment = "Left",
         Size = UDim2.new(0,0,0,0),
-        FontFace = Font.new("rbxassetid://16658246179", Enum.FontWeight.Medium),
         BackgroundTransparency = 1,
         AutomaticSize = "XY",
     })
+    
+    TextLabel.FontFace = Font.new("rbxassetid://16658246179", Enum.FontWeight.Medium)
     
     local ScrollingFrame = New("ScrollingFrame", {
         Size = UDim2.new(1,0,0,0),

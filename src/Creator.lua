@@ -16,6 +16,7 @@ local Creator = {
     CanDraggable = true,
     Theme = nil,
     Objects = {},
+    FontObjects = {},
     DefaultProperties = {
         ScreenGui = {
             ResetOnSpawn = false,
@@ -70,6 +71,17 @@ local Creator = {
 function Creator.SetTheme(Theme)
     Creator.Theme = Theme
     Creator.UpdateTheme(nil, true)
+end
+
+function Creator.AddFontObject(Object)
+    table.insert(Creator.FontObjects, Object)
+    Creator.UpdateFont(Creator.Font)
+end
+function Creator.UpdateFont(FontId)
+    Creator.Font = FontId
+    for _,Obj in next, Creator.FontObjects do
+        Obj.FontFace = Font.new(FontId, Obj.FontFace.Weight, Obj.FontFace.Style)
+    end
 end
 
 function Creator.GetThemeProperty(Property, Theme)
@@ -134,6 +146,9 @@ function Creator.New(Name, Properties, Children)
     
     if Properties and Properties.ThemeTag then
         Creator.AddThemeObject(Object, Properties.ThemeTag)
+    end
+    if Properties and Properties.FontFace then
+        Creator.AddFontObject(Object)
     end
     return Object
 end

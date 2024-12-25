@@ -31,6 +31,12 @@ Window:EditOpenButton({
 
 -- Tabs
 
+-- TransparencyValue
+WindUI.TransparencyValue = .1
+
+-- Font (example)
+-- WindUI:SetFont("rbxassetid://font-id")
+
 --- Section for Tabs
 
 local MainTab = Window:Tab({
@@ -303,6 +309,22 @@ local Slider = MainTab:Slider({
         game.Workspace[game.Players.LocalPlayer.Name].Humanoid.WalkSpeed = value
     end
 })
+
+local Sliderbb = MainTab:Slider({
+    Title = "Just slider",
+    Locked = false,
+    Step = 1,
+    Value = {
+        Min = 0,
+        Max = 1000,
+        Default = 0,
+    },
+    Callback = function(value)
+        -- Functikn
+    end
+})
+
+Sliderbb:Set(20)
 
 
 MainTab:Section({ Title = "Keybinds" })
@@ -713,7 +735,7 @@ local Toggle = BlockedElementsTab:Toggle({
 })
 Toggle:Lock()
 
-local Slider = BlockedElementsTab:Slider({
+local Sliderbb = BlockedElementsTab:Slider({
     Title = "Blocked Slider",
     Locked = true,
     Step = 1,
@@ -752,7 +774,7 @@ local Input = BlockedElementsTab:Input({
     end
 })
 
-local Dropdown = MainTab:Dropdown({
+local Dropdown = BlockedElementsTab:Dropdown({
     Title = "Blocked Dropdown",
     Multi = false,
     Value = "Tab 1",

@@ -155,6 +155,19 @@ function Element:New(Config)
         Dropdown.UIElements.Menu
     })
     
+    function Dropdown:Lock()
+        CanCallback = false
+        return Dropdown.DropdownFrame:Lock()
+    end
+    function Dropdown:Unlock()
+        CanCallback = true
+        return Dropdown.DropdownFrame:Unlock()
+    end
+    
+    if Dropdown.Locked then
+        Dropdown:Lock()
+    end
+    
     local function RecalculateCanvasSize()
 		Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame.CanvasSize = UDim2.fromOffset(0, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y)
     end

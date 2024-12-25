@@ -2,7 +2,9 @@ local WindUI = {
     Window = nil,
     Theme = nil,
     Themes = nil,
-    Transparent = false
+    Transparent = false,
+    
+    TransparencyValue = .25
 }
 local RunService = game:GetService("RunService")
 
@@ -55,6 +57,9 @@ function WindUI:Notify(Config)
     })
 end
 
+function WindUI:SetFont(FontId)
+    Creator.UpdateFont(FontId)
+end
 
 function WindUI:AddTheme(LTheme)
     Themes[LTheme.Name] = LTheme
@@ -473,7 +478,7 @@ function WindUI:CreateWindow(Config)
     
     function Window:ToggleTransparency(Value)
         WindUI.Transparent = Value
-        Window.UIElements.Main.Background.BackgroundTransparency = Value and 0.25 or 0
+        Window.UIElements.Main.Background.BackgroundTransparency = Value and WindUI.TransparencyValue or 0
         Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
             NumberSequenceKeypoint.new(0, 1), 
             NumberSequenceKeypoint.new(1, Value and 0.85 or 0.7),
