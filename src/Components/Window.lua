@@ -658,24 +658,22 @@ return function(Config)
     
     task.spawn(function()
         if Window.Icon then
+            local themetag = { ImageColor3 = "Text" }
+            
+            if string.find(Window.Icon, "rbxassetid://") or not Creator.Icon(tostring(Window.Icon))[1] then
+                themetag = nil
+            end
             local ImageLabel = New("ImageLabel", {
                 Parent = Window.UIElements.Main.Main.Topbar.Left,
                 Size = UDim2.new(0,24,0,24),
                 BackgroundTransparency = 1,
                 LayoutOrder = 1,
-                ThemeTag = Creator.Icon(Window.Icon)[2] and {
-                    ImageColor3 = "Text"
-                } or nil
+                ThemeTag = themetag
             })
-            if Creator.Icon(Window.Icon)[2] then
-                ImageLabel.Image = Creator.Icon(Window.Icon)[1]
-                ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
-                OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
-                OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
-            end
-            if string.find(Window.Icon,"http") then
+            if string.find(Window.Icon, "rbxassetid://") or string.find(Window.Icon, "http://www.roblox.com/asset/?id=") then
+                ImageLabel.Image = Window.Icon
+                OpenButtonIcon.Image = Window.Icon
+            elseif string.find(Window.Icon,"http") then
                 if not isfile("WindUI" .. Window.Folder .. "/Assets/Icon.png") then
                     local response = request({
                         Url = Window.Icon,
@@ -685,9 +683,15 @@ return function(Config)
                 end
                 ImageLabel.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
                 OpenButtonIcon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
-            elseif string.find(Window.Icon,"rbxassetid") then
-                ImageLabel.Image = Window.Icon
-                OpenButtonIcon.Image = Window.Icon
+            else
+                if Creator.Icon(tostring(Window.Icon))[1] then
+                    ImageLabel.Image = Creator.Icon(Window.Icon)[1]
+                    ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+                    ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
+                    OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
+                    OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+                    OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
+                end
             end
         else
             OpenButtonIcon.Visible = false

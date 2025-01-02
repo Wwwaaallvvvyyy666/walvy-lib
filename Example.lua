@@ -2,7 +2,8 @@ local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindU
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
-    Icon = "door-open", -- Url or rbxassetid or lucide
+    --Icon = "rbxassetid://125272542064435", -- Url or rbxassetid or lucide
+    Icon = "droplet-off", -- Url or rbxassetid or lucide
     Author = ".ftgs", -- Author & Creator
     Folder = "CloudHub", -- Folder name for saving data (And key)
     Size = UDim2.fromOffset(580, 460), -- UI Size
@@ -15,7 +16,7 @@ local Window = WindUI:CreateWindow({
     Transparent = true,-- UI Transparency
     Theme = "Dark", -- UI Theme
     SideBarWidth = 200, -- UI Sidebar Width (number)
-    HasOutline = false, -- Adds Oultines to the window
+    HasOutline = true, -- Adds Oultines to the window
 })
 
 Window:EditOpenButton({
