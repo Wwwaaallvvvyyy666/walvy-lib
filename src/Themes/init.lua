@@ -20,32 +20,19 @@ return {
         Text = "#FFFFFF",
         PlaceholderText = "#6B7280",
     },
-    -- Lime = {
-    --     Name = "Lime",
-    --     Accent = "#A7F3D0",
-    --     Outline = "#1D4ED8",
-    --     Text = "#1D4ED8",
-    --     PlaceholderText = "#4B5563",
-    -- },
-    -- Emerald = {
-    --     Name = "Emerald",
-    --     Accent = "#093502",
-    --     Outline = "#034309",
-    --     Text = "#FFFFFFFF",
-    --     PlaceholderText = "#6B7280",
-    -- },
-    -- Sky = {
-    --     Name = "Sky",
-    --     Accent = "#065e82",
-    --     Outline = "#033f43",
-    --     Text = "#FFFFFF",
-    --     PlaceholderText = "#6B7280",
-    -- },
-    -- Amber = {
-    --     Name = "Amber",
-    --     Accent = "#F59E0B",
-    --     Outline = "#F97316",
-    --     Text = "#7C2D12",
-    --     PlaceholderText = "#9CA3AF",
-    -- },
+    Plant = {
+        Name = "Plant",
+        Accent = "#102d04",
+        Outline = "#FFFFFF",
+        Text = "#e6ffe5",
+        PlaceholderText = "#7d977d",
+    },
+    Red = {
+        Name = "Red",
+        Accent = "#28050a",
+        Outline = "#FFFFFF",
+        Text = "#ffeded",
+        PlaceholderText = "#977d7d",
+    },
+    
 }

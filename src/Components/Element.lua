@@ -26,7 +26,7 @@ return function(Config)
             } or nil
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0,8)
+                CornerRadius = UDim.new(0,11)
             })
         })
         ImageFrame = New("Frame", {
@@ -125,7 +125,7 @@ return function(Config)
             Name = "Highlight"
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0,8),
+                CornerRadius = UDim.new(0,11),
             }),
         }),
         New("Frame", {

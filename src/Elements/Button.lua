@@ -19,7 +19,6 @@ function Element:New(Config)
         Title = Button.Title,
         Desc = Button.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 20,
         Hover = true,
     })
@@ -33,7 +32,6 @@ function Element:New(Config)
         Size = UDim2.new(0,20,0,20),
         AnchorPoint = Vector2.new(1,0.5),
         Position = UDim2.new(1,0,0.5,0),
-        ImageColor3 = Color3.fromHex(Config.Theme.Text),
         ThemeTag = {
             ImageColor3 = "Text"
         }

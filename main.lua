@@ -2,14 +2,13 @@ local WindUI = require("./src/init")
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library", -- UI Title
-    --Icon = "rbxassetid://125272542064435", -- Url or rbxassetid or lucide
     Icon = "droplet-off", -- Url or rbxassetid or lucide
     Author = ".ftgs", -- Author & Creator
     Folder = "CloudHub", -- Folder name for saving data (And key)
     Size = UDim2.fromOffset(580, 460), -- UI Size
     KeySystem = { -- Creates key system
-        Key = "1234", -- key
-        Note = "The Key is 1234", -- Note
+        Key = { "1234", "SuperKey5678" }, -- keys
+        Note = "The Key is '1234' or 'SuperKey5678'", -- Note
         URL = "https://github.com/Footagesus/WindUI", -- URL To get key (example: Discord)
         SaveKey = true, -- Saves the key in the folder specified above
     }, 
@@ -18,6 +17,8 @@ local Window = WindUI:CreateWindow({
     SideBarWidth = 200, -- UI Sidebar Width (number)
     HasOutline = false, -- Adds Oultines to the window
 })
+
+WindUI:SetNotificationLower(false)
 
 Window:EditOpenButton({
     Title = "Open UI Button",
@@ -221,11 +222,13 @@ Paragraph1:SetDesc("New Description!")
 MainTab:Section({ Title = "Buttons" })
 
 local Dialog = Window:Dialog({
-    Title = "Dialog haha",
+    Icon = "droplet", -- lucide
+    Title = "Dialog",
     Content = "Dialog Content",
     Buttons = {
         {
             Title = "Confirm",
+            Variant = "Primary", -- Or "Secondary"
             Callback = function()
                 print("confirm")
             end
@@ -797,7 +800,7 @@ local Dropdown = BlockedElementsTab:Dropdown({
 BlockedElementsTab:Section({Title = "Unlocked"})
 
 local Colorpicker = BlockedElementsTab:Colorpicker({
-    Title = "Blocked Colorpicker",
+    Title = "Unlocked Colorpicker",
     Locked = true,
     Default = Color3.fromRGB(255, 129, 0),
     Callback = function(color)

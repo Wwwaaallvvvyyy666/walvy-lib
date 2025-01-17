@@ -50,7 +50,6 @@ function TabModule.New(Config)
   	    }),
   	    New("TextLabel", {
   	        Text = Tab.Title,
-  	        TextColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
   	        ThemeTag = {
   	            TextColor3 = "Text"
   	        },
@@ -137,9 +136,9 @@ function TabModule.New(Config)
     end)
 
     local Slider = New("Frame", {
-        Size = UDim2.new(0,2,1,0),
+        Size = UDim2.new(0,2,1,-Window.UIPadding*2),
         BackgroundTransparency = 1,
-        Position = UDim2.new(1,-Window.UIPadding/3,0,0),
+        Position = UDim2.new(1,-Window.UIPadding/3,0,Window.UIPadding),
         AnchorPoint = Vector2.new(1,0),
     })
     
@@ -254,7 +253,7 @@ function TabModule.New(Config)
     end)
     
     Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y - Window.UIPadding/2)
+        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y - Window.UIPadding*2)
     end)
     Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
     Tab.UIElements.ContainerFrame:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
@@ -272,7 +271,6 @@ function TabModule.New(Config)
             Locked = ElementConfig.Locked,
             Parent = Tab.UIElements.ContainerFrame,
             IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false,
-            Theme = TabModule.Window.Theme,
             TextOffset = 0,
             Window = Window,
             Hover = false,
@@ -312,7 +310,7 @@ function TabModule.New(Config)
                 Button.MouseEnter:Connect(function()
                     Tween(Button, 0.1, {BackgroundTransparency = .3}):Play()
                 end)
-                Button.MouseButton1Click:Connect(function()
+                Button.MouseLeave:Connect(function()
                     Tween(Button, 0.1, {BackgroundTransparency = .1}):Play()
                 end)
                 Button.MouseButton1Click:Connect(function()
@@ -330,7 +328,7 @@ function TabModule.New(Config)
             Desc = ElementConfig.Desc,
             Locked = ElementConfig.Locked,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
+            
             Parent = Tab.UIElements.ContainerFrame
         })
         Tab.Elements[Button] = Content
@@ -352,7 +350,7 @@ function TabModule.New(Config)
             Locked = ElementConfig.Locked,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
+            
             Parent = Tab.UIElements.ContainerFrame
         })
         Tab.Elements[Toggle] = Content
@@ -375,7 +373,6 @@ function TabModule.New(Config)
             Step = ElementConfig.Step,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Slider] = Content
@@ -397,7 +394,7 @@ function TabModule.New(Config)
             Locked = ElementConfig.Locked,
             Value = ElementConfig.Value,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
+            
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Keybind] = Content
@@ -421,7 +418,7 @@ function TabModule.New(Config)
             PlaceholderText = ElementConfig.PlaceholderText,
             ClearTextOnFocus = ElementConfig.ClearTextOnFocus,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
+            
             Parent = Tab.UIElements.ContainerFrame,
         })
         Tab.Elements[Input] = Content
@@ -446,7 +443,7 @@ function TabModule.New(Config)
             Values = ElementConfig.Values,
             Multi = ElementConfig.Multi,
             Callback = ElementConfig.Callback,
-            Theme = TabModule.Window.Theme,
+            
             Parent = Tab.UIElements.ContainerFrame,
             Window = Window
         })
@@ -491,7 +488,7 @@ function TabModule.New(Config)
             Transparency = ElementConfig.Transparency,
             Callback = ElementConfig.Callback,
             Parent = Tab.UIElements.ContainerFrame,
-            Theme = TabModule.Window.Theme,
+            
             Window = Window
         })
         Tab.Elements[Colorpicker] = Content
@@ -545,7 +542,6 @@ function TabModule.New(Config)
             New("TextLabel", {
                 --AutomaticSize = "XY",
                 Text = "This tab is empty",
-                TextColor3 = Color3.fromHex(TabModule.Window.Theme.Text),
                 ThemeTag = {
                     TextColor3 = "Text"
                 },

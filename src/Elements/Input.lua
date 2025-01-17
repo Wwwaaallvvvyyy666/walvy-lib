@@ -26,14 +26,12 @@ function Element:New(Config)
         Title = Input.Title,
         Desc = Input.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 160,
         Hover = false,
     })
     
     Input.UIElements.Input = New("Frame",{
         BackgroundTransparency = .95,
-        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
         Parent = Input.InputFrame.UIElements.Main,
         Size = UDim2.new(0,30*5,0,30),
         AnchorPoint = Vector2.new(1,0.5),
@@ -52,7 +50,6 @@ function Element:New(Config)
             AnchorPoint = Vector2.new(0,0.5),
             ClearTextOnFocus = Input.ClearTextOnFocus,
             Text = Input.Value,
-            TextColor3 = Color3.fromHex(Config.Theme.Text),
             TextSize = 15,
             ClipsDescendants = true,
             TextXAlignment = "Left",
@@ -67,7 +64,6 @@ function Element:New(Config)
             CornerRadius = UDim.new(0,Element.UICorner)
         }),
         New("UIStroke", {
-            Color = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 Color = "Text",
             },

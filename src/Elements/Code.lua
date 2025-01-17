@@ -20,7 +20,6 @@ function Element:New(Config)
         Title = Code.Title,
         Desc = Code.Code,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 40,
         Hover = false,
     })

@@ -23,18 +23,17 @@ return function(Config)
 			0.5, 0,
 			0.5, 0
 		),
-		UICorner = 9,
-		UIPadding = 14,
+		UICorner = 12,
+		UIPadding = 16,
 		SideBarWidth = Config.SideBarWidth or 200,
 		UIElements = {},
-		Theme = Config.Theme,
 		CanDropdown = true,
 		Closed = false,
 		HasOutline = Config.HasOutline or false,
 		SuperParent = Config.Parent,
 		Destroyed = false,
 		IsFullscreen = false
-    }
+    } -- wtf 
     
     if Window.Folder then
         makefolder("WindUI/" .. Window.Folder)
@@ -43,14 +42,14 @@ return function(Config)
     local UICorner = New("UICorner", {
         CornerRadius = UDim.new(0,Window.UICorner)
     })
-    local UIStroke = New("UIStroke", {
-        Thickness = 0.6,
-        Color = Color3.fromHex(Config.Theme.Outline),
-        ThemeTag = {
-            Color = "Outline",
-        },
-        Transparency = 1, -- 0.8
-    })
+    local UIStroke
+    -- local UIStroke = New("UIStroke", {
+    --     Thickness = 0.6,
+    --     ThemeTag = {
+    --         Color = "Outline",
+    --     },
+    --     Transparency = 1, -- 0.8
+    -- })
 
     local ResizeHandle = New("Frame", {
         Size = UDim2.new(0,32,0,32),
@@ -84,9 +83,9 @@ return function(Config)
 
     
     local Slider = New("Frame", {
-        Size = UDim2.new(0,2,1,0),
+        Size = UDim2.new(0,2,1,-Window.UIPadding*2),
         BackgroundTransparency = 1,
-        Position = UDim2.new(1,-Window.UIPadding/3,0,0),
+        Position = UDim2.new(1,-Window.UIPadding/3,0,Window.UIPadding),
         AnchorPoint = Vector2.new(1,0),
     })
     
@@ -137,8 +136,8 @@ return function(Config)
     })
     
     Window.UIElements.SideBarContainer = New("Frame", {
-        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-Window.UIPadding*4),
-        Position = UDim2.new(0,0,0,Window.UIPadding*4),
+        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-56),
+        Position = UDim2.new(0,0,0,56),
         BackgroundTransparency = 1,
     }, {
         Window.UIElements.SideBar,
@@ -214,7 +213,7 @@ return function(Config)
     end)
     
     Thumb:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y - Window.UIPadding/2)
+        Slider.Size = UDim2.new(0, Slider.Size.X.Offset, 1, -Thumb.AbsoluteSize.Y - Window.UIPadding*2)
     end)
     Window.UIElements.SideBar:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateSliderSize)
     Window.UIElements.SideBar:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
@@ -222,8 +221,8 @@ return function(Config)
     updateSliderSize()
 
     Window.UIElements.MainBar = New("Frame", {
-        Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-Window.UIPadding*4),
-        Position = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,Window.UIPadding*4),
+        Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-56),
+        Position = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,56),
         BackgroundTransparency = 1,
     })
     
@@ -454,7 +453,7 @@ return function(Config)
             Name = "Outline",
             Size = UDim2.new(1,Window.UIPadding*2,0,1),
             Position = UDim2.new(0.5,0,1,Window.UIPadding),
-            BackgroundTransparency= .8,
+            BackgroundTransparency= .9,
             AnchorPoint = Vector2.new(0.5,0.5),
             ThemeTag = {
                 BackgroundColor3 = "Outline"
@@ -462,9 +461,9 @@ return function(Config)
         })
         Outline2 = New("Frame", {
             Name = "Outline",
-            Size = UDim2.new(0,1,1,-Window.UIPadding*4),
-            Position = UDim2.new(0,Window.SideBarWidth,0,Window.UIPadding*4),
-            BackgroundTransparency= .8,
+            Size = UDim2.new(0,1,1,-56),
+            Position = UDim2.new(0,Window.SideBarWidth -Window.UIPadding/2,0,56),
+            BackgroundTransparency= .9,
             AnchorPoint = Vector2.new(0.5,0),
             ThemeTag = {
                 BackgroundColor3 = "Outline"
@@ -480,7 +479,6 @@ return function(Config)
         Name = "Title",
         TextXAlignment = "Left",
         TextSize = 16,
-        TextColor3 = Color3.fromHex(Config.Theme.Text),
         ThemeTag = {
             TextColor3 = "Text"
         }
@@ -497,7 +495,6 @@ return function(Config)
         Blur,
         Gradient,
         New("Frame", {
-            BackgroundColor3 = Color3.fromHex(Config.Theme.Accent),
             BackgroundTransparency = 1, -- Window.Transparent and 0.25 or 0
             Size = UDim2.new(1,0,1,0),
             Name = "Background",
@@ -531,8 +528,9 @@ return function(Config)
             Window.UIElements.MainBar,
             Outline2,
             New("Frame", { -- Topbar
-                Size = UDim2.new(1,0,0,Window.UIPadding*4),
+                Size = UDim2.new(1,0,0,56),
                 BackgroundTransparency = 1,
+                BackgroundColor3 = Color3.fromRGB(50,50,50),
                 Name = "Topbar"
             }, {
                 Outline1,
@@ -580,7 +578,7 @@ return function(Config)
                     AnchorPoint = Vector2.new(1,0.5)
                 }, {
                     New("UIListLayout", {
-                        Padding = UDim.new(0,12),
+                        Padding = UDim.new(0,16),
                         FillDirection = "Horizontal",
                         SortOrder = "LayoutOrder",
                     }),
@@ -609,7 +607,7 @@ return function(Config)
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,Window.UIPadding),
                     PaddingLeft = UDim.new(0,Window.UIPadding),
-                    PaddingRight = UDim.new(0,Window.UIPadding),
+                    PaddingRight = UDim.new(0,Window.UIPadding+3),
                     PaddingBottom = UDim.new(0,Window.UIPadding),
                 })
             })
@@ -637,7 +635,6 @@ return function(Config)
             TextXAlignment = "Left",
             TextSize = 14,
             LayoutOrder = 2,
-            TextColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 TextColor3 = "Text"
             }
@@ -706,7 +703,9 @@ return function(Config)
         Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        if UIStroke then
+            Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        end
         
         Window.CanDropdown = true
         
@@ -723,7 +722,9 @@ return function(Config)
         Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = .9}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
         Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        if UIStroke then
+            Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        end
         
         task.spawn(function()
             task.wait(0.25)
@@ -891,23 +892,36 @@ return function(Config)
         }
         local Dialog = DialogModule.Create()
         
+        if DialogConfig.Icon and Creator.Icon(DialogConfig.Icon)[2] then
+            New("ImageLabel", {
+                Image = Creator.Icon(DialogConfig.Icon)[1],
+                ImageRectSize = Creator.Icon(DialogConfig.Icon)[2].ImageRectSize,
+                ImageRectOffset = Creator.Icon(DialogConfig.Icon)[2].ImageRectPosition,
+                ThemeTag = {
+                    ImageColor3 = "Text",
+                },
+                Size = UDim2.new(0,36,0,36),
+                BackgroundTransparency = 1,
+                Parent = Dialog.UIElements.Main
+            })
+        end
         
         Dialog.UIElements.UIListLayout = New("UIListLayout", {
             Padding = UDim.new(0,8*2.3),
             FillDirection = "Vertical",
-            HorizontalAlignment = "Center",
+            HorizontalAlignment = "Left",
             Parent = Dialog.UIElements.Main
         })
     
         New("UISizeConstraint", {
-			MinSize = Vector2.new(300, 20),
+			MinSize = Vector2.new(180, 20),
 			MaxSize = Vector2.new(620, math.huge),
 			Parent = Dialog.UIElements.Main,
 		})
         
         Dialog.UIElements.Title = New("TextLabel", {
             Text = DialogTable.Title,
-            TextSize = 20,
+            TextSize = 19,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
             TextXAlignment = "Left",
             TextWrapped = true,
@@ -923,7 +937,7 @@ return function(Config)
         if DialogTable.Content then
             local Content = New("TextLabel", {
                 Text = DialogTable.Content,
-                TextSize = 16,
+                TextSize = 17,
                 TextTransparency = .4,
                 TextWrapped = true,
                 RichText = true,
@@ -947,20 +961,20 @@ return function(Config)
         --     Dialog.UIElements.Title.Size = UDim2.new(1,0,0,Dialog.UIElements.Title.TextBounds.Y)
         -- end)
         
-        New("Frame", {
-            Name = "Line",
-            Size = UDim2.new(1, Dialog.UIPadding*2, 0, 1),
-            Parent = Dialog.UIElements.Main,
-            LayoutOrder = 3,
-            BackgroundTransparency = .8,
-            ThemeTag = {
-                BackgroundColor3 = "Text",
-            }
-        })
+        -- New("Frame", {
+        --     Name = "Line",
+        --     Size = UDim2.new(1, Dialog.UIPadding*2, 0, 1),
+        --     Parent = Dialog.UIElements.Main,
+        --     LayoutOrder = 3,
+        --     BackgroundTransparency = 1,
+        --     ThemeTag = {
+        --         BackgroundColor3 = "Text",
+        --     }
+        -- })
         
         local ButtonsContent = New("Frame", {
-            Size = UDim2.new(1,0,0,30),
-            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,32),
+            AutomaticSize = "None",
             BackgroundTransparency = 1,
             Parent = Dialog.UIElements.Main,
             LayoutOrder = 4,
@@ -973,40 +987,51 @@ return function(Config)
         })
         
         for _,Button in next, DialogTable.Buttons do
+            if Button.Variant == nil or Button.Variant == "" then
+                Button.Variant = "Secondary"
+            end
             local ButtonFrame = New("TextButton", {
                 Text = Button.Title or "Button",
-                TextSize = 14,
+                TextSize = 16,
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                 ThemeTag = {
-                    TextColor3 = "Text",
+                    TextColor3 = Button.Variant == "Secondary" and "Text" or "Accent",
                     BackgroundColor3 = "Text",
                 },
-                BackgroundTransparency = .93,
+                BackgroundTransparency = Button.Variant == "Secondary" and .93 or .1 ,
                 Parent = ButtonsContent,
-                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 0, 0),
-                AutomaticSize = "Y",
+                Size = UDim2.new(1 / #DialogTable.Buttons, -(((#DialogTable.Buttons - 1) * 10) / #DialogTable.Buttons), 1, 0),
+                --AutomaticSize = "X",
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, Dialog.UICorner-7),
+                    CornerRadius = UDim.new(0, Dialog.UICorner-5),
                 }),
                 New("UIPadding", {
-                    PaddingTop = UDim.new(0, Dialog.UIPadding/1.85),
+                    PaddingTop = UDim.new(0, 0),
                     PaddingLeft = UDim.new(0, Dialog.UIPadding/1.85),
                     PaddingRight = UDim.new(0, Dialog.UIPadding/1.85),
-                    PaddingBottom = UDim.new(0, Dialog.UIPadding/1.85),
+                    PaddingBottom = UDim.new(0, 0),
                 }),
                 New("Frame", {
-                    Size = UDim2.new(1,(Dialog.UIPadding/1.85)*2,1,(Dialog.UIPadding/1.85)*2),
+                    Size = UDim2.new(1,(Dialog.UIPadding/1.85)*2,1,0),
                     Position = UDim2.new(0.5,0,0.5,0),
                     AnchorPoint = Vector2.new(0.5,0.5),
                     ThemeTag = {
-                        BackgroundColor3 = "Text"
+                        BackgroundColor3 = Button.Variant == "Secondary" and "Text" or "Accent"
                     },
                     BackgroundTransparency = 1, -- .9
                 }, {
                     New("UICorner", {
-                        CornerRadius = UDim.new(0, Dialog.UICorner-7),
+                        CornerRadius = UDim.new(0, Dialog.UICorner-5),
                     }),
+                }),
+                New("UIStroke", {
+                    ThemeTag = {
+                        Color = "Text",
+                    },
+                    Thickness = 1.2,
+                    Transparency = Button.Variant == "Secondary" and .9 or .1,
+                    ApplyStrokeMode = "Border",
                 })
             })
             
@@ -1030,16 +1055,19 @@ return function(Config)
     end
     
     local CloseDialog = Window:Dialog({
-        Title = "Warning",
-        Content = "Do you want to close this window?",
+        Icon = "trash-2",
+        Title = "Close Window",
+        Content = "Do you want to close this window? You will not be able to open it again.",
         Buttons = {
             {
-                Title = "No",
-                Callback = function() end
+                Title = "Cancel",
+                Callback = function() end,
+                Variant = "Secondary",
             },
             {
-                Title = "Yes",
-                Callback = function() Window:Close():Destroy() end
+                Title = "Close Window",
+                Callback = function() Window:Close():Destroy() end,
+                Variant = "Primary",
             }
         }
     })

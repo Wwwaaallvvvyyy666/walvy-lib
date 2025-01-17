@@ -17,7 +17,6 @@ function Element:New(Config)
         Title = Toggle.Title,
         Desc = Toggle.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 44,
         Hover = true,
     })
@@ -30,7 +29,6 @@ function Element:New(Config)
     
     Toggle.UIElements.Toggle = New("Frame",{
         BackgroundTransparency = .95,
-        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
         ThemeTag = {
             BackgroundColor3 = "Text"
         },
@@ -43,7 +41,6 @@ function Element:New(Config)
             CornerRadius = UDim.new(1,0)
         }),
         New("UIStroke", {
-            Color = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 Color = "Text",
             },
@@ -55,7 +52,6 @@ function Element:New(Config)
             Position = UDim2.new(0,3,0.5,0),
             AnchorPoint = Vector2.new(0,0.5),
             BackgroundTransparency = 0.15,
-            BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 BackgroundColor3 = "Text"
             },

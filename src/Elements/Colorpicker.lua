@@ -646,7 +646,6 @@ function Element:New(Config)
         Title = Colorpicker.Title,
         Desc = Colorpicker.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 40,
         Hover = false,
     })

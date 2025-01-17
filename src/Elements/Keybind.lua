@@ -28,16 +28,13 @@ function Element:New(Config)
         Title = Keybind.Title,
         Desc = Keybind.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 85,
         Hover = Keybind.CanChange,
     })
     
     Keybind.UIElements.Keybind = New("TextLabel",{
         BackgroundTransparency = .95,
-        BackgroundColor3 = Color3.fromHex(Config.Theme.Text),
         Text = Keybind.Value,
-        TextColor3 = Color3.fromHex(Config.Theme.Text),
         TextSize = 15,
         TextXAlignment = "Right",
         --AutomaticSize = "XY",
@@ -56,7 +53,6 @@ function Element:New(Config)
             CornerRadius = UDim.new(0,Element.UICorner)
         }),
         New("UIStroke", {
-            Color = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 Color = "Text",
             },

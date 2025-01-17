@@ -4,7 +4,7 @@ local Tween = Creator.Tween
 
 local DialogModule = {
     UICorner = 14,
-    UIPadding = 18,
+    UIPadding = 12,
     Holder = nil,
     Window = nil,
 }
@@ -16,7 +16,7 @@ end
 
 function DialogModule.Create(Key)
     local Dialog = {
-        UICorner = 14,
+        UICorner = 16,
         UIPadding = 18,
         UIElements = {}
     }
@@ -36,18 +36,35 @@ function DialogModule.Create(Key)
         })
     end
     
-    Dialog.UIElements.Main = New("CanvasGroup", {
+    Dialog.UIElements.Main = New("Frame", {
+        --Size = UDim2.new(1,0,1,0),
         ThemeTag = {
-            BackgroundColor3 = "Accent"
+            BackgroundColor3 = "Accent",
         },
+        AutomaticSize = "XY",
+        BackgroundTransparency = .7,
+    }, {
+        New("UIPadding", {
+            PaddingTop = UDim.new(0, Dialog.UIPadding),
+            PaddingLeft = UDim.new(0, Dialog.UIPadding),
+            PaddingRight = UDim.new(0, Dialog.UIPadding),
+            PaddingBottom = UDim.new(0, Dialog.UIPadding),
+        })
+    })
+    
+    Dialog.UIElements.MainContainer = New("CanvasGroup", {
         Visible = false, -- true
         GroupTransparency = 1, -- 0
         BackgroundTransparency = 0,
-        AutomaticSize = "XY",
         Parent = Key and DialogModule.Window or Dialog.UIElements.FullScreen,
         Position = UDim2.new(0.5,0,0.5,0),
         AnchorPoint = Vector2.new(0.5,0.5),
+        AutomaticSize = "XY",
+        ThemeTag = {
+            BackgroundColor3 = "Accent"
+        },
     }, {
+        Dialog.UIElements.Main,
         New("UIScale", {
             Scale = .9
         }),
@@ -55,18 +72,13 @@ function DialogModule.Create(Key)
             CornerRadius = UDim.new(0,Dialog.UICorner),
         }),
         New("UIStroke", {
-            Thickness = 0.6,
+            Thickness = 0.8,
             ThemeTag = {
                 Color = "Outline",
             },
-            Transparency = 1, -- .8
+            Transparency = 1, -- .9
         }),
-        New("UIPadding", {
-            PaddingTop = UDim.new(0, Dialog.UIPadding),
-            PaddingLeft = UDim.new(0, Dialog.UIPadding),
-            PaddingRight = UDim.new(0, Dialog.UIPadding),
-            PaddingBottom = UDim.new(0, Dialog.UIPadding),
-        })
+        
     })
 
     function Dialog:Open()
@@ -78,14 +90,14 @@ function DialogModule.Create(Key)
         task.spawn(function()
             task.wait(.1)
             
-            Dialog.UIElements.Main.Visible = true
+            Dialog.UIElements.MainContainer.Visible = true
             
             if not Key then
                 Tween(Dialog.UIElements.FullScreen, 0.1, {BackgroundTransparency = .5}):Play()
             end
-            Tween(Dialog.UIElements.Main, 0.1, {GroupTransparency = 0}):Play()
-            Tween(Dialog.UIElements.Main.UIScale, 0.1, {Scale = 1}):Play()
-            Tween(Dialog.UIElements.Main.UIStroke, 0.1, {Transparency = .8}):Play()
+            Tween(Dialog.UIElements.MainContainer, 0.1, {GroupTransparency = 0}):Play()
+            Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = 1}):Play()
+            Tween(Dialog.UIElements.MainContainer.UIStroke, 0.1, {Transparency = 1}):Play()
         end)
     end
     function Dialog:Close()
@@ -98,9 +110,9 @@ function DialogModule.Create(Key)
             end)
         end
         
-        Tween(Dialog.UIElements.Main, 0.1, {GroupTransparency = 1}):Play()
-        Tween(Dialog.UIElements.Main.UIScale, 0.1, {Scale = .9}):Play()
-        Tween(Dialog.UIElements.Main.UIStroke, 0.1, {Transparency = 1}):Play()
+        Tween(Dialog.UIElements.MainContainer, 0.1, {GroupTransparency = 1}):Play()
+        Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = .9}):Play()
+        Tween(Dialog.UIElements.MainContainer.UIStroke, 0.1, {Transparency = 1}):Play()
         
         return function()
             task.spawn(function()
@@ -108,7 +120,7 @@ function DialogModule.Create(Key)
                 if not Key then
                     Dialog.UIElements.FullScreen:Destroy()
                 else
-                    Dialog.UIElements.Main:Destroy()
+                    Dialog.UIElements.MainContainer:Destroy()
                 end
             end)
         end

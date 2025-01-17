@@ -4,6 +4,7 @@ local Tween = Creator.Tween
 
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
+    SizeLower = UDim2.new(0,300,1,-56),
     UICorner = 12,
     UIPadding = 14,
     ButtonPadding = 9,
@@ -13,10 +14,19 @@ local NotificationModule = {
 }
 
 function NotificationModule.Init(Parent)
-    return New("Frame", {
+    local NotModule = {
+        Lower = false
+    }
+    
+    function NotModule.SetLower(val)
+        NotModule.Lower = val
+        NotModule.Frame.Size = val and NotificationModule.SizeLower or NotificationModule.Size
+    end
+    
+    NotModule.Frame = New("Frame", {
         Position = UDim2.new(1,-116/4,0,56),
         AnchorPoint = Vector2.new(1,0),
-        Size = NotificationModule.Size,
+        Size = NotificationModule.Size ,
         Parent = Parent,
         BackgroundTransparency = 1,
         --[[ScrollingDirection = "Y",
@@ -30,7 +40,11 @@ function NotificationModule.Init(Parent)
 			VerticalAlignment = "Bottom",
 			Padding = UDim.new(0, 8),
         }),
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0,116/4)
+        })
     })
+    return NotModule
 end
 
 function NotificationModule.New(Config)
@@ -96,7 +110,10 @@ function NotificationModule.New(Config)
             BackgroundTransparency = 1,
             Size = UDim2.new(0,20,0,20),
             Position = UDim2.new(1,-NotificationModule.UIPadding,0,NotificationModule.UIPadding),
-            AnchorPoint = Vector2.new(1,0)
+            AnchorPoint = Vector2.new(1,0),
+            ThemeTag = {
+                ImageColor3 = "Text"
+            }
         })
     end
     

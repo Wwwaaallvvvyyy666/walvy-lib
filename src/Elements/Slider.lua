@@ -31,7 +31,6 @@ function Element:New(Config)
         Title = Slider.Title,
         Desc = Slider.Desc,
         Parent = Config.Parent,
-        Theme = Config.Theme,
         TextOffset = 160,
         Hover = false,
     })
@@ -97,7 +96,6 @@ function Element:New(Config)
             Size = UDim2.new(0,60,0,0),
             TextXAlignment = "Right",
             Text = tostring(Value),
-            TextColor3 = Color3.fromHex(Config.Theme.Text),
             ThemeTag = {
                 TextColor3 = "Text"
             },
