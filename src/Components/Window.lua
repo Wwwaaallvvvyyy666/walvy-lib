@@ -32,7 +32,9 @@ return function(Config)
 		HasOutline = Config.HasOutline or false,
 		SuperParent = Config.Parent,
 		Destroyed = false,
-		IsFullscreen = false
+		IsFullscreen = false,
+		
+		CurrentTab = 0,
     } -- wtf 
     
     if Window.Folder then
@@ -124,7 +126,7 @@ return function(Config)
         ScrollingDirection = "Y",
     }, {
         New("UIPadding", {
-            PaddingTop = UDim.new(0,Window.UIPadding),
+            PaddingTop = UDim.new(0,4),
             PaddingLeft = UDim.new(0,Window.UIPadding+4),
             --PaddingRight = UDim.new(0,Window.UIPadding+4),
             PaddingBottom = UDim.new(0,Window.UIPadding),
@@ -135,10 +137,11 @@ return function(Config)
         })
     })
     
-    Window.UIElements.SideBarContainer = New("Frame", {
-        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-56),
-        Position = UDim2.new(0,0,0,56),
+    Window.UIElements.SideBarContainer = New("CanvasGroup", {
+        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-52),
+        Position = UDim2.new(0,0,0,52),
         BackgroundTransparency = 1,
+        GroupTransparency = 0,
     }, {
         Window.UIElements.SideBar,
         Slider,
@@ -221,8 +224,9 @@ return function(Config)
     updateSliderSize()
 
     Window.UIElements.MainBar = New("Frame", {
-        Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-56),
-        Position = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,56),
+        Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-52),
+        Position = UDim2.new(1,0,0,52),
+        AnchorPoint = Vector2.new(1,0),
         BackgroundTransparency = 1,
     })
     
@@ -230,7 +234,8 @@ return function(Config)
         Size = UDim2.new(1,0,1,0),
         BackgroundTransparency = 1, -- Window.Transparent and 0.25 or 0
         ZIndex = 3,
-        Name = "Gradient"
+        Name = "Gradient",
+        Visible = false
     }, {
         New("UIGradient", {
             Color = ColorSequence.new(Color3.new(0,0,0),Color3.new(0,0,0)),
@@ -286,6 +291,19 @@ return function(Config)
         Image = Creator.Icon("minus")[1],
         ImageRectOffset = Creator.Icon("minus")[2].ImageRectPosition,
         ImageRectSize = Creator.Icon("minus")[2].ImageRectSize,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1,-6,1,-6),
+        ThemeTag = {
+            ImageColor3 = "Text"
+        },
+        AnchorPoint = Vector2.new(0.5,0.5),
+        Position = UDim2.new(0.5,0,0.5,0),
+    })
+
+    local SearchButton = New("ImageButton", {
+        Image = Creator.Icon("search")[1],
+        ImageRectOffset = Creator.Icon("search")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("search")[2].ImageRectSize,
         BackgroundTransparency = 1,
         Size = UDim2.new(1,-6,1,-6),
         ThemeTag = {
@@ -461,8 +479,8 @@ return function(Config)
         })
         Outline2 = New("Frame", {
             Name = "Outline",
-            Size = UDim2.new(0,1,1,-56),
-            Position = UDim2.new(0,Window.SideBarWidth -Window.UIPadding/2,0,56),
+            Size = UDim2.new(0,1,1,-52),
+            Position = UDim2.new(0,Window.SideBarWidth -Window.UIPadding/2,0,52),
             BackgroundTransparency= .9,
             AnchorPoint = Vector2.new(0.5,0),
             ThemeTag = {
@@ -528,7 +546,7 @@ return function(Config)
             Window.UIElements.MainBar,
             Outline2,
             New("Frame", { -- Topbar
-                Size = UDim2.new(1,0,0,56),
+                Size = UDim2.new(1,0,0,52),
                 BackgroundTransparency = 1,
                 BackgroundColor3 = Color3.fromRGB(50,50,50),
                 Name = "Topbar"
@@ -578,7 +596,7 @@ return function(Config)
                     AnchorPoint = Vector2.new(1,0.5)
                 }, {
                     New("UIListLayout", {
-                        Padding = UDim.new(0,16),
+                        Padding = UDim.new(0,20),
                         FillDirection = "Horizontal",
                         SortOrder = "LayoutOrder",
                     }),
@@ -589,19 +607,19 @@ return function(Config)
                     }, {
                         CloseButton,
                     }),
-                    -- New("TextButton", {
-                    --     Size = UDim2.new(0,24,0,24),
-                    --     BackgroundTransparency = 1,
-                    --     LayoutOrder=2,
-                    -- }, {
-                    --     FullscreenButton,
-                    -- }),
                     New("TextButton", {
                         Size = UDim2.new(0,24,0,24),
                         BackgroundTransparency = 1,
-                        LayoutOrder=1,
+                        LayoutOrder = 2,
                     }, {
                         MinimizeButton,
+                    }),
+                    New("TextButton", {
+                        Size = UDim2.new(0,24,0,24),
+                        BackgroundTransparency = 1,
+                        LayoutOrder = 1,
+                    }, {
+                        SearchButton,
                     })
                 }),
                 New("UIPadding", {
@@ -626,7 +644,7 @@ return function(Config)
     
     if Window.Author then
         local Author = New("TextLabel", {
-            Text = "by " .. Window.Author,
+            Text = Window.Author,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             BackgroundTransparency = 1,
             TextTransparency = 0.4,
@@ -671,15 +689,22 @@ return function(Config)
                 ImageLabel.Image = Window.Icon
                 OpenButtonIcon.Image = Window.Icon
             elseif string.find(Window.Icon,"http") then
-                if not isfile("WindUI" .. Window.Folder .. "/Assets/Icon.png") then
-                    local response = request({
-                        Url = Window.Icon,
-                        Method = "GET",
-                    }).Body
-                    writefile("WindUI" .. Window.Folder .. "/Assets/Icon.png", response)
+                local success, response = pcall(function()
+                    if not isfile("WindUI/" .. Window.Folder .. "/Assets/Icon.png") then
+                        local response = request({
+                            Url = Window.Icon,
+                            Method = "GET",
+                        }).Body
+                        writefile("WindUI/" .. Window.Folder .. "/Assets/Icon.png", response)
+                    end
+                    ImageLabel.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/Icon.png")
+                    OpenButtonIcon.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/Icon.png")
+                end)
+                if not success then
+                    ImageLabel:Destroy()
+                    
+                    warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
                 end
-                ImageLabel.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
-                OpenButtonIcon.Image = getcustomasset("WindUI" .. Window.Folder .. "/Assets/Icon.png")
             else
                 if Creator.Icon(tostring(Window.Icon))[1] then
                     ImageLabel.Image = Creator.Icon(Window.Icon)[1]
@@ -855,6 +880,8 @@ return function(Config)
     end
     
     local TabModule = require("./Tab").Init(Window, Config.WindUI)
+    
+    TabModule:OnChange(function(t) Window.CurrentTab = t end)
     function Window:Tab(TabConfig)
         return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
     end
@@ -892,17 +919,31 @@ return function(Config)
         }
         local Dialog = DialogModule.Create()
         
+        local DialogTopFrame = New("Frame", {
+            Size = UDim2.new(1,0,0,0),
+            AutomaticSize = "Y",
+            BackgroundTransparency = 1,
+            Parent = Dialog.UIElements.Main
+        }, {
+            New("UIListLayout", {
+                FillDirection = "Horizontal",
+                Padding = UDim.new(0,Dialog.UIPadding),
+                VerticalAlignment = "Center"
+            })
+        })
+        
+        local p
         if DialogConfig.Icon and Creator.Icon(DialogConfig.Icon)[2] then
-            New("ImageLabel", {
+            p = New("ImageLabel", {
                 Image = Creator.Icon(DialogConfig.Icon)[1],
                 ImageRectSize = Creator.Icon(DialogConfig.Icon)[2].ImageRectSize,
                 ImageRectOffset = Creator.Icon(DialogConfig.Icon)[2].ImageRectPosition,
                 ThemeTag = {
                     ImageColor3 = "Text",
                 },
-                Size = UDim2.new(0,36,0,36),
+                Size = UDim2.new(0,26,0,26),
                 BackgroundTransparency = 1,
-                Parent = Dialog.UIElements.Main
+                Parent = DialogTopFrame
             })
         end
         
@@ -926,13 +967,13 @@ return function(Config)
             TextXAlignment = "Left",
             TextWrapped = true,
             RichText = true,
-            Size = UDim2.new(1,0,0,0),
+            Size = UDim2.new(1,p and -26-Dialog.UIPadding or 0,0,0),
             AutomaticSize = "Y",
             ThemeTag = {
                 TextColor3 = "Text"
             },
             BackgroundTransparency = 1,
-            Parent = Dialog.UIElements.Main
+            Parent = DialogTopFrame
         })
         if DialogTable.Content then
             local Content = New("TextLabel", {
@@ -1044,7 +1085,7 @@ return function(Config)
             ButtonFrame.MouseButton1Click:Connect(function()
                 Dialog:Close()
                 task.spawn(function()
-                    pcall(Button.Callback)
+                    Button.Callback()
                 end)
             end)
         end
@@ -1072,6 +1113,7 @@ return function(Config)
         }
     })
     CloseButton.MouseButton1Click:Connect(function()
+        Tween(Window.UIElements.Main, 0.35, {Position = UDim2.new(0.5,0,0.5,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         CloseDialog:Open()
     end)
 
@@ -1115,6 +1157,55 @@ return function(Config)
             end
         end
     end)
+    
+    
+    
+    -- / Search Bar /
+    
+    local SearchBar = require("./SearchBar")
+    
+    SearchButton.MouseButton1Click:Connect(function()
+        local Closed = false
+        Tween(Window.UIElements.MainBar, .25, {
+            Size = UDim2.new(
+                1,
+                0,
+                Window.UIElements.SideBarContainer.Size.Y.Scale,
+                Window.UIElements.SideBarContainer.Size.Y.Offset
+            )
+        }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+        Tween(Window.UIElements.SideBarContainer, .1, {
+            GroupTransparency = 1
+        }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+        
+        
+        SearchBar.new(
+            TabModule.Tabs[Window.CurrentTab].Elements, 
+            Window.UIElements.Main, 
+            TabModule.Tabs[Window.CurrentTab].Title, 
+            function()
+                Closed = true
+                
+                Window.UIElements.SideBarContainer.Visible = true
+                Tween(Window.UIElements.MainBar, .25, {
+                    Size = UDim2.new(
+                        1,
+                        -Window.UIElements.SideBarContainer.AbsoluteSize.X,
+                        Window.UIElements.SideBarContainer.Size.Y.Scale,
+                        Window.UIElements.SideBarContainer.Size.Y.Offset
+                    )
+                }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+                Tween(Window.UIElements.SideBarContainer, .1, {
+                    GroupTransparency = 0
+                }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+            end,
+            TabModule.Tabs[Window.CurrentTab].ContainerFrame 
+        )
+        
+        task.wait(.25)
+        Window.UIElements.SideBarContainer.Visible = Closed
+    end)
+    
     
     return Window
 end

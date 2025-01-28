@@ -320,7 +320,7 @@ function Element:Colorpicker(Config, OnApply)
 	end
 	
 	local ButtonsContent = New("Frame", {
-        Size = UDim2.new(1,0,0,30),
+        Size = UDim2.new(1,0,0,32),
         AutomaticSize = "Y",
         Position = UDim2.new(0,0,0,40+8+182+24),
         BackgroundTransparency = 1,
@@ -341,50 +341,59 @@ function Element:Colorpicker(Config, OnApply)
 	    },
 	    {
 	        Title = "Apply",
+	        Variant = "Primary",
 	        Callback = function() OnApply(Color3.fromHSV(Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib), Colorpicker.Transparency) end
 	    }
 	}
 	
 	for _,Button in next, Buttons do
+        if Button.Variant == nil or Button.Variant == "" then
+            Button.Variant = "Secondary"
+        end
         local ButtonFrame = New("TextButton", {
             Text = Button.Title or "Button",
-            TextSize = 14,
+            TextSize = 16,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             ThemeTag = {
-                TextColor3 = "Text",
+                TextColor3 = Button.Variant == "Secondary" and "Text" or "Accent",
                 BackgroundColor3 = "Text",
             },
-            BackgroundTransparency = .9,
-            ZIndex = 999999,
+            BackgroundTransparency = Button.Variant == "Secondary" and .93 or .1 ,
             Parent = ButtonsContent,
-            Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 8) / #Buttons), 0, 0),
-            AutomaticSize = "Y",
+            Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 10) / #Buttons), 1, 0),
+            --AutomaticSize = "X",
         }, {
             New("UICorner", {
-                CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
+                CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-5),
             }),
             New("UIPadding", {
-                PaddingTop = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
-                PaddingLeft = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
-                PaddingRight = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
-                PaddingBottom = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
+                PaddingTop = UDim.new(0, 0),
+                PaddingLeft = UDim.new(0, ColorpickerFrame.UIPadding/1.85),
+                PaddingRight = UDim.new(0, ColorpickerFrame.UIPadding/1.85),
+                PaddingBottom = UDim.new(0, 0),
             }),
             New("Frame", {
-                Size = UDim2.new(1,(ColorpickerFrame.UIPadding/1.6)*2,1,(ColorpickerFrame.UIPadding/1.6)*2),
+                Size = UDim2.new(1,(ColorpickerFrame.UIPadding/1.85)*2,1,0),
                 Position = UDim2.new(0.5,0,0.5,0),
                 AnchorPoint = Vector2.new(0.5,0.5),
                 ThemeTag = {
-                    BackgroundColor3 = "Text"
+                    BackgroundColor3 = Button.Variant == "Secondary" and "Text" or "Accent"
                 },
                 BackgroundTransparency = 1, -- .9
             }, {
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
+                    CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-5),
                 }),
+            }),
+            New("UIStroke", {
+                ThemeTag = {
+                    Color = "Text",
+                },
+                Thickness = 1.2,
+                Transparency = Button.Variant == "Secondary" and .9 or .1,
+                ApplyStrokeMode = "Border",
             })
         })
-    
-        
         
         ButtonFrame.MouseEnter:Connect(function()
             Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = .9}):Play()
@@ -398,16 +407,72 @@ function Element:Colorpicker(Config, OnApply)
                 Button.Callback()
             end)
         end)
-	end
-	
-	
-	local TransparencySlider, TransparencyDrag, TransparencyColor
-	if Colorpicker.Transparency then
-		local TransparencyDragHolder = New("Frame", {
-			Size = UDim2.new(1, 0, 1, 0),
-			Position = UDim2.fromOffset(0, 0),
-			BackgroundTransparency = 1,
-		})
+    end
+        
+  	
+--	for _,Button in next, Buttons do
+--         local ButtonFrame = New("TextButton", {
+--             Text = Button.Title or "Button",
+--             TextSize = 14,
+--             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+--             ThemeTag = {
+--                 TextColor3 = "Text",
+--                 BackgroundColor3 = "Text",
+--             },
+--             BackgroundTransparency = .9,
+--             ZIndex = 999999,
+--             Parent = ButtonsContent,
+--             Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 8) / #Buttons), 0, 0),
+--             AutomaticSize = "Y",
+--         }, {
+--             New("UICorner", {
+--                 CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
+--             }),
+--             New("UIPadding", {
+--                 PaddingTop = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
+--                 PaddingLeft = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
+--                 PaddingRight = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
+--                 PaddingBottom = UDim.new(0, ColorpickerFrame.UIPadding/1.6),
+--             }),
+--             New("Frame", {
+--                 Size = UDim2.new(1,(ColorpickerFrame.UIPadding/1.6)*2,1,(ColorpickerFrame.UIPadding/1.6)*2),
+--                 Position = UDim2.new(0.5,0,0.5,0),
+--                 AnchorPoint = Vector2.new(0.5,0.5),
+--                 ThemeTag = {
+--                     BackgroundColor3 = "Text"
+--                 },
+--                 BackgroundTransparency = 1, -- .9
+--             }, {
+--                 New("UICorner", {
+--                     CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-7),
+--                 }),
+--             })
+--         })
+    
+        
+        
+--         ButtonFrame.MouseEnter:Connect(function()
+--             Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = .9}):Play()
+--         end)
+--         ButtonFrame.MouseLeave:Connect(function()
+--             Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
+--         end)
+--         ButtonFrame.MouseButton1Click:Connect(function()
+--             ColorpickerFrame:Close()
+--             task.spawn(function()
+--                 Button.Callback()
+--             end)
+--         end)
+--	end
+  	
+  	
+  	local TransparencySlider, TransparencyDrag, TransparencyColor
+  	if Colorpicker.Transparency then
+  		local TransparencyDragHolder = New("Frame", {
+  			Size = UDim2.new(1, 0, 1, 0),
+  			Position = UDim2.fromOffset(0, 0),
+  			BackgroundTransparency = 1,
+  		})
 
 		TransparencyDrag = New("ImageLabel", {
 			Size = UDim2.new(1,0,0,3),

@@ -9,7 +9,8 @@ local RenderStepped = RunService.Heartbeat
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 
-local Icons = require("./Icons")
+local Icons = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Footagesus/Icons/main/Main.lua"))()
+Icons.SetIconsType("lucide")
 
 local Creator = {
     Font = "rbxassetid://12187365364", -- Inter
@@ -121,10 +122,7 @@ function Creator.UpdateTheme(TargetObject, isTween)
 end
 
 function Creator.Icon(Icon)
-    if Icons.Icons[Icon] then
-        return { Icons.Spritesheets[tostring(Icons.Icons[Icon].Image)], Icons.Icons[Icon] }
-    end
-    return nil
+    return Icons.Icon(Icon)
 end
 
 function Creator.New(Name, Properties, Children)

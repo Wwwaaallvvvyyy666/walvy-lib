@@ -24,7 +24,7 @@ local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
 
 WindUI.ScreenGui = New("ScreenGui", {
     Name = "WindUI",
-    Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or gethui(),
+    Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or gethui and gethui() or game.CoreGui,
     IgnoreGuiInset = true,
 }, {
     New("Folder", {
@@ -94,6 +94,15 @@ end
 
 function WindUI:CreateWindow(Config)
     local CreateWindow = require("./Components/Window")
+    
+    if not isfolder("WindUI") then
+        makefolder("WindUI")
+    end
+    if Config.Folder then
+        makefolder(Config.Folder)
+    else
+        makefolder(Config.Title)
+    end
     
     Config.WindUI = WindUI
     Config.Parent = WindUI.ScreenGui.Window

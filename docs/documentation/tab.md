@@ -16,9 +16,3 @@ local Tab = Window:Tab({
 ```lua
 Window:SelectTab(2) -- Number of Tab
 ```
-
-::: tip INFO
-1544 Lucide Icons are used in this UI Library
-
-Last icons update: December 8, 2024
-:::

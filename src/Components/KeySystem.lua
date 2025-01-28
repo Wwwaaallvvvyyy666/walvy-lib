@@ -159,7 +159,8 @@ function KeySystem.new(Config, Filename, func)
                     KeyDialog:Close()()
                     
                     if Config.KeySystem.SaveKey then
-                        writefile(Config.Folder .. "/" .. Filename .. ".key", tostring(Key))
+                        local folder = Config.Folder or Config.Title
+                        writefile(folder .. "/" .. Filename .. ".key", tostring(Key))
                     end
                     
                     task.wait(.4)
@@ -183,9 +184,6 @@ function KeySystem.new(Config, Filename, func)
     if not Config.KeySystem.URL then
         table.remove(KeySystemButtons, 1)
     end
-    
-    print(#KeySystemButtons)
-    print(1 / #KeySystemButtons)
     
     local function CreateButton(Title, Icon, Callback, Variant)
         local ButtonFrame = New("TextButton", {

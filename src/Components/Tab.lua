@@ -11,6 +11,8 @@ local TabModule = {
     Containers = {},
     SelectedTab = nil,
     TabCount = 0,
+    
+    OnChangeFunc = function(v) end
 }
 
 function TabModule.Init(Window, WindUI)
@@ -27,6 +29,7 @@ function TabModule.New(Config)
         Index = nil,
         UIElements = {},
         Elements = {},
+        ContainerFrame = nil
     }
     
     local Window = TabModule.Window
@@ -132,7 +135,7 @@ function TabModule.New(Config)
     })
 
     Tab.UIElements.ContainerFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        Tab.UIElements.ContainerFrame.CanvasSize = UDim2.new(0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.X,0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.Y+Window.UIPadding*2)
+        Tab.UIElements.ContainerFrame.CanvasSize = UDim2.new(0,0,0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.Y+Window.UIPadding*2)
     end)
 
     local Slider = New("Frame", {
@@ -179,6 +182,8 @@ function TabModule.New(Config)
 
     TabModule.Containers[TabIndex] = Tab.UIElements.ContainerFrameCanvas
 	TabModule.Tabs[TabIndex] = Tab
+	
+	Tab.ContainerFrame = ContainerFrameCanvas
 	
 	Tab.UIElements.Main.MouseButton1Click:Connect(function()
 	    TabModule:SelectTab(TabIndex)
@@ -263,6 +268,12 @@ function TabModule.New(Config)
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
+        local ParagraphModule = {
+            __type = "Paragraph",
+            Title = ElementConfig.Title or "Input",
+            Desc = ElementConfig.Desc or nil,
+            Locked = ElementConfig.Locked or false,
+        }
         local Paragraph = require("../Components/Element")({
             Title = ElementConfig.Title or "Paragraph",
             Desc = ElementConfig.Desc,
@@ -275,6 +286,7 @@ function TabModule.New(Config)
             Window = Window,
             Hover = false,
         })
+        ParagraphModule.ParagraphFrame = Paragraph
         if ElementConfig.Buttons and #ElementConfig.Buttons > 0 then
             local ButtonsContainer = New("Frame", {
                 Size = UDim2.new(1,0,0,0),
@@ -318,8 +330,16 @@ function TabModule.New(Config)
                 end)
             end
         end
-        Tab.Elements["Paragraph"] = Paragraph
-        return Paragraph
+        
+        function ParagraphModule:SetTitle(Title)
+            ParagraphModule.ParagraphFrame:SetTitle(Title)
+        end
+        function ParagraphModule:SetDesc(Title)
+            ParagraphModule.ParagraphFrame:SetDesc(Title)
+        end
+        
+        table.insert(Tab.Elements, ParagraphModule)
+        return ParagraphModule
     end
     function Tab:Button(ElementConfig)
         
@@ -331,7 +351,7 @@ function TabModule.New(Config)
             
             Parent = Tab.UIElements.ContainerFrame
         })
-        Tab.Elements[Button] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.ButtonFrame:SetTitle(Title)
@@ -353,7 +373,7 @@ function TabModule.New(Config)
             
             Parent = Tab.UIElements.ContainerFrame
         })
-        Tab.Elements[Toggle] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.ToggleFrame:SetTitle(Title)
@@ -375,7 +395,7 @@ function TabModule.New(Config)
             Callback = ElementConfig.Callback,
             Parent = Tab.UIElements.ContainerFrame,
         })
-        Tab.Elements[Slider] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.SliderFrame:SetTitle(Title)
@@ -397,7 +417,7 @@ function TabModule.New(Config)
             
             Parent = Tab.UIElements.ContainerFrame,
         })
-        Tab.Elements[Keybind] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.KeybindFrame:SetTitle(Title)
@@ -421,7 +441,7 @@ function TabModule.New(Config)
             
             Parent = Tab.UIElements.ContainerFrame,
         })
-        Tab.Elements[Input] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.InputFrame:SetTitle(Title)
@@ -447,7 +467,7 @@ function TabModule.New(Config)
             Parent = Tab.UIElements.ContainerFrame,
             Window = Window
         })
-        Tab.Elements[Dropdown] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.DropdownFrame:SetTitle(Title)
@@ -467,7 +487,7 @@ function TabModule.New(Config)
             Window = Window,
             WindUI = WindUI,
         })
-        Tab.Elements[Code] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.CodeFrame:SetTitle(Title)
@@ -491,7 +511,7 @@ function TabModule.New(Config)
             
             Window = Window
         })
-        Tab.Elements[Colorpicker] = Content
+        table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
             Content.ColorpickerFrame:SetTitle(Title)
@@ -510,7 +530,7 @@ function TabModule.New(Config)
             TextSize = ElementConfig.TextSize,
             Parent = Tab.UIElements.ContainerFrame,
         })
-        Tab.Elements[Section] = Content
+        table.insert(Tab.Elements, Content)
         return Content
     end
 
@@ -564,6 +584,10 @@ function TabModule.New(Config)
 	return Tab
 end
 
+function TabModule:OnChange(func)
+    TabModule.OnChangeFunc = func
+end
+
 function TabModule:SelectTab(TabIndex)
     TabModule.SelectedTab = TabIndex
     
@@ -588,6 +612,8 @@ function TabModule:SelectTab(TabIndex)
 	    TabModule.Containers[TabIndex].Visible = true
 	    Tween(TabModule.Containers[TabIndex], 0.15, {AnchorPoint = Vector2.new(0,0)}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
 	end)
+	
+	TabModule.OnChangeFunc(TabIndex)
 end
 
 return TabModule

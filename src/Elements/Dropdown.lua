@@ -102,9 +102,9 @@ function Element:New(Config)
         BackgroundTransparency = 0.15,
         Size = UDim2.new(1,0,1,0)
     }, {
-        New("UISizeConstraint", {
-			MinSize = Vector2.new(190, 0),
-		}),
+--         New("UISizeConstraint", {
+--			MinSize = Vector2.new(190, 0),
+--		}),
         New("UICorner", {
             CornerRadius = UDim.new(0,Element.MenuCorner)
         }),
@@ -140,16 +140,26 @@ function Element:New(Config)
 		})
     })
 
-    Dropdown.UIElements.MenuCanvas = New("Frame", {
-        Size = UDim2.new(0,170,0,300),
+    Dropdown.UIElements.MenuCanvas = New("CanvasGroup", {
+        Size = UDim2.new(0,190,0,300),
         BackgroundTransparency = 1,
         Position = UDim2.new(-10,0,-10,0),
         Visible = false,
         Active = false,
+        GroupTransparency = 1, -- 0
         Parent = Config.Window.SuperParent.Parent.Dropdowns,
 
     }, {
-        Dropdown.UIElements.Menu
+        Dropdown.UIElements.Menu,
+        New("UIPadding", {
+            PaddingTop = UDim.new(0,1),
+            PaddingLeft = UDim.new(0,1),
+            PaddingRight = UDim.new(0,1),
+            PaddingBottom = UDim.new(0,1),
+        }),
+        New("UISizeConstraint", {
+            MinSize = Vector2.new(190,0)
+        })
     })
     
     function Dropdown:Lock()
@@ -215,7 +225,7 @@ function Element:New(Config)
         Dropdown.Tabs = {}
         
         for Index,Tab in next, Values do
-            task.wait(0.012)
+            --task.wait(0.012)
             local TabMain = {
                 Name = Tab,
                 Selected = false,
@@ -226,14 +236,8 @@ function Element:New(Config)
                 --AutomaticSize = "Y",
                 BackgroundTransparency = 1,
                 Parent = Dropdown.UIElements.Menu.CanvasGroup.ScrollingFrame,
-                Text = Tab,
-                TextXAlignment = "Left",
-                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                ThemeTag = {
-                    TextColor3 = "Text",
-                    BackgroundColor3 = "Text"
-                },
-                TextSize = 15,
+                Text = "",
+                
             }, {
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,Element.TabPadding),
@@ -243,6 +247,36 @@ function Element:New(Config)
                 }),
                 New("UICorner", {
                     CornerRadius = UDim.new(0,Element.MenuCorner - Element.MenuPadding)
+                }),
+                New("ImageLabel", {
+                    Image = Creator.Icon("check")[1],
+                    ImageRectSize = Creator.Icon("check")[2].ImageRectSize,
+                    ImageRectOffset = Creator.Icon("check")[2].ImageRectPosition,
+                    ThemeTag = {
+                        ImageColor3 = "Text",
+                    },
+                    ImageTransparency = 1, -- .1
+                    Size = UDim2.new(0,18,0,18),
+                    AnchorPoint = Vector2.new(0,0.5),
+                    Position = UDim2.new(0,0,0.5,0),
+                    BackgroundTransparency = 1,
+                }),
+                New("TextLabel", {
+                    Text = Tab,
+                    TextXAlignment = "Left",
+                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                    ThemeTag = {
+                        TextColor3 = "Text",
+                        BackgroundColor3 = "Text"
+                    },
+                    TextSize = 15,
+                    BackgroundTransparency = 1,
+                    TextTransparency = .4,
+                    AutomaticSize = "Y",
+                    TextTruncate = "AtEnd",
+                    Size = UDim2.new(1,-18-Element.TabPadding*3,0,0),
+                    AnchorPoint = Vector2.new(0,0.5),
+                    Position = UDim2.new(0,0,0.5,0), -- 0,18+Element.TabPadding,0.5,0
                 })
             })
         
@@ -255,6 +289,9 @@ function Element:New(Config)
             
             if TabMain.Selected then
                 TabMain.UIElements.TabItem.BackgroundTransparency = .93
+                TabMain.UIElements.TabItem.ImageLabel.ImageTransparency = .1
+                TabMain.UIElements.TabItem.TextLabel.Position = UDim2.new(0,18+Element.TabPadding,0.5,0)
+                TabMain.UIElements.TabItem.TextLabel.TextTransparency = 0
             end
             
             Dropdown.Tabs[Index] = TabMain
@@ -271,6 +308,8 @@ function Element:New(Config)
                     if not TabMain.Selected then
                         TabMain.Selected = true
                         Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
+                        Tween(TabMain.UIElements.TabItem.ImageLabel, 0.1, {ImageTransparency = .1}):Play()
+                        Tween(TabMain.UIElements.TabItem.TextLabel, 0.1, {Position = UDim2.new(0,18+Element.TabPadding,0.5,0), TextTransparency = 0}):Play()
                         table.insert(Dropdown.Value, TabMain.Name)
                     else
                         if not Dropdown.AllowNone and #Dropdown.Value == 1 then
@@ -278,6 +317,8 @@ function Element:New(Config)
                         end
                         TabMain.Selected = false
                         Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
+                        Tween(TabMain.UIElements.TabItem.ImageLabel, 0.1, {ImageTransparency = 1}):Play()
+                        Tween(TabMain.UIElements.TabItem.TextLabel, 0.1, {Position = UDim2.new(0,0,0.5,0), TextTransparency = .4}):Play()
                         for i, v in ipairs(Dropdown.Value) do
                             if v == TabMain.Name then
                                 table.remove(Dropdown.Value, i)
@@ -289,10 +330,14 @@ function Element:New(Config)
                     for Index, TabPisun in next, Dropdown.Tabs do
                         -- pisun
                         Tween(TabPisun.UIElements.TabItem, 0.1, {BackgroundTransparency = 1}):Play()
+                        Tween(TabPisun.UIElements.TabItem.ImageLabel, 0.1, {ImageTransparency = 1}):Play()
+                        Tween(TabPisun.UIElements.TabItem.TextLabel, 0.1, {Position = UDim2.new(0,0,0.5,0), TextTransparency = .4}):Play()
                         TabPisun.Selected = false
                     end
                     TabMain.Selected = true
                     Tween(TabMain.UIElements.TabItem, 0.1, {BackgroundTransparency = .93}):Play()
+                    Tween(TabMain.UIElements.TabItem.ImageLabel, 0.1, {ImageTransparency = .1}):Play()
+                    Tween(TabMain.UIElements.TabItem.TextLabel, 0.1, {Position = UDim2.new(0,18+Element.TabPadding,0.5,0), TextTransparency = 0}):Play()
                     Dropdown.Value = TabMain.Name
                 end
                 Callback()
@@ -331,6 +376,7 @@ function Element:New(Config)
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
         
         Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 180}):Play()
+        Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 0}):Play()
         
         UpdatePosition()
     end
@@ -340,10 +386,11 @@ function Element:New(Config)
         Tween(Dropdown.UIElements.Menu, 0.1, {
             Size = UDim2.new(
                 1, 0,
-                0, 0
+                0.8, 0
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
         Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 0}):Play()
+        Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 1}):Play()
         task.wait(.1)
         Dropdown.UIElements.MenuCanvas.Visible = false
         Dropdown.UIElements.MenuCanvas.Active = false

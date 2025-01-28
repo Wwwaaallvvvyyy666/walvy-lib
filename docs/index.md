@@ -6,7 +6,7 @@ hero:
   text: Luau UI Library
   tagline: Open-source, customizable UI library for Roblox with a dark theme and flexible color options.
   image:
-    src: https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/docs/W.png
+    src: https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/docs/ui.png
     alt: WindUI
   actions:
     - theme: brand
@@ -15,6 +15,9 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/Footagesus/WindUI
+    - theme: alt
+      text: Use new documentation
+      link: https://tree-hub.vercel.app/docs/WindUI
 
 features:
   - icon: 🎨

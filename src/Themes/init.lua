@@ -1,7 +1,7 @@
 return {
     Dark = {
         Name = "Dark",
-        Accent = "#181818",
+        Accent = "#1b1b1b",
         Outline = "#FFFFFF",
         Text = "#FFFFFF",
         PlaceholderText = "#999999",

@@ -1,4 +1,6 @@
---by me.
+-- Outdated!
+-- Use new: https://github.com/Footagesus/Icons
+--
 
 return { Spritesheets = {
     ["1"] = "rbxassetid://128927283736760",

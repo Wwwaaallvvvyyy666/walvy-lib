@@ -42,14 +42,21 @@ return function(Config)
             ImageLabel.ImageRectSize = Creator.Icon(Element.Image)[2].ImageRectSize
         end
         if string.find(Element.Image,"http") then
-            if not isfile("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png") then
-                local response = request({
-                    Url = Element.Image,
-                    Method = "GET",
-                }).Body
-                writefile("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png", response)
+            local success, response = pcall(function()
+                if not isfile("WindUI/" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png") then
+                    local response = request({
+                        Url = Element.Image,
+                        Method = "GET",
+                    }).Body
+                    writefile("WindUI/" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png", response)
+                end
+                ImageLabel.Image = getcustomasset("WindUI/" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png")
+            end)
+            if not success then
+                ImageLabel:Destroy()
+                
+                warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
             end
-            ImageLabel.Image = getcustomasset("WindUI" .. Config.Window.Folder .. "/Assets/" .. Element.Title .. ".png")
         elseif string.find(Element.Image,"rbxassetid") then
             ImageLabel.Image = Element.Image
         end
