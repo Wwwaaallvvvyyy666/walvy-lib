@@ -38,6 +38,9 @@ WindUI.ScreenGui = New("ScreenGui", {
     }),
     New("Folder", {
         Name = "KeySystem"
+    }),
+    New("Folder", {
+        Name = "ToolTips"
     })
 })
 ProtectGui(WindUI.ScreenGui)
@@ -123,8 +126,8 @@ function WindUI:CreateWindow(Config)
     local Filename = LocalPlayer.Name or "Unknown"
     
     if Config.KeySystem then
+        CanLoadWindow = false
         if Config.KeySystem.SaveKey and Config.Folder then
-            CanLoadWindow = false
             if isfile(Config.Folder .. "/" .. Filename .. ".key") then
                 local isKey = tostring(Config.KeySystem.Key) == tostring(readfile(Config.Folder .. "/" .. Filename .. ".key" ))
                 if type(Config.KeySystem.Key) == "table" then
@@ -153,12 +156,13 @@ function WindUI:CreateWindow(Config)
     function Window:ToggleTransparency(Value)
         WindUI.Transparent = Value
         Window.UIElements.Main.Background.BackgroundTransparency = Value and WindUI.TransparencyValue or 0
+        Window.UIElements.Main.Background.ImageLabel.ImageTransparency = Value and WindUI.TransparencyValue or 0
         Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
             NumberSequenceKeypoint.new(0, 1), 
             NumberSequenceKeypoint.new(1, Value and 0.85 or 0.7),
         }
     end
-
+    
     return Window
 end
 

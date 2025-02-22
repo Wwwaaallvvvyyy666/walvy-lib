@@ -2,6 +2,8 @@ local Creator = require("../Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
+local UserInputService = game:GetService("UserInputService")
+
 return function(Config)
     local Element = {
         Title = Config.Title,
@@ -15,6 +17,7 @@ return function(Config)
     
     local ImageSize = Element.ImageSize
     local CanHover = true
+    local Hovering = false
     
     local ImageFrame
     if Element.Image then
@@ -65,13 +68,18 @@ return function(Config)
     Element.UIElements.Main = New("TextButton", {
         Size = UDim2.new(1,0,0,0),
         AutomaticSize = "Y",
-        BackgroundTransparency = 0.98,
+        BackgroundTransparency = 0.95,
+        AnchorPoint = Vector2.new(0.5,0.5),
+        Position = UDim2.new(0.5,0,0.5,0),
         ThemeTag = {
             BackgroundColor3 = "Text"
         }
     }, {
         New("UICorner", {
             CornerRadius = UDim.new(0,8),
+        }),
+        New("UIScale", {
+            Scale = 1,
         }),
         ImageFrame,
         New("Frame", {
@@ -179,7 +187,7 @@ return function(Config)
             PaddingTop = UDim.new(0,0),
             PaddingLeft = UDim.new(0,2),
             PaddingRight = UDim.new(0,2),
-            PaddingBottom = UDim.new(0,0),
+            PaddingBottom = UDim.new(0,2),
         })
     })
     
@@ -237,15 +245,36 @@ return function(Config)
     if Element.Hover then
         Element.UIElements.Main.MouseEnter:Connect(function()
             if CanHover then
-                Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 0.97}):Play()
+                Tween(Element.UIElements.Main.Highlight, 0.066, {BackgroundTransparency = 0.97}):Play()
             end
         end)
-        Element.UIElements.Main.MouseLeave:Connect(function()
+        -- Element.UIElements.Main.MouseLeave:Connect(function()
+        --     if CanHover then
+        --     end
+        -- end)
+        
+        Element.UIElements.Main.MouseButton1Down:Connect(function()
             if CanHover then
-                Tween(Element.UIElements.Main.Highlight, 0.08, {BackgroundTransparency = 1}):Play()
+                Hovering = true
+                Tween(Element.UIElements.Main.UIScale, 0.11, {Scale = .965}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            end
+        end)
+        
+        Element.UIElements.Main.InputEnded:Connect(function()
+            if CanHover then
+                Tween(Element.UIElements.Main.Highlight, 0.066, {BackgroundTransparency = 1}):Play()
+                Tween(Element.UIElements.Main.UIScale, 0.175, {Scale = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+                task.wait(.16)
+                Hovering = false
             end
         end)
     end
+    
+    Element.UIElements.Main:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        if not Hovering then
+            Element.UIElements.MainContainer.Size = UDim2.new(1,0,0,Element.UIElements.Main.AbsoluteSize.Y)
+        end
+    end)
     
     function Element:SetTitle(Title)
         Element.UIElements.Main.Title.Title.Text = Title

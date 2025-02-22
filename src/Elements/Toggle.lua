@@ -37,6 +37,22 @@ function Element:New(Config)
         AnchorPoint = Vector2.new(1,0.5),
         Position = UDim2.new(1,0,0.5,0)
     }, {
+        New("Frame", {
+            Size = UDim2.new(1,0,1,0),
+            BackgroundTransparency = 1,
+            Name = "Stroke"
+        }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(1,0)
+            }),
+            New("UIStroke", {
+                ThemeTag = {
+                    Color = "Text",
+                },
+                Transparency = 1, -- 0
+                Thickness = 1.2,
+            }),
+        }),
         New("UICorner", {
             CornerRadius = UDim.new(1,0)
         }),
@@ -45,7 +61,7 @@ function Element:New(Config)
                 Color = "Text",
             },
             Transparency = .93,
-            Thickness = 1,
+            Thickness = 1.2,
         }),
         New("Frame", {
             Size = UDim2.new(0,18,0,18),
@@ -93,25 +109,33 @@ function Element:New(Config)
         
         if Toggled then
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {
-                Position = UDim2.new(1, -18 - 3, 0.5, 0),
+                Position = UDim2.new(1, -20 - 2, 0.5, 0),
                 BackgroundTransparency = 1,
-            }):Play()
+                Size = UDim2.new(0,20,0,20),
+            }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {
                 BackgroundTransparency = 0.15,
             }):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {
                 BackgroundTransparency = 0.15,
+            }):Play()
+            Tween(Toggle.UIElements.Toggle.Stroke.UIStroke, 0.1, {
+                Transparency = 0,
             }):Play()
         else
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {
                 Position = UDim2.new(0, 3, 0.5, 0),
                 BackgroundTransparency = 0.15,
-            }):Play()
+                Size = UDim2.new(0,18,0,18),
+            }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
             Tween(Toggle.UIElements.Toggle.Frame.Frame, 0.1, {
                 BackgroundTransparency = 1,
             }):Play()
             Tween(Toggle.UIElements.Toggle, 0.1, {
                 BackgroundTransparency = 0.95,
+            }):Play()
+            Tween(Toggle.UIElements.Toggle.Stroke.UIStroke, 0.1, {
+                Transparency = 1,
             }):Play()
         end
 

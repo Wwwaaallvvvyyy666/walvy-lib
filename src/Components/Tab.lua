@@ -1,4 +1,5 @@
 local UserInputService = game:GetService("UserInputService")
+local Mouse = game.Players.LocalPlayer:GetMouse()
 
 local Creator = require("../Creator")
 local New = Creator.New
@@ -11,25 +12,31 @@ local TabModule = {
     Containers = {},
     SelectedTab = nil,
     TabCount = 0,
+    ToolTipParent = nil,
+    TabHighlight = nil,
     
     OnChangeFunc = function(v) end
 }
 
-function TabModule.Init(Window, WindUI)
+function TabModule.Init(Window, WindUI, ToolTipParent, TabHighlight)
     TabModule.Window = Window
     TabModule.WindUI = WindUI
+    TabModule.ToolTipParent = ToolTipParent
+    TabModule.TabHighlight = TabHighlight
     return TabModule
 end
 
 function TabModule.New(Config)
     local Tab = {
         Title = Config.Title or "Tab",
+        Desc = Config.Desc,
         Icon = Config.Icon,
         Selected = false,
         Index = nil,
+        Parent = Config.Parent,
         UIElements = {},
         Elements = {},
-        ContainerFrame = nil
+        ContainerFrame = nil,
     }
     
     local Window = TabModule.Window
@@ -74,7 +81,7 @@ function TabModule.New(Config)
   	})
   	
   	local TextOffset = 0
-  	
+
 --	Tab.UIElements.Main.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
 --	    Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,0,0,Tab.UIElements.Main.TextLabel.TextBounds.Y)
 --	    Tab.UIElements.Main.Size = UDim2.new(1,TextOffset,0,Tab.UIElements.Main.TextLabel.TextBounds.Y+6+6)
@@ -86,7 +93,7 @@ function TabModule.New(Config)
             Image = Creator.Icon(Tab.Icon)[1],
             ImageRectOffset = Creator.Icon(Tab.Icon)[2].ImageRectPosition,
             ImageRectSize = Creator.Icon(Tab.Icon)[2].ImageRectSize,
-            Size = UDim2.new(0,20,0,20),
+            Size = UDim2.new(0,18,0,18),
             LayoutOrder = 1,
             ThemeTag = {
                 ImageColor3 = "Text"
@@ -100,7 +107,7 @@ function TabModule.New(Config)
         local Icon = New("ImageLabel", {
             ImageTransparency = 0.4,
             Image = Tab.Icon,
-            Size = UDim2.new(0,20,0,20),
+            Size = UDim2.new(0,18,0,18),
             LayoutOrder = 1,
             ThemeTag = {
                 ImageColor3 = "Text"
@@ -265,6 +272,55 @@ function TabModule.New(Config)
     
     updateSliderSize()
 	
+	
+	-- ToolTip
+	
+    local ToolTip
+    local hoverTimer
+    local MouseConn
+    local IsHovering = false
+    
+    local function removeToolTip()
+        IsHovering = false
+        if hoverTimer then
+            task.cancel(hoverTimer)
+            hoverTimer = nil
+        end
+        if MouseConn then
+            MouseConn:Disconnect()
+            MouseConn = nil
+        end
+        if ToolTip then
+            ToolTip:Close()
+            ToolTip = nil
+        end
+    end
+    
+    Tab.UIElements.Main.MouseEnter:Connect(function()
+        IsHovering = true
+        hoverTimer = task.spawn(function()
+            task.wait(0.35)
+            if IsHovering and not ToolTip then
+                ToolTip = Creator.ToolTip({
+                    Title = Tab.Desc,
+                    Parent = TabModule.ToolTipParent
+                })
+    
+                local function updatePosition()
+                    if ToolTip then
+                        ToolTip.Container.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y - 20)
+                    end
+                end
+    
+                updatePosition()
+                MouseConn = Mouse.Move:Connect(updatePosition)
+                ToolTip:Open()
+            end
+        end)
+    end)
+    
+    Tab.UIElements.Main.InputEnded:Connect(removeToolTip)
+
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
@@ -603,6 +659,15 @@ function TabModule:SelectTab(TabIndex)
         Tween(TabModule.Tabs[TabIndex].UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0}):Play()
     end
 	TabModule.Tabs[TabIndex].Selected = true
+	
+	Tween(TabModule.TabHighlight, .25, {Position = UDim2.new(
+	    0,
+	    0,
+	    0,
+	    TabModule.Tabs[TabIndex].UIElements.Main.AbsolutePosition.Y - TabModule.Tabs[TabIndex].Parent.AbsolutePosition.Y
+	), 
+	Size = UDim2.new(1,-13,0,TabModule.Tabs[TabIndex].UIElements.Main.AbsoluteSize.Y)
+	}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 	
 	task.spawn(function()
 	    for _, ContainerObject in next, TabModule.Containers do

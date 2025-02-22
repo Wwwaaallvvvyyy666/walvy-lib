@@ -21,7 +21,7 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
     })
 
     local UIStroke = New("UIStroke", {
-        Thickness = 2,
+        Thickness = 1.3,
         ThemeTag = {
             Color = "Text",
         },
@@ -29,9 +29,10 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
     })
     
     local SearchFrame = New("CanvasGroup", {
-        Size = UDim2.new(1,-SearchBar.Margin*2,0,52 -(SearchBar.Margin*2)),
-        Position = UDim2.new(0.5,0,0,((52 -(SearchBar.Margin*2))/2) + SearchBar.Margin),
-        AnchorPoint = Vector2.new(0.5,0.5),
+        Size = UDim2.new(0.3,0,0,52 -(SearchBar.Margin*2)),
+        Position = UDim2.new(1,-SearchBar.Margin,0,(((52 -(SearchBar.Margin*2))/2) + SearchBar.Margin)+52),
+        AnchorPoint = Vector2.new(1,0.5),
+        AutomaticSize = "X",
         BackgroundTransparency = 0,
         ThemeTag = {
             BackgroundColor3 = "Accent",
@@ -43,7 +44,7 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         Visible = false -- true
     }, {
         New("UICorner", {
-            CornerRadius = UDim.new(0,9),
+            CornerRadius = UDim.new(0,12),
         }),
         New("ImageLabel", {
             Size = UDim2.new(0,SearchBarModule.IconSize,0,SearchBarModule.IconSize),
@@ -74,7 +75,10 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
             }
         }),
         UIStroke,
-        UIScale
+        UIScale,
+        New("UISizeConstraint", {
+            MaxSize = Vector2.new(Parent.AbsoluteSize.X, math.huge)
+        })
     })
     
     function SearchBarModule:Open()

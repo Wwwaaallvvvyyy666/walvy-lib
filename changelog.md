@@ -1,9 +1,11 @@
-# 1.5.1
-### Changelog:
-- Added Search bar (it works on an open tab)
-- Remaked Dialog & Window
-- Dropdown design changed
-- Updated lucide icons
-- Removed the "BY" in window subtitle
-- Fixed error in Codex
-- Clear example code completely
+# 1.5.2  
+### Changelog:  
+- Redesigned KeySystem  
+- Added RichText  
+- Added Tab Description  
+- Remade Tabs  
+- Fixed KeySystem  
+- Updated Toggle Design  
+- Moved "SearchBar" lower  
+- Added Fullscreen mode
+- Added Image-Background

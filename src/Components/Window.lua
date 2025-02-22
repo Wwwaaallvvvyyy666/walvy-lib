@@ -14,6 +14,7 @@ return function(Config)
         Author = Config.Author,
         Icon = Config.Icon,
         Folder = Config.Folder,
+        Background = Config.Background,
         Size = Config.Size and UDim2.new(
                     0, math.clamp(Config.Size.X.Offset, 480, 700),
                     0, math.clamp(Config.Size.Y.Offset, 350, 520)) or UDim2.new(0,580,0,460),
@@ -34,7 +35,7 @@ return function(Config)
 		Destroyed = false,
 		IsFullscreen = false,
 		
-		CurrentTab = 0,
+		CurrentTab = nil,
     } -- wtf 
     
     if Window.Folder then
@@ -116,6 +117,18 @@ return function(Config)
         Hitbox
     })
 
+    local TabHighlight = New("Frame", {
+        Size = UDim2.new(1,0,0,0),
+        BackgroundTransparency = .95,
+        ThemeTag = {
+            BackgroundColor3 = "Text",
+        }
+    }, {
+        New("UICorner", {
+            CornerRadius = UDim.new(0,9)
+        })
+    })
+
     Window.UIElements.SideBar = New("ScrollingFrame", {
         Size = UDim2.new(1,-Window.UIPadding+2,1,0),
         BackgroundTransparency = 1,
@@ -125,16 +138,29 @@ return function(Config)
         AutomaticCanvasSize = "Y",
         ScrollingDirection = "Y",
     }, {
-        New("UIPadding", {
-            PaddingTop = UDim.new(0,4),
-            PaddingLeft = UDim.new(0,Window.UIPadding+4),
-            --PaddingRight = UDim.new(0,Window.UIPadding+4),
-            PaddingBottom = UDim.new(0,Window.UIPadding),
+        New("Frame", {
+            BackgroundTransparency = 1,
+            AutomaticSize = "Y",
+            Size = UDim2.new(1,0,0,0)
+        }, {
+            New("UIPadding", {
+                PaddingTop = UDim.new(0,4),
+                PaddingLeft = UDim.new(0,4+3),
+                --PaddingRight = UDim.new(0,Window.UIPadding+4),
+                PaddingBottom = UDim.new(0,Window.UIPadding),
+            }),
+            New("UIListLayout", {
+                SortOrder = "LayoutOrder",
+                Padding = UDim.new(0,8)
+            })
         }),
-        New("UIListLayout", {
-            SortOrder = "LayoutOrder",
-            Padding = UDim.new(0,8)
-        })
+        New("UIPadding", {
+            --PaddingTop = UDim.new(0,4),
+            PaddingLeft = UDim.new(0,Window.UIPadding-3),
+            PaddingRight = UDim.new(0,Window.UIPadding-3),
+            --PaddingBottom = UDim.new(0,Window.UIPadding),
+        }),
+        TabHighlight
     })
     
     Window.UIElements.SideBarContainer = New("CanvasGroup", {
@@ -225,8 +251,8 @@ return function(Config)
 
     Window.UIElements.MainBar = New("Frame", {
         Size = UDim2.new(1,-Window.UIElements.SideBarContainer.AbsoluteSize.X,1,-52),
-        Position = UDim2.new(1,0,0,52),
-        AnchorPoint = Vector2.new(1,0),
+        Position = UDim2.new(1,0,1,0),
+        AnchorPoint = Vector2.new(1,1),
         BackgroundTransparency = 1,
     })
     
@@ -491,7 +517,7 @@ return function(Config)
     
     local WindowTitle = New("TextLabel", {
         Text = Window.Title,
-        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
         BackgroundTransparency = 1,
         AutomaticSize = "XY",
         Name = "Title",
@@ -523,6 +549,16 @@ return function(Config)
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(0,Window.UICorner)
+            }),
+            New("ImageLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1,0,1,0),
+                Image = Window.Background,
+                -- ImageTransparency = 0,
+            }, {
+                New("UICorner", {
+                    CornerRadius = UDim.new(0,Window.UICorner)
+                }),
             })
         }),
         UIStroke,
@@ -612,15 +648,22 @@ return function(Config)
                         BackgroundTransparency = 1,
                         LayoutOrder = 2,
                     }, {
-                        MinimizeButton,
+                        FullscreenButton,
                     }),
                     New("TextButton", {
                         Size = UDim2.new(0,24,0,24),
                         BackgroundTransparency = 1,
                         LayoutOrder = 1,
                     }, {
+                        MinimizeButton,
+                    }),
+                    New("TextButton", {
+                        Size = UDim2.new(0,24,0,24),
+                        BackgroundTransparency = 1,
+                        LayoutOrder = 0,
+                    }, {
                         SearchButton,
-                    })
+                    }),
                 }),
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,Window.UIPadding),
@@ -723,13 +766,13 @@ return function(Config)
     function Window:Open()
         Window.Closed = false
         
-        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and 0.25 or 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and Config.WindUI.TransparencyValue or 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         if UIStroke then
-            Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+            Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
         
         Window.CanDropdown = true
@@ -742,13 +785,13 @@ return function(Config)
         Window.CanDropdown = false
         Window.Closed = true
         
-        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = .9}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-        Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Main, 0.25, {GroupTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.UIScale, 0.25, {Scale = .9}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         if UIStroke then
-            Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
+            Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
         
         task.spawn(function()
@@ -786,10 +829,10 @@ return function(Config)
             FullscreenButton.ImageRectSize = iconSquare[2].ImageRectSize
         end
         
-        Tween(Window.UIElements.Main, 0.45, {Size = isFullscreen and CurrentSize or UDim2.new(1,-20,1,-20)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main, 0.45, {Size = isFullscreen and CurrentSize or UDim2.new(1,-20,1,-20-52)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
     
         delay(0.1, function()
-            Tween(Window.UIElements.Main, 0.45, {Position = isFullscreen and CurrentPos or Window.Position}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(Window.UIElements.Main, 0.45, {Position = isFullscreen and CurrentPos or UDim2.new(0.5,0,0.5,52/2)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end)
         
         Window.IsFullscreen = not isFullscreen
@@ -879,11 +922,11 @@ return function(Config)
         end
     end
     
-    local TabModule = require("./Tab").Init(Window, Config.WindUI)
+    local TabModule = require("./Tab").Init(Window, Config.WindUI, Config.Parent.Parent.ToolTips, TabHighlight)
     
     TabModule:OnChange(function(t) Window.CurrentTab = t end)
     function Window:Tab(TabConfig)
-        return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar })
+        return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar.Frame, Desc = TabConfig.Desc })
     end
     
     function Window:SelectTab(Tab)
@@ -901,7 +944,7 @@ return function(Config)
             }
         })
         New("Frame", {
-            Parent = Window.UIElements.SideBar,
+            Parent = Window.UIElements.SideBar.Frame,
             --AutomaticSize = "Y",
             Size = UDim2.new(1,0,0,1),
             BackgroundTransparency = 1,
@@ -1144,7 +1187,7 @@ return function(Config)
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if isResizing then
+        if isResizing and not isFullscreen then
             if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
                 local delta = input.Position - initialInputPosition
                 local newSize = UDim2.new(0, initialSize.X.Offset + delta.X*2, 0, initialSize.Y.Offset + delta.Y*2)
@@ -1163,21 +1206,28 @@ return function(Config)
     -- / Search Bar /
     
     local SearchBar = require("./SearchBar")
+    local CanOpen = true
     
     SearchButton.MouseButton1Click:Connect(function()
+        if not CanOpen then return end
+        if not Window.CurrentTab then return end
+        
+        CanOpen = false
         local Closed = false
+        
         Tween(Window.UIElements.MainBar, .25, {
             Size = UDim2.new(
                 1,
                 0,
                 Window.UIElements.SideBarContainer.Size.Y.Scale,
-                Window.UIElements.SideBarContainer.Size.Y.Offset
+                Window.UIElements.SideBarContainer.Size.Y.Offset-52
             )
         }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
         Tween(Window.UIElements.SideBarContainer, .1, {
             GroupTransparency = 1
         }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
         
+        Tween(SearchButton, .15, {ImageTransparency = .4}):Play()
         
         SearchBar.new(
             TabModule.Tabs[Window.CurrentTab].Elements, 
@@ -1185,6 +1235,7 @@ return function(Config)
             TabModule.Tabs[Window.CurrentTab].Title, 
             function()
                 Closed = true
+                CanOpen = true
                 
                 Window.UIElements.SideBarContainer.Visible = true
                 Tween(Window.UIElements.MainBar, .25, {
@@ -1198,6 +1249,8 @@ return function(Config)
                 Tween(Window.UIElements.SideBarContainer, .1, {
                     GroupTransparency = 0
                 }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+                
+                Tween(SearchButton, .15, {ImageTransparency = 0}):Play()
             end,
             TabModule.Tabs[Window.CurrentTab].ContainerFrame 
         )
@@ -1206,6 +1259,6 @@ return function(Config)
         Window.UIElements.SideBarContainer.Visible = Closed
     end)
     
-    
+
     return Window
 end

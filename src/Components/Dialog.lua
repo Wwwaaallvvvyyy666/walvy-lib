@@ -21,14 +21,14 @@ function DialogModule.Create(Key)
         UIElements = {}
     }
     
-    if Key then Dialog.UIPadding = 24 end
-    if Key then Dialog.UICorner  = 16 end
+    if Key then Dialog.UIPadding = 0 end -- 16
+    if Key then Dialog.UICorner  = 22 end
     
     if not Key then
         Dialog.UIElements.FullScreen = New("Frame", {
             ZIndex = 999,
             BackgroundTransparency = 1, -- 0.5
-            BackgroundColor3 = Color3.new(0,0,0),
+            BackgroundColor3 = Color3.fromHex("#2a2a2a"),
             Size = UDim2.new(1,0,1,0),
             Active = false, -- true
             Visible = false, -- true
@@ -55,7 +55,7 @@ function DialogModule.Create(Key)
     Dialog.UIElements.MainContainer = New("CanvasGroup", {
         Visible = false, -- true
         GroupTransparency = 1, -- 0
-        BackgroundTransparency = 0,
+        BackgroundTransparency = Key and 0.15 or 0, 
         Parent = Key and DialogModule.Window or Dialog.UIElements.FullScreen,
         Position = UDim2.new(0.5,0,0.5,0),
         AnchorPoint = Vector2.new(0.5,0.5),
