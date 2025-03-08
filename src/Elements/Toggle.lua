@@ -10,6 +10,7 @@ function Element:New(Config)
         Title = Config.Title or "Toggle",
         Desc = Config.Desc or nil,
         Value = Config.Value,
+        Icon = Config.Icon or nil,
         Callback = Config.Callback or function() end,
         UIElements = {}
     }
@@ -25,6 +26,24 @@ function Element:New(Config)
     
     if Toggle.Value == nil then
         Toggle.Value = false
+    end
+    
+    local ToggleIcon 
+    if Toggle.Icon then
+        ToggleIcon = New("ImageLabel", {
+            Size = UDim2.new(1,-8,1,-8),
+            BackgroundTransparency = 1,
+            AnchorPoint = Vector2.new(0.5,0.5),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Image = Creator.Icon(Toggle.Icon)[1],
+            ImageRectOffset = Creator.Icon(Toggle.Icon)[2].ImageRectPosition,
+            ImageRectSize = Creator.Icon(Toggle.Icon)[2].ImageRectSize,
+            ImageTransparency = 1,
+            
+            ThemeTag = {
+                ImageColor3 = "Text"
+            }
+        })
     end
     
     Toggle.UIElements.Toggle = New("Frame",{
@@ -63,6 +82,7 @@ function Element:New(Config)
             Transparency = .93,
             Thickness = 1.2,
         }),
+        --bar
         New("Frame", {
             Size = UDim2.new(0,18,0,18),
             Position = UDim2.new(0,3,0.5,0),
@@ -85,7 +105,8 @@ function Element:New(Config)
                 New("UICorner", {
                     CornerRadius = UDim.new(1,0)
                 }),
-            })
+            }),
+            ToggleIcon,
         })
     })
 
@@ -122,6 +143,12 @@ function Element:New(Config)
             Tween(Toggle.UIElements.Toggle.Stroke.UIStroke, 0.1, {
                 Transparency = 0,
             }):Play()
+        
+            if ToggleIcon then 
+                Tween(ToggleIcon, 0.1, {
+                    ImageTransparency = 0,
+                }):Play()
+            end
         else
             Tween(Toggle.UIElements.Toggle.Frame, 0.1, {
                 Position = UDim2.new(0, 3, 0.5, 0),
@@ -137,6 +164,12 @@ function Element:New(Config)
             Tween(Toggle.UIElements.Toggle.Stroke.UIStroke, 0.1, {
                 Transparency = 1,
             }):Play()
+        
+            if ToggleIcon then 
+                Tween(ToggleIcon, 0.1, {
+                    ImageTransparency = 1,
+                }):Play()
+            end
         end
 
         task.spawn(function()

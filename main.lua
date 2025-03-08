@@ -24,6 +24,21 @@ local Window = WindUI:CreateWindow({
     },
 })
 
+
+Window:EditOpenButton({
+    Title = "Open Example UI",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0,10),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    --Enabled = false,
+    Draggable = true,
+})
+
+
 local Tabs = {
     ButtonTab = Window:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
     CodeTab = Window:Tab({ Title = "Code", Icon = "code", Desc = "Displays and manages code snippets." }),
@@ -127,6 +142,12 @@ Tabs.ToggleTab:Toggle({
     Title = "Activate Mode",
     Default = false,
     Callback = function(state) print("Mode activated: " .. tostring(state)) end
+})
+Tabs.ToggleTab:Toggle({
+    Title = "Toggle with icon",
+    Icon = "check",
+    Default = false,
+    Callback = function(state) print("Toggle with icon activated: " .. tostring(state)) end
 })
 
 

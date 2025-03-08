@@ -1,11 +1,7 @@
-# 1.5.2  
+# 1.5.3  
 ### Changelog:  
-- Redesigned KeySystem  
-- Added RichText  
-- Added Tab Description  
-- Remade Tabs  
-- Fixed KeySystem  
-- Updated Toggle Design  
-- Moved "SearchBar" lower  
-- Added Fullscreen mode
-- Added Image-Background
+- Changed Fullscreen icon
+- Searchbar Changed
+- Added Enable/Disabe to "OpenButton"
+- Added "Icon" for Toggle Element
+- Fixed lags (partly)

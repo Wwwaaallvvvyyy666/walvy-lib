@@ -125,7 +125,7 @@ function TabModule.New(Config)
         ScrollBarThickness = 0,
         ElasticBehavior = "Never",
         CanvasSize = UDim2.new(0,0,0,0),
-        --AutomaticCanvasSize = "Y",
+        AutomaticCanvasSize = "Y",
         --Visible = false,
         ScrollingDirection = "Y",
     }, {
@@ -141,9 +141,9 @@ function TabModule.New(Config)
         })
     })
 
-    Tab.UIElements.ContainerFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        Tab.UIElements.ContainerFrame.CanvasSize = UDim2.new(0,0,0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.Y+Window.UIPadding*2)
-    end)
+    -- Tab.UIElements.ContainerFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    --     Tab.UIElements.ContainerFrame.CanvasSize = UDim2.new(0,0,0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.Y+Window.UIPadding*2)
+    -- end)
 
     local Slider = New("Frame", {
         Size = UDim2.new(0,2,1,-Window.UIPadding*2),
@@ -296,7 +296,7 @@ function TabModule.New(Config)
         end
     end
     
-    Tab.UIElements.Main.MouseEnter:Connect(function()
+    Tab.UIElements.Main.InputBegan:Connect(function()
         IsHovering = true
         hoverTimer = task.spawn(function()
             task.wait(0.35)
@@ -324,24 +324,20 @@ function TabModule.New(Config)
 	-- WTF
 	
     function Tab:Paragraph(ElementConfig)
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        ElementConfig.Window = Window
+        ElementConfig.Hover = false
+        ElementConfig.TextOffset = 0
+        ElementConfig.IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false
+        
         local ParagraphModule = {
             __type = "Paragraph",
             Title = ElementConfig.Title or "Input",
             Desc = ElementConfig.Desc or nil,
             Locked = ElementConfig.Locked or false,
         }
-        local Paragraph = require("../Components/Element")({
-            Title = ElementConfig.Title or "Paragraph",
-            Desc = ElementConfig.Desc,
-            Image = ElementConfig.Image,
-            ImageSize = ElementConfig.ImageSize,
-            Locked = ElementConfig.Locked,
-            Parent = Tab.UIElements.ContainerFrame,
-            IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false,
-            TextOffset = 0,
-            Window = Window,
-            Hover = false,
-        })
+        local Paragraph = require("../Components/Element")(ElementConfig)
+        
         ParagraphModule.ParagraphFrame = Paragraph
         if ElementConfig.Buttons and #ElementConfig.Buttons > 0 then
             local ButtonsContainer = New("Frame", {
@@ -398,15 +394,8 @@ function TabModule.New(Config)
         return ParagraphModule
     end
     function Tab:Button(ElementConfig)
-        
-        local Button, Content = require("../Elements/Button"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Callback = ElementConfig.Callback,
-            
-            Parent = Tab.UIElements.ContainerFrame
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Button, Content = require("../Elements/Button"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -419,16 +408,8 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Toggle(ElementConfig)
-        
-        local Toggle, Content = require("../Elements/Toggle"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Value = ElementConfig.Value,
-            Callback = ElementConfig.Callback,
-            
-            Parent = Tab.UIElements.ContainerFrame
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Toggle, Content = require("../Elements/Toggle"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -441,16 +422,8 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Slider(ElementConfig)
-        
-        local Slider, Content = require("../Elements/Slider"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Step = ElementConfig.Step,
-            Value = ElementConfig.Value,
-            Callback = ElementConfig.Callback,
-            Parent = Tab.UIElements.ContainerFrame,
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Slider, Content = require("../Elements/Slider"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -463,16 +436,8 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Keybind(ElementConfig)
-        
-        local Keybind, Content = require("../Elements/Keybind"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Value = ElementConfig.Value,
-            Callback = ElementConfig.Callback,
-            
-            Parent = Tab.UIElements.ContainerFrame,
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Keybind, Content = require("../Elements/Keybind"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -485,18 +450,8 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Input(ElementConfig)
-        
-        local Input, Content = require("../Elements/Input"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Value = ElementConfig.Value,
-            PlaceholderText = ElementConfig.PlaceholderText,
-            ClearTextOnFocus = ElementConfig.ClearTextOnFocus,
-            Callback = ElementConfig.Callback,
-            
-            Parent = Tab.UIElements.ContainerFrame,
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Input, Content = require("../Elements/Input"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -509,20 +464,9 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Dropdown(ElementConfig)
-        
-        local Dropdown, Content = require("../Elements/Dropdown"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            AllowNone = ElementConfig.AllowNone,
-            Value = ElementConfig.Value,
-            Values = ElementConfig.Values,
-            Multi = ElementConfig.Multi,
-            Callback = ElementConfig.Callback,
-            
-            Parent = Tab.UIElements.ContainerFrame,
-            Window = Window
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        ElementConfig.Window = Window
+        local Dropdown, Content = require("../Elements/Dropdown"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -535,14 +479,10 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Code(ElementConfig)
-        local Code, Content = require("../Elements/Code"):New({
-            Title = ElementConfig.Title,
-            Code = ElementConfig.Code,
-            Locked = ElementConfig.Locked,
-            Parent = Tab.UIElements.ContainerFrame,
-            Window = Window,
-            WindUI = WindUI,
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        ElementConfig.Window = Window
+        ElementConfig.WindUI = WindUI
+        local Code, Content = require("../Elements/Code"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -555,18 +495,9 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Colorpicker(ElementConfig)
-        
-        local Colorpicker, Content = require("../Elements/Colorpicker"):New({
-            Title = ElementConfig.Title,
-            Desc = ElementConfig.Desc,
-            Locked = ElementConfig.Locked,
-            Default = ElementConfig.Default,
-            Transparency = ElementConfig.Transparency,
-            Callback = ElementConfig.Callback,
-            Parent = Tab.UIElements.ContainerFrame,
-            
-            Window = Window
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        ElementConfig.Window = Window
+        local Colorpicker, Content = require("../Elements/Colorpicker"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         
         function Content:SetTitle(Title)
@@ -579,13 +510,8 @@ function TabModule.New(Config)
         return Content
     end
     function Tab:Section(ElementConfig)
-        
-        local Section, Content = require("../Elements/Section"):New({
-            Title = ElementConfig.Title,
-            TextXAlignment = ElementConfig.TextXAlignment,
-            TextSize = ElementConfig.TextSize,
-            Parent = Tab.UIElements.ContainerFrame,
-        })
+        ElementConfig.Parent = Tab.UIElements.ContainerFrame
+        local Section, Content = require("../Elements/Section"):New(ElementConfig)
         table.insert(Tab.Elements, Content)
         return Content
     end
@@ -616,7 +542,7 @@ function TabModule.New(Config)
                 ImageTransparency = .4,
             }),
             New("TextLabel", {
-                --AutomaticSize = "XY",
+                AutomaticSize = "XY",
                 Text = "This tab is empty",
                 ThemeTag = {
                     TextColor3 = "Text"
@@ -628,9 +554,9 @@ function TabModule.New(Config)
             })
         })
         
-        Empty.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
-            Empty.TextLabel.Size = UDim2.new(0,Empty.TextLabel.TextBounds.X,0,Empty.TextLabel.TextBounds.Y)
-        end)
+        -- Empty.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        --     Empty.TextLabel.Size = UDim2.new(0,Empty.TextLabel.TextBounds.X,0,Empty.TextLabel.TextBounds.Y)
+        -- end)
         
         Tab.UIElements.ContainerFrame.ChildAdded:Connect(function()
             Empty.Visible = false

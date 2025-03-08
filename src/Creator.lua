@@ -306,21 +306,23 @@ function Creator.ToolTip(ToolTipConfig)
     return ToolTipModule
 end
 
-function Creator.Drag(UIElement)
+function Creator.Drag(UIElement, b)
     local dragging, dragInput, dragStart, startPos
+    local DragModule = {
+        CanDraggable = true
+    }
     
     local function update(input)
-        if Creator.CanDraggable then
-            local delta = input.Position - dragStart
-            -- UIElement.Position = UDim2.new(
-            --     startPos.X.Scale, startPos.X.Offset + delta.X,
-            --     startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            -- )
-            Creator.Tween(UIElement, 0.08, {Position = UDim2.new(
-                startPos.X.Scale, startPos.X.Offset + delta.X,
-                startPos.Y.Scale, startPos.Y.Offset + delta.Y
-            )}):Play()
-        end
+        local delta = input.Position - dragStart
+        -- UIElement.Position = UDim2.new(
+        --     startPos.X.Scale, startPos.X.Offset + delta.X,
+        --     startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        -- )
+        Creator.Tween(UIElement, 0.08, {Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )}):Play()
+    
     end
     
     UIElement.InputBegan:Connect(function(input)
@@ -345,9 +347,22 @@ function Creator.Drag(UIElement)
     
     UserInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
-            update(input)
+            if b then
+                if Creator.CanDraggable then
+                    update(input)
+                end
+            elseif DragModule.CanDraggable then 
+                update(input)
+            end
         end
     end)
+    
+    
+    function DragModule:Set(v)
+        DragModule.CanDraggable = v
+    end
+    
+    return DragModule
 end
 
 

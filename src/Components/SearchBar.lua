@@ -33,9 +33,9 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         Position = UDim2.new(1,-SearchBar.Margin,0,(((52 -(SearchBar.Margin*2))/2) + SearchBar.Margin)+52),
         AnchorPoint = Vector2.new(1,0.5),
         AutomaticSize = "X",
-        BackgroundTransparency = 0,
+        BackgroundTransparency = 0.95,
         ThemeTag = {
-            BackgroundColor3 = "Accent",
+            BackgroundColor3 = "Text",
         },
         Parent = Parent,
         ZIndex = 99999,
@@ -74,7 +74,7 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
                 PlaceholderColor3 = "PlaceholderText",
             }
         }),
-        UIStroke,
+        --UIStroke,
         UIScale,
         New("UISizeConstraint", {
             MaxSize = Vector2.new(Parent.AbsoluteSize.X, math.huge)
@@ -167,6 +167,8 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
     end)
     SearchBarModule:Open()
     
+    
+    return SearchBarModule
     -- Debug
     
     --print(game:GetService("HttpService"):JSONEncode(Elements, true))

@@ -151,10 +151,10 @@ function WindUI:CreateWindow(Config)
     WindUI.Window = Window
     
     
-    
-    
     function Window:ToggleTransparency(Value)
         WindUI.Transparent = Value
+        WindUI.Window.Transparent = Value
+        
         Window.UIElements.Main.Background.BackgroundTransparency = Value and WindUI.TransparencyValue or 0
         Window.UIElements.Main.Background.ImageLabel.ImageTransparency = Value and WindUI.TransparencyValue or 0
         Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
