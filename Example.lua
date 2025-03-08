@@ -1,7 +1,7 @@
 local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
 
 local Window = WindUI:CreateWindow({
-    Title = 'Atlas.<font color="rgb(0, 150, 255)">dev</font>', -- UI Title
+    Title = "WindUI Library",
     Icon = "door-open",
     Author = "Example UI",
     Folder = "CloudHub",
@@ -23,6 +23,21 @@ local Window = WindUI:CreateWindow({
         SaveKey = true, -- optional
     },
 })
+
+
+Window:EditOpenButton({
+    Title = "Open Example UI",
+    Icon = "monitor",
+    CornerRadius = UDim.new(0,10),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("FF0F7B"), 
+        Color3.fromHex("F89B29")
+    ),
+    --Enabled = false,
+    Draggable = true,
+})
+
 
 local Tabs = {
     ButtonTab = Window:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
@@ -127,6 +142,12 @@ Tabs.ToggleTab:Toggle({
     Title = "Activate Mode",
     Default = false,
     Callback = function(state) print("Mode activated: " .. tostring(state)) end
+})
+Tabs.ToggleTab:Toggle({
+    Title = "Toggle with icon",
+    Icon = "check",
+    Default = false,
+    Callback = function(state) print("Toggle with icon activated: " .. tostring(state)) end
 })
 
 
