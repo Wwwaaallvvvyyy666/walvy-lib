@@ -10,7 +10,7 @@ function gradient(text, startColor, endColor)
     local length = #text
 
     for i = 1, length do
-        local t = (i - 1) / math.max(length - 1, 1) -- чтобы избежать деления на 0
+        local t = (i - 1) / math.max(length - 1, 1)
         local r = math.floor((startColor.R + (endColor.R - startColor.R) * t) * 255)
         local g = math.floor((startColor.G + (endColor.G - startColor.G) * t) * 255)
         local b = math.floor((startColor.B + (endColor.B - startColor.B) * t) * 255)

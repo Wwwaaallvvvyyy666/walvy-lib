@@ -1,5 +1,54 @@
 local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
 
+-- Set theme:
+-- WindUI:SetTheme("Dark")
+
+--- EXAMPLE !!!
+
+function gradient(text, startColor, endColor)
+    local result = ""
+    local length = #text
+
+    for i = 1, length do
+        local t = (i - 1) / math.max(length - 1, 1)
+        local r = math.floor((startColor.R + (endColor.R - startColor.R) * t) * 255)
+        local g = math.floor((startColor.G + (endColor.G - startColor.G) * t) * 255)
+        local b = math.floor((startColor.B + (endColor.B - startColor.B) * t) * 255)
+
+        local char = text:sub(i, i)
+        result = result .. "<font color=\"rgb(" .. r ..", " .. g .. ", " .. b .. ")\">" .. char .. "</font>"
+    end
+
+    return result
+end
+
+local Confirmed = false
+
+WindUI:Popup({
+    Title = "Welcome!",
+    Icon = "info",
+    Content = "This is an Example UI for the " .. gradient("WindUI", Color3.fromHex("#00FF87"), Color3.fromHex("#60EFFF")) .. " Lib",
+    Buttons = {
+        {
+            Title = "Cancel",
+            --Icon = "",
+            Callback = function() end,
+            Variant = "Tertiary", -- Primary, Secondary, Tertiary
+        },
+        {
+            Title = "Continue",
+            Icon = "arrow-right",
+            Callback = function() Confirmed = true end,
+            Variant = "Primary", -- Primary, Secondary, Tertiary
+        }
+    }
+})
+
+
+repeat wait() until Confirmed
+
+--
+
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library",
     Icon = "door-open",
@@ -8,13 +57,14 @@ local Window = WindUI:CreateWindow({
     Size = UDim2.fromOffset(580, 460),
     Transparent = true,
     Theme = "Dark",
+    UserEnabled = false,
     SideBarWidth = 200,
     --Background = "rbxassetid://13511292247", -- rbxassetid only
-    HasOutline = false,
+    HasOutline = true,
     -- remove it below if you don't want to use the key system in your script.
     KeySystem = { 
         Key = { "1234", "5678" },
-        Note = "The Key is '1234' or '5678",
+        Note = "Example Key System. \n\nThe Key is '1234' or '5678",
         -- Thumbnail = {
         --     Image = "rbxassetid://18220445082", -- rbxassetid only
         --     Title = "Thumbnail"
@@ -25,10 +75,13 @@ local Window = WindUI:CreateWindow({
 })
 
 
+--Window:SetBackgroundImage("rbxassetid://13511292247")
+
+
 Window:EditOpenButton({
     Title = "Open Example UI",
     Icon = "monitor",
-    CornerRadius = UDim.new(0,10),
+    CornerRadius = UDim.new(0,16),
     StrokeThickness = 2,
     Color = ColorSequence.new( -- gradient
         Color3.fromHex("FF0F7B"), 
@@ -40,6 +93,7 @@ Window:EditOpenButton({
 
 
 local Tabs = {
+    ParagraphTab = Window:Tab({ Title = "Paragraph", Icon = "type" }),
     ButtonTab = Window:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
     CodeTab = Window:Tab({ Title = "Code", Icon = "code", Desc = "Displays and manages code snippets." }),
     ColorPickerTab = Window:Tab({ Title = "ColorPicker", Icon = "paintbrush", Desc = "Choose and customize colors easily." }),
@@ -53,9 +107,113 @@ local Tabs = {
     CreateThemeTab = Window:Tab({ Title = "Create Theme", Icon = "palette", Desc = "Design and apply custom themes." }),
     be = Window:Divider(),
     LongTab = Window:Tab({ Title = "Long and empty tab. Looong and empty.. tab.", Icon = "frown", Desc = "Long Description" }),
+    LockedTab = Window:Tab({ Title = "Locked Tab", Icon = "lock", Desc = "This tab is locked", Locked = true }),
 }
 
 Window:SelectTab(1)
+
+
+Tabs.ParagraphTab:Paragraph({
+    Title = "Default",
+    Desc = "Normal Paragraph",
+    Image = "bird",
+    --Color = "Red"
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "Danger (Error)",
+    Desc = "Red Paragraph",
+    Image = "triangle-alert",
+    Color = "Red",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "Warning",
+    Desc = "Orange Paragraph",
+    Image = "triangle-alert",
+    Color = "Orange",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "Success",
+    Desc = "Green Paragraph",
+    Image = "check",
+    Color = "Green",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "Info",
+    Desc = "Blue Paragraph",
+    Image = "info",
+    Color = "Blue",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "Grey",
+    Desc = "Grey Paragraph",
+    Image = "bird",
+    Color = "Grey",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+Tabs.ParagraphTab:Paragraph({
+    Title = "White",
+    Desc = "White Paragraph",
+    Image = "bird",
+    Color = "White",
+    Buttons = {
+        {
+            Title = "Ok!",
+        },
+        {
+            Title = "Ok!",
+        }
+    }
+})
+
+
+
 
 Tabs.ButtonTab:Button({
     Title = "Click Me",
@@ -69,29 +227,37 @@ Tabs.ButtonTab:Button({
     Locked = true,
 })
 
+local destroybtn
+destroybtn = Tabs.ButtonTab:Button({
+    Title = "Click to destroy me!",
+    Callback = function() destroybtn:Destroy() end,
+})
+
 Tabs.ButtonTab:Button({
     Title = "Submit",
     Desc = "Click to submit",
     Callback = function() print("Submitted!") end,
-    Locked = false
+})
+
+Tabs.ButtonTab:Button({
+    Title = "Set ToggleKey to 'F'",
+    Callback = function() Window:SetToggleKey(Enum.KeyCode.F) end,
 })
 
 
 Tabs.CodeTab:Code({
-    Title = "Example Code",
+    Title = "example-code.lua",
     Code = [[
-
 local message = "Hello"
 print(message)
 
 if message == "Hello" then
     print("Greetings!")
-end
-    ]],
+end]],
 })
 
 Tabs.CodeTab:Code({
-    Title = "Another Code Example",
+    Title = "example-code-2-longggggg-looooonnnnnnggggggggggggggg.lua",
     Code = [[
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
 
@@ -101,8 +267,7 @@ local Window = WindUI:CreateWindow({
     Author = ".ftgs",
     Folder = "CloudHub",
     Size = UDim2.fromOffset(580, 460),
-})
-    ]],
+})]],
 })
 
 
@@ -113,8 +278,9 @@ Tabs.ColorPickerTab:Colorpicker({
 })
 
 Tabs.ColorPickerTab:Colorpicker({
-    Title = "Background Color",
+    Title = "Transparency Color",
     Default = Color3.fromRGB(0, 0, 255),
+    Transparency = 0,
     Callback = function(color) print("Background color: " .. tostring(color)) end
 })
 
@@ -123,10 +289,34 @@ Tabs.NotificationTab:Button({
     Title = "Click to get Notified",
     Callback = function() 
         WindUI:Notify({
-            Title = "Notification Example",
+            Title = "Notification Example 1",
+            Content = "Content",
+            Duration = 5,
+        })
+    end
+})
+
+Tabs.NotificationTab:Button({
+    Title = "Notification with icon",
+    Callback = function() 
+        WindUI:Notify({
+            Title = "Notification Example 2",
             Content = "Content",
             Icon = "droplet-off",
             Duration = 5,
+        })
+    end
+})
+
+Tabs.NotificationTab:Button({
+    Title = "Notification with BackgroundImage",
+    Callback = function() 
+        WindUI:Notify({
+            Title = "Notification Example 3",
+            Content = "with BackgroundImage",
+            Icon = "image",
+            Duration = 5,
+            Background = "rbxassetid://13511292247"
         })
     end
 })
@@ -204,6 +394,7 @@ Tabs.DropdownTab:Dropdown({
 
 
 -- Configuration
+-- Optional
 
 
 local HttpService = game:GetService("HttpService")
