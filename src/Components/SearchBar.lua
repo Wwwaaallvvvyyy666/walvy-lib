@@ -1,7 +1,7 @@
 local UserInputService = game:GetService("UserInputService")
 
 local SearchBar = {
-    Margin = 6,
+    Margin = 8,
     Padding = 9,
 }
 
@@ -32,8 +32,8 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         Size = UDim2.new(0.3,0,0,52 -(SearchBar.Margin*2)),
         Position = UDim2.new(1,-SearchBar.Margin,0,(((52 -(SearchBar.Margin*2))/2) + SearchBar.Margin)+52),
         AnchorPoint = Vector2.new(1,0.5),
-        AutomaticSize = "X",
-        BackgroundTransparency = 0.95,
+        --AutomaticSize = "X",
+        BackgroundTransparency = 0.93,
         ThemeTag = {
             BackgroundColor3 = "Text",
         },
@@ -48,7 +48,7 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         }),
         New("ImageLabel", {
             Size = UDim2.new(0,SearchBarModule.IconSize,0,SearchBarModule.IconSize),
-            Position = UDim2.new(0,SearchBar.Padding,0.5,0),
+            Position = UDim2.new(0,0,0.5,0),
             AnchorPoint = Vector2.new(0,0.5),
             BackgroundTransparency = 1,
             Image = Creator.Icon("search")[1],
@@ -60,12 +60,13 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         }),
         New("TextBox", {
             Size = UDim2.new(1,-((SearchBar.Padding*2)+SearchBarModule.IconSize+SearchBar.Padding),1,0),
-            Position = UDim2.new(1,-SearchBar.Padding,0,0),
+            Position = UDim2.new(0,0,0,0),
             AnchorPoint = Vector2.new(1,0),
             BackgroundTransparency = 1,
             TextXAlignment = "Left",
             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             TextSize = 17,
+            --AutomaticSize = "XY",
             BackgroundTransparency = 1,
             MultiLine = false,
             PlaceholderText = "Search in " .. TabName,
@@ -77,7 +78,17 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         --UIStroke,
         UIScale,
         New("UISizeConstraint", {
-            MaxSize = Vector2.new(Parent.AbsoluteSize.X, math.huge)
+            MaxSize = Vector2.new(Parent.AbsoluteSize.X, math.huge),
+            MinSize = Vector2.new(160, 0),
+        }),
+        New("UIListLayout", {
+            Padding = UDim.new(0,SearchBar.Padding),
+            FillDirection = "Horizontal",
+            VerticalAlignment = "Center",
+        }),
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0,SearchBar.Padding),
+            PaddingRight = UDim.new(0,SearchBar.Padding),
         })
     })
     
@@ -92,6 +103,13 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
         Tween(UIStroke, 0.35, {
             Transparency = 0.95,
         }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+    
+        SearchFrame.Size = UDim2.new(0, 
+            ((SearchBar.Padding*2)+SearchBarModule.IconSize+SearchBar.Padding+SearchFrame.TextBox.TextBounds.X), 
+            0, 
+            52 -(SearchBar.Margin*2)
+        )
+        
     end
     function SearchBarModule:Close()
         Tween(SearchFrame, 0.35, {
@@ -109,6 +127,12 @@ function SearchBar.new(Elements, Parent, TabName, OnClose, ClipFrame)
     end
     
     function SearchBarModule:Search(Text)
+        SearchFrame.Size = UDim2.new(0, 
+            ((SearchBar.Padding*2)+SearchBarModule.IconSize+SearchBar.Padding+SearchFrame.TextBox.TextBounds.X), 
+            0, 
+            52 -(SearchBar.Margin*2)
+        )
+        
         for _, Element in next, Elements do
             local TitleMatch = string.find(string.lower(Element.Title or ""), string.lower(Text))
             local DescMatch = Element.Desc and string.find(string.lower(Element.Desc or ""), string.lower(Text))

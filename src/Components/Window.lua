@@ -21,7 +21,7 @@ return function(Config)
         ToggleKey = Config.ToggleKey or Enum.KeyCode.G,
         Transparent = Config.Transparent or false,
         Position = UDim2.new(
-			0.5, 0,
+		    0.5, 0,
 			0.5, 0
 		),
 		UICorner = 16,
@@ -37,7 +37,10 @@ return function(Config)
 		IsOpenButtonEnabled = true,
 		
 		CurrentTab = nil,
+        
+        TopBarButtons = {},
     } -- wtf 
+    
     
     if Window.Folder then
         makefolder("WindUI/" .. Window.Folder)
@@ -58,28 +61,19 @@ return function(Config)
     local ResizeHandle = New("Frame", {
         Size = UDim2.new(0,32,0,32),
         Position = UDim2.new(1,0,1,0),
-        AnchorPoint = Vector2.new(0.5,0.5),
+        AnchorPoint = Vector2.new(.5,.5),
         BackgroundTransparency = 1,
         ZIndex = 99,
         Active = true
     }, {
-        -- New("Frame", {
-        --     Size = UDim2.new(1,0,1,0),
-        --     Position = UDim2.new(0,3,0,3),
-        --     AnchorPoint = Vector2.new(0.5,0.5),
-        --     BackgroundTransparency = 1,
-        -- }, {
-        --     New("UIStroke", {
-        --         Thickness = 1.2,
-        --         ThemeTag = {
-        --             Color = "Text",
-        --         },
-        --         Transparency = .6,
-        --     }),
-        --     New("UICorner", {
-        --         CornerRadius = UDim.new(0,Window.UICorner+6)
-        --     })
-        -- })
+        New("ImageLabel", {
+            Size = UDim2.new(0,48*2,0,48*2),
+            BackgroundTransparency = 1,
+            Image = "rbxassetid://120997033468887",
+            Position = UDim2.new(0.5,-16,0.5,-16),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            ImageTransparency = .8, -- .35
+        })
     })
     local FullScreenIcon = New("Frame", {
         Size = UDim2.new(1,0,1,0),
@@ -144,7 +138,7 @@ return function(Config)
         }
     }, {
         New("UICorner", {
-            CornerRadius = UDim.new(0,9)
+            CornerRadius = UDim.new(0,11)
         })
     })
 
@@ -156,17 +150,23 @@ return function(Config)
         CanvasSize = UDim2.new(0,0,0,0),
         AutomaticCanvasSize = "Y",
         ScrollingDirection = "Y",
+        ClipsDescendants = true,
     }, {
-        New("Frame", {
+        New("CanvasGroup", {
             BackgroundTransparency = 1,
             AutomaticSize = "Y",
-            Size = UDim2.new(1,0,0,0)
+            Size = UDim2.new(1,0,0,0),
+            Name = "Frame",
+            ClipsDescendants = true,
         }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,9),
+            }),
             New("UIPadding", {
-                PaddingTop = UDim.new(0,4),
+                PaddingTop = UDim.new(0,Window.UIPadding),
                 PaddingLeft = UDim.new(0,4+3),
                 --PaddingRight = UDim.new(0,Window.UIPadding+4),
-                PaddingBottom = UDim.new(0,Window.UIPadding),
+                PaddingBottom = UDim.new(0,Window.UIPadding-5),
             }),
             New("UIListLayout", {
                 SortOrder = "LayoutOrder",
@@ -182,8 +182,10 @@ return function(Config)
         TabHighlight
     })
     
+    local ImageId, _ = game.Players:GetUserThumbnailAsync(game.Players.LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+    
     Window.UIElements.SideBarContainer = New("CanvasGroup", {
-        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-52),
+        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-52 -42 -(Window.UIPadding*2)),
         Position = UDim2.new(0,0,0,52),
         BackgroundTransparency = 1,
         GroupTransparency = 0,
@@ -340,21 +342,27 @@ return function(Config)
             AutomaticSize = "XY",
         })
     
-        OpenButtonDrag = New("ImageLabel", {
-            Image = Creator.Icon("grab")[1],
-            ImageRectOffset = Creator.Icon("grab")[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon("grab")[2].ImageRectSize,
-            Size = UDim2.new(0,20,0,20),
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0,0,0.5,0),
-            AnchorPoint = Vector2.new(0,0.5),
+        OpenButtonDrag = New("Frame", {
+            Size = UDim2.new(0,44-8,0,44-8),
+            BackgroundTransparency = 1, 
+            Name = "Drag",
+        }, {
+            New("ImageLabel", {
+                Image = Creator.Icon("move")[1],
+                ImageRectOffset = Creator.Icon("move")[2].ImageRectPosition,
+                ImageRectSize = Creator.Icon("move")[2].ImageRectSize,
+                Size = UDim2.new(0,18,0,18),
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0.5,0,0.5,0),
+                AnchorPoint = Vector2.new(0.5,0.5),
+            })
         })
         OpenButtonDivider = New("Frame", {
-            Size = UDim2.new(0,1,1,-16),
+            Size = UDim2.new(0,1,1,0),
             Position = UDim2.new(0,20+16,0.5,0),
             AnchorPoint = Vector2.new(0,0.5),
             BackgroundColor3 = Color3.new(1,1,1),
-            BackgroundTransparency = .86,
+            BackgroundTransparency = .9,
         })
     
         OpenButtonContainer = New("Frame", {
@@ -371,13 +379,13 @@ return function(Config)
             AutomaticSize = "X",
             Parent = OpenButtonContainer,
             Active = false,
-            BackgroundColor3 = Color3.new(0,0,0),
-            BackgroundTransparency = .3,
+            BackgroundTransparency = .25,
             ZIndex = 99,
+            BackgroundColor3 = Color3.new(0,0,0),
         }, {
-            New("UIScale", {
-                Scale = 1.05,
-            }),
+            -- New("UIScale", {
+            --     Scale = 1.05,
+            -- }),
 		    New("UICorner", {
                 CornerRadius = UDim.new(1,0)
             }),
@@ -395,7 +403,7 @@ return function(Config)
             OpenButtonDivider,
             
             New("UIListLayout", {
-                Padding = UDim.new(0, Window.UIPadding),
+                Padding = UDim.new(0, 4),
                 FillDirection = "Horizontal",
                 VerticalAlignment = "Center",
             }),
@@ -403,10 +411,14 @@ return function(Config)
             New("TextButton",{
                 AutomaticSize = "XY",
                 Active = true,
-                BackgroundTransparency = 1,
-                Size = UDim2.new(0,0,1,0),
-                Position = UDim2.new(0,20+16+16+1,0,0)
+                BackgroundTransparency = 1, -- .93
+                Size = UDim2.new(0,0,0,44-(4*2)),
+                --Position = UDim2.new(0,20+16+16+1,0,0),
+                BackgroundColor3 = Color3.new(1,1,1),
             }, {
+                New("UICorner", {
+                    CornerRadius = UDim.new(1,-4)
+                }),
                 OpenButtonIcon,
                 New("UIListLayout", {
                     Padding = UDim.new(0, Window.UIPadding),
@@ -414,12 +426,14 @@ return function(Config)
                     VerticalAlignment = "Center",
                 }),
                 OpenButtonTitle,
+                New("UIPadding", {
+                    PaddingLeft = UDim.new(0,8+4),
+                    PaddingRight = UDim.new(0,8+4),
+                }),
             }),
             New("UIPadding", {
-                PaddingTop = UDim.new(0,0),
-                PaddingLeft = UDim.new(0,16),
-                PaddingRight = UDim.new(0,16),
-                PaddingBottom = UDim.new(0,0),
+                PaddingLeft = UDim.new(0,4),
+                PaddingRight = UDim.new(0,4),
             })
         })
         
@@ -460,10 +474,12 @@ return function(Config)
         end)
         
         OpenButton.TextButton.MouseEnter:Connect(function()
-            Tween(OpenButton.UIScale, .1, {Scale = .99}):Play()
+            --Tween(OpenButton.UIScale, .1, {Scale = .99}):Play()
+            Tween(OpenButton.TextButton, .1, {BackgroundTransparency = .93}):Play()
         end)
         OpenButton.TextButton.MouseLeave:Connect(function()
-            Tween(OpenButton.UIScale, .1, {Scale = 1.05}):Play()
+            --Tween(OpenButton.UIScale, .1, {Scale = 1.05}):Play()
+            Tween(OpenButton.TextButton, .1, {BackgroundTransparency = 1}):Play()
         end)
     end
     
@@ -472,10 +488,10 @@ return function(Config)
     if Window.HasOutline then
         Outline1 = New("Frame", {
             Name = "Outline",
-            Size = UDim2.new(1,Window.UIPadding*2,0,1),
-            Position = UDim2.new(0.5,0,1,Window.UIPadding),
+            Size = UDim2.new(1,Window.UIPadding+8,0,1),
+            Position = UDim2.new(0,-Window.UIPadding,1,Window.UIPadding),
             BackgroundTransparency= .9,
-            AnchorPoint = Vector2.new(0.5,0.5),
+            AnchorPoint = Vector2.new(0,0.5),
             ThemeTag = {
                 BackgroundColor3 = "Outline"
             },
@@ -533,7 +549,8 @@ return function(Config)
                 BackgroundTransparency = 1,
                 Size = UDim2.new(1,0,1,0),
                 Image = Window.Background,
-                -- ImageTransparency = 0,
+                ImageTransparency = 1,
+                ScaleType = "Crop"
             }, {
                 New("UICorner", {
                     CornerRadius = UDim.new(0,Window.UICorner)
@@ -560,6 +577,67 @@ return function(Config)
             }),
             Window.UIElements.SideBarContainer,
             Window.UIElements.MainBar,
+            
+            New("Frame", {
+                Size = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,42+(Window.UIPadding*2)),
+                BackgroundTransparency = 1,
+                Position = UDim2.new(0,0,1,0),
+                AnchorPoint = Vector2.new(0,1),
+            }, {
+                New("ImageLabel", {
+                    Image = ImageId,
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(0,42,0,42),
+                    ThemeTag = {
+                        BackgroundColor3 = "Text",
+                    },
+                    BackgroundTransparency = .93,
+                }, {
+                    New("UICorner", {
+                        CornerRadius = UDim.new(1,0)
+                    })
+                }),
+                New("Frame", {
+                    AutomaticSize = "XY",
+                    BackgroundTransparency = 1,
+                }, {
+                    New("TextLabel", {
+                        Text = game.Players.LocalPlayer.DisplayName,
+                        TextSize = 17,
+                        ThemeTag = {
+                            TextColor3 = "Text",
+                        },
+                        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
+                        AutomaticSize = "XY",
+                        BackgroundTransparency = 1,
+                    }),
+                    New("TextLabel", {
+                        Text = game.Players.LocalPlayer.Name,
+                        TextSize = 15,
+                        TextTransparency = .4,
+                        ThemeTag = {
+                            TextColor3 = "Text",
+                        },
+                        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                        AutomaticSize = "XY",
+                        BackgroundTransparency = 1,
+                    }),
+                    New("UIListLayout", {
+                        Padding = UDim.new(0,4),
+                        HorizontalAlignment = "Left",
+                    })
+                }),
+                New("UIListLayout", {
+                    Padding = UDim.new(0,Window.UIPadding),
+                    FillDirection = "Horizontal",
+                    VerticalAlignment = "Center",
+                }),
+                New("UIPadding", {
+                    PaddingLeft = UDim.new(0,Window.UIPadding),
+                    PaddingRight = UDim.new(0,Window.UIPadding),
+                })
+            }),
+            
             Outline2,
             New("Frame", { -- Topbar
                 Size = UDim2.new(1,0,0,52),
@@ -613,17 +691,16 @@ return function(Config)
                     Name = "Right",
                 }, {
                     New("UIListLayout", {
-                        Padding = UDim.new(0,20),
+                        Padding = UDim.new(0,9),
                         FillDirection = "Horizontal",
                         SortOrder = "LayoutOrder",
                     }),
-                    
                     
                 }),
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,Window.UIPadding),
                     PaddingLeft = UDim.new(0,Window.UIPadding),
-                    PaddingRight = UDim.new(0,Window.UIPadding),
+                    PaddingRight = UDim.new(0,8),
                     PaddingBottom = UDim.new(0,Window.UIPadding),
                 })
             })
@@ -633,30 +710,50 @@ return function(Config)
     
     function Window:CreateTopbarButton(Icon, Callback, LayoutOrder)
         local Button = New("TextButton", {
-            Size = UDim2.new(0,24,0,24),
+            Size = UDim2.new(0,36,0,36),
             BackgroundTransparency = 1,
             LayoutOrder = LayoutOrder or 999,
             Parent = Window.UIElements.Main.Main.Topbar.Right,
             --Active = true,
             ZIndex = 9999,
+            ThemeTag = {
+                BackgroundColor3 = "Text"
+            },
+            BackgroundTransparency = 1 -- .93
         }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,9),
+            }),
             New("ImageLabel", {
                 Image = Creator.Icon(Icon)[1],
                 ImageRectOffset = Creator.Icon(Icon)[2].ImageRectPosition,
                 ImageRectSize = Creator.Icon(Icon)[2].ImageRectSize,
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1,-6,1,-6),
+                Size = UDim2.new(0,16,0,16),
                 ThemeTag = {
                     ImageColor3 = "Text"
                 },
                 AnchorPoint = Vector2.new(0.5,0.5),
                 Position = UDim2.new(0.5,0,0.5,0),
-                Active = false
+                Active = false,
+                ImageTransparency = .2,
             }),
         })
+    
+        -- shhh
+        
+        Window.TopBarButtons[100-LayoutOrder] = Button
         
         Button.MouseButton1Click:Connect(function()
             Callback()
+        end)
+        Button.MouseEnter:Connect(function()
+            Tween(Button, .15, {BackgroundTransparency = .93}):Play()
+            Tween(Button.ImageLabel, .15, {ImageTransparency = 0}):Play()
+        end)
+        Button.MouseLeave:Connect(function()
+            Tween(Button, .1, {BackgroundTransparency = 1}):Play()
+            Tween(Button.ImageLabel, .1, {ImageTransparency = .2}):Play()
         end)
         
         return Button
@@ -711,7 +808,7 @@ return function(Config)
             end
             local ImageLabel = New("ImageLabel", {
                 Parent = Window.UIElements.Main.Main.Topbar.Left,
-                Size = UDim2.new(0,24,0,24),
+                Size = UDim2.new(0,22,0,22),
                 BackgroundTransparency = 1,
                 LayoutOrder = 1,
                 ThemeTag = themetag
@@ -721,15 +818,15 @@ return function(Config)
                 OpenButtonIcon.Image = Window.Icon
             elseif string.find(Window.Icon,"http") then
                 local success, response = pcall(function()
-                    if not isfile("WindUI/" .. Window.Folder .. "/Assets/Icon.png") then
+                    if not isfile("WindUI/." .. Window.Folder .. "/Assets/Icon.png") then
                         local response = request({
                             Url = Window.Icon,
                             Method = "GET",
                         }).Body
-                        writefile("WindUI/" .. Window.Folder .. "/Assets/Icon.png", response)
+                        writefile("WindUI/." .. Window.Folder .. "/Assets/Icon.png", response)
                     end
-                    ImageLabel.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/Icon.png")
-                    OpenButtonIcon.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/Icon.png")
+                    ImageLabel.Image = getcustomasset("WindUI/." .. Window.Folder .. "/Assets/Icon.png")
+                    OpenButtonIcon.Image = getcustomasset("WindUI/." .. Window.Folder .. "/Assets/Icon.png")
                 end)
                 if not success then
                     ImageLabel:Destroy()
@@ -751,52 +848,12 @@ return function(Config)
         end
     end)
     
-    function Window:Open()
-        Window.Closed = false
-        
-        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and Config.WindUI.TransparencyValue or 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        --Tween(Window.UIElements.Main.Main, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.Background.UIScale, 0.2, {Scale = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        if UIStroke then
-            Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        end
-        
-        Window.CanDropdown = true
-        
-        Window.UIElements.Main.Visible = true
-        task.wait(.08)
-        Window.UIElements.Main.Main.Visible = true
+    function Window:SetToggleKey(keycode)
+        Window.ToggleKey = keycode
     end
-    function Window:Close()
-        local Close = {}
-        
-        Window.UIElements.Main.Main.Visible = false
-        Window.CanDropdown = false
-        Window.Closed = true
-        
-        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        --Tween(Window.UIElements.Main.Main, 0.25, {BackgroundTransparency= 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Window.UIElements.Main.Background.UIScale, 0.19, {Scale = .95}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        if UIStroke then
-            Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        end
-        
-        task.spawn(function()
-            task.wait(0.25)
-            Window.UIElements.Main.Visible = false
-        end)
-        
-        function Close:Destroy()
-            Window.Destroyed = true
-            task.wait(0.25)
-            Config.Parent.Parent:Destroy()
-        end
-        
-        return Close
+    
+    function Window:SetBackgroundImage(id)
+        Window.UIElements.Main.Background.ImageLabel.Image = id
     end
     
     local CurrentPos
@@ -825,9 +882,9 @@ return function(Config)
         
         Tween(Window.UIElements.Main, 0.45, {Size = isFullscreen and CurrentSize or UDim2.new(1,-20,1,-20-52)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
     
-        delay(0, function()
-            Tween(Window.UIElements.Main, 0.45, {Position = isFullscreen and CurrentPos or UDim2.new(0.5,0,0.5,52/2)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        end)
+        Tween(Window.UIElements.Main, 0.45, {Position = isFullscreen and CurrentPos or UDim2.new(0.5,0,0.5,52/2)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        -- delay(0, function()
+        -- end)
         
         Window.IsFullscreen = not isFullscreen
     end, 998)
@@ -855,6 +912,75 @@ return function(Config)
             })
         end
     end, 997)
+    
+
+    function Window:Open()
+        Window.Closed = false
+        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = Config.Transparent and Config.WindUI.TransparencyValue or 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        --Tween(Window.UIElements.Main.Main, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background.ImageLabel, 0.2, {ImageTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background.UIScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
+        Tween(Gradient, 0.25, {BackgroundTransparency = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        if UIStroke then
+            Tween(UIStroke, 0.25, {Transparency = .8}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        end
+        
+        Window.CanDropdown = true
+        
+        -- task.spawn(function()
+        --     for _,i in next, Window.TopBarButtons do
+        --         Tween(i.ImageLabel, .1, {ImageTransparency = 1}):Play()
+        --         --task.wait(.1)
+        --     end
+        -- end)
+        
+        Window.UIElements.Main.Visible = true
+        task.wait(.1)
+        Window.UIElements.Main.Main.Visible = true
+        
+        -- task.spawn(function()
+        --     task.wait(.1)
+        --     for _,i in pairs(Window.TopBarButtons) do
+        --         Tween(i.ImageLabel, .15, {ImageTransparency = .2}):Play()
+        --         task.wait(.15)
+        --     end
+        -- end)
+    end
+    function Window:Close()
+        local Close = {}
+        
+        Window.UIElements.Main.Main.Visible = false
+        Window.CanDropdown = false
+        Window.Closed = true
+        
+        Tween(Window.UIElements.Main.Background, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        --Tween(Window.UIElements.Main.Main, 0.25, {BackgroundTransparency= 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background.UIScale, 0.19, {Scale = .95}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Window.UIElements.Main.Background.ImageLabel, 0.2, {ImageTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Gradient, 0.25, {BackgroundTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        Tween(Blur, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        if UIStroke then
+            Tween(UIStroke, 0.25, {Transparency = 1}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+        end
+        
+        
+        task.spawn(function()
+            task.wait(0.25)
+            Window.UIElements.Main.Visible = false
+        end)
+        
+        function Close:Destroy()
+            Window.Destroyed = true
+            task.wait(0.25)
+            Config.Parent.Parent:Destroy()
+        end
+        
+        return Close
+    end
+    
+    
+
 
     if not IsPC and Window.IsOpenButtonEnabled then
         OpenButton.TextButton.MouseButton1Click:Connect(function()
@@ -881,7 +1007,8 @@ return function(Config)
     end)
     
     function Window:EditOpenButton(OpenButtonConfig)
-        task.wait()
+        -- fuck
+        --task.wait()
         if OpenButton and OpenButton.Parent ~= nil then
             local OpenButtonModule = {
                 Title = OpenButtonConfig.Title,
@@ -928,6 +1055,7 @@ return function(Config)
             end
             
             if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
+                OpenButtonIcon.Visible = true
                 OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
                 OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
                 OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectSize
@@ -939,6 +1067,7 @@ return function(Config)
             end
     
             OpenButton.UICorner.CornerRadius = OpenButtonModule.CornerRadius
+            OpenButton.TextButton.UICorner.CornerRadius = UDim.new(OpenButtonModule.CornerRadius.Scale, OpenButtonModule.CornerRadius.Offset-4)
             OpenButton.UIStroke.Thickness = OpenButtonModule.StrokeThickness
         end
     end
@@ -948,7 +1077,13 @@ return function(Config)
     
     TabModule:OnChange(function(t) Window.CurrentTab = t end)
     function Window:Tab(TabConfig)
-        return TabModule.New({ Title = TabConfig.Title, Icon = TabConfig.Icon, Parent = Window.UIElements.SideBar.Frame, Desc = TabConfig.Desc })
+        return TabModule.New({ 
+            Title = TabConfig.Title, 
+            Icon = TabConfig.Icon, 
+            Desc = TabConfig.Desc,
+            Locked = TabConfig.Locked,
+            Parent = Window.UIElements.SideBar.Frame, 
+        })
     end
     
     function Window:SelectTab(Tab)
@@ -1132,14 +1267,14 @@ return function(Config)
                         CornerRadius = UDim.new(0, Dialog.UICorner-5),
                     }),
                 }),
-                New("UIStroke", {
-                    ThemeTag = {
-                        Color = "Text",
-                    },
-                    Thickness = 1.2,
-                    Transparency = Button.Variant == "Secondary" and .9 or .1,
-                    ApplyStrokeMode = "Border",
-                })
+                -- New("UIStroke", {
+                --     ThemeTag = {
+                --         Color = "Text",
+                --     },
+                --     Thickness = 1.2,
+                --     Transparency = Button.Variant == "Secondary" and .9 or .1,
+                --     ApplyStrokeMode = "Border",
+                -- })
             })
             
             ButtonFrame.MouseEnter:Connect(function()
@@ -1194,6 +1329,7 @@ return function(Config)
             initialInputPosition = input.Position
             Tween(FullScreenIcon, 0.2, {BackgroundTransparency = .65}):Play()
             Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 0}):Play()
+            Tween(ResizeHandle.ImageLabel, 0.2, {ImageTransparency = .35}):Play()
         
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
@@ -1201,6 +1337,7 @@ return function(Config)
                     FullScreenIcon.Active = false
                     Tween(FullScreenIcon, 0.2, {BackgroundTransparency = 1}):Play()
                     Tween(FullScreenIcon.ImageLabel, 0.2, {ImageTransparency = 1}):Play()
+                    Tween(ResizeHandle.ImageLabel, 0.2, {ImageTransparency = .8}):Play()
                 end
             end)
         end
@@ -1253,11 +1390,16 @@ return function(Config)
                     Window.UIElements.SideBarContainer.Size.Y.Offset
                 )
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
-            Tween(Window.UIElements.SideBarContainer, .1, {
-                GroupTransparency = 0
-            }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+            -- Tween(Window.UIElements.SideBarContainer, .1, {
+            --     GroupTransparency = 0
+            -- }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
             
-            Tween(SearchButton.ImageLabel, .15, {ImageTransparency = 0}):Play()
+            Window.UIElements.SideBarContainer.GroupTransparency = 0
+            
+            --Tween(SearchButton.ImageLabel, .15, {ImageTransparency = 0}):Play()
+            if Outline2 then
+                Tween(Outline2, .15, {BackgroundTransparency = .9}):Play()
+            end
         end
         
         if not IsOpen then
@@ -1272,11 +1414,13 @@ return function(Config)
                     Window.UIElements.SideBarContainer.Size.Y.Offset-52
                 )
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
-            Tween(Window.UIElements.SideBarContainer, .1, {
+            --[[Tween(Window.UIElements.SideBarContainer, .1, {
                 GroupTransparency = 1
-            }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+            }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()--]]
             
-            Tween(SearchButton.ImageLabel, .15, {ImageTransparency = .4}):Play()
+            Window.UIElements.SideBarContainer.GroupTransparency = 1
+            
+            --Tween(SearchButton.ImageLabel, .15, {ImageTransparency = .4}):Play()
             
             CurrentSearchBar = SearchBar.new(
                 TabModule.Tabs[Window.CurrentTab].Elements, 
@@ -1285,6 +1429,10 @@ return function(Config)
                 closeSearchbar,
                 TabModule.Tabs[Window.CurrentTab].ContainerFrame 
             )
+            
+            if Outline2 then
+                Tween(Outline2, .1, {BackgroundTransparency = 1}):Play()
+            end
         else
             closeSearchbar()
             
@@ -1295,9 +1443,10 @@ return function(Config)
             end
         end
         
-        task.wait(.25)
+        --task.wait(0)
         Window.UIElements.SideBarContainer.Visible = not IsOpen
     end, 996)
+
 
     return Window
 end

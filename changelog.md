@@ -1,7 +1,13 @@
-# 1.5.3  
+# 1.5.4
 ### Changelog:  
-- Changed Fullscreen icon
-- Searchbar Changed
-- Added Enable/Disabe to "OpenButton"
-- Added "Icon" for Toggle Element
-- Fixed lags (partly)
+- Colorpicker small remake
+- Fixed BackgroundImage
+- Added `Window:SetBackgroundImage()`
+- Added `Window:SetToggleKey()`
+- Added Notification Background Image
+- Added Paragraph Colors (`Alert`)
+- Added UI Expansion Indicator
+- Added `:Destroy()` for elements
+- Added User Icon
+- Added Popup (Advanced Dialog)
+- Fixed bugs

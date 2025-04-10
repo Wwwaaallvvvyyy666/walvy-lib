@@ -7,7 +7,7 @@ local New = Creator.New
 local Tween = Creator.Tween
 
 local Element = {
-    UICorner = 6,
+    UICorner = 8,
     UIPadding = 8,
     MenuCorner = 14,
     MenuPadding = 7,
@@ -296,6 +296,8 @@ function Element:New(Config)
             
             Dropdown.Tabs[Index] = TabMain
             
+            Dropdown:Display()
+            
             local function Callback()
                 Dropdown:Display()
                 task.spawn(function()
@@ -357,7 +359,7 @@ function Element:New(Config)
         Dropdown:Refresh(Dropdown.Values)
     end
     
-    Dropdown:Display()
+    --Dropdown:Display()
     RecalculateListSize()
     
     function Dropdown:Open()

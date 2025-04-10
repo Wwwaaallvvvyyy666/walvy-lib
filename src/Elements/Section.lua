@@ -39,6 +39,14 @@ function Element:New(Config)
     function Section:SetTitle(Title)
         Section.UIElements.Main.Text = Title
     end
+    function Section:Destroy()
+        Section.UIElements.Main.AutomaticSize = "None"
+        Section.UIElements.Main.Size = UDim2.new(1,0,0,Section.UIElements.Main.TextBounds.Y)
+        
+        Tween(Section.UIElements.Main, .1, {TextTransparency = 1}):Play()
+        task.wait(.1)
+        Tween(Section.UIElements.Main, .15, {Size = UDim2.new(1,0,0,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
+    end
     
     return Section.__type, Section
 end

@@ -68,6 +68,14 @@ local Creator = {
             SortOrder = "LayoutOrder",
         }
     },
+    Colors = {
+        Red = "#e53935",    -- Danger
+        Orange = "#f57c00", -- Warning
+        Green = "#43a047",  -- Success
+        Blue = "#039be5",   -- Info
+        White = "#ffffff",   -- White
+        Grey = "#616161",   -- Grey
+    }
 }
             
 function Creator.SetTheme(Theme)

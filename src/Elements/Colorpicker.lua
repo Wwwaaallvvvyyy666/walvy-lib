@@ -13,7 +13,7 @@ local Mouse = LocalPlayer:GetMouse()
 
 
 local Element = {
-    UICorner = 6,
+    UICorner = 8,
     UIPadding = 8
 }
 
@@ -42,12 +42,12 @@ function Element:Colorpicker(Config, OnApply)
     
     Colorpicker.ColorpickerFrame = ColorpickerFrame
     
-    ColorpickerFrame:Close()
+    --ColorpickerFrame:Close()
     
     local Hue, Sat, Vib = Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib
 
     Colorpicker.UIElements.Title = New("TextLabel", {
-        Text = "Colorpicker",
+        Text = Colorpicker.Title,
         TextSize = 20,
         FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
         TextXAlignment = "Left",
@@ -81,7 +81,7 @@ function Element:Colorpicker(Config, OnApply)
   		Parent = ColorpickerFrame.UIElements.Main,
   	}, {
   		New("UICorner", {
-  			CornerRadius = UDim.new(0, 6),
+  			CornerRadius = UDim.new(0,8),
   		}),
   		New("UIStroke", {
   			Thickness = .6,
@@ -95,12 +95,12 @@ function Element:Colorpicker(Config, OnApply)
   	
   	Colorpicker.UIElements.Inputs = New("Frame", {
   	    AutomaticSize = "XY",
-  	    Position = UDim2.fromOffset(Colorpicker.Transparency and 160+10+10+20+20+10 or 160+10+10+20, 40),
+  	    Position = UDim2.fromOffset(Colorpicker.Transparency and 160+10+10+10+10+10+10+20 or 160+10+10+10+20, 40),
   	    BackgroundTransparency = 1,
   	    Parent = ColorpickerFrame.UIElements.Main
   	}, {
   	    New("UIListLayout", {
-  		    Padding = UDim.new(0, 8),
+  		    Padding = UDim.new(0, 10),
   		    FillDirection = "Vertical",
   	    })
   	})
@@ -115,7 +115,7 @@ function Element:Colorpicker(Config, OnApply)
 		BackgroundTransparency = Colorpicker.Transparency,
 	}, {
 		New("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = UDim.new(0, 8),
 		}),
 	})
 
@@ -130,10 +130,10 @@ function Element:Colorpicker(Config, OnApply)
 		Parent = ColorpickerFrame.UIElements.Main,
 	}, {
 		New("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = UDim.new(0, 8),
 		}),
 		New("UIStroke", {
-			Thickness = .6,
+			Thickness = 1,
 			Transparency = 0.8,
 			ThemeTag = {
 			    Color = "Text"
@@ -149,7 +149,7 @@ function Element:Colorpicker(Config, OnApply)
 		ZIndex = 9,
 	}, {
 		New("UICorner", {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 8),
 		}),
 	})
 
@@ -164,10 +164,10 @@ function Element:Colorpicker(Config, OnApply)
 		Parent = ColorpickerFrame.UIElements.Main,
 	}, {
 		New("UICorner", {
-			CornerRadius = UDim.new(0, 4),
+			CornerRadius = UDim.new(0, 8),
 		}),
 		New("UIStroke", {
-			Thickness = .6,
+			Thickness = 1,
 			Transparency = 0.8,
 			ThemeTag = {
 			    Color = "Text"
@@ -193,24 +193,34 @@ function Element:Colorpicker(Config, OnApply)
 		BackgroundTransparency = 1,
 	})
 
-	local HueDrag = New("ImageLabel", {
-		Size = UDim2.new(1,0,0,3),
-		Image = "rbxassetid://18747052224",
-		AnchorPoint = Vector2.new(0,0.5),
+	local HueDrag = New("Frame", {
+		Size = UDim2.new(0,14,0,14),
+		AnchorPoint = Vector2.new(0.5,0.5),
+		Position = UDim2.new(0.5,0,0,0),
 		Parent = HueDragHolder,
-		ScaleType = "Crop",
-		ThemeTag = {
-			ImageColor3 = "Text",
-		},
+		--Image = "rbxassetid://18747052224",
+		--ScaleType = "Crop",
+		BackgroundColor3 = Colorpicker.Default
+	}, {
+        New("UIStroke", {
+            Thickness = 2,
+            Transparency = .1,
+            ThemeTag = {
+			    Color = "Text",
+            },
+        }),
+        New("UICorner", {
+            CornerRadius = UDim.new(1,0),
+        })
 	})
 
 	local HueSlider = New("Frame", {
-		Size = UDim2.fromOffset(20, 182+10),
-		Position = UDim2.fromOffset(160+10, 40),
+		Size = UDim2.fromOffset(10, 182+10),
+		Position = UDim2.fromOffset(160+10+10, 40),
 		Parent = ColorpickerFrame.UIElements.Main,
 	}, {
 		New("UICorner", {
-			CornerRadius = UDim.new(0, 6),
+			CornerRadius = UDim.new(1,0),
 		}),
 		HueSliderGradient,
 		HueDragHolder,
@@ -220,7 +230,7 @@ function Element:Colorpicker(Config, OnApply)
 	function CreateInput(Title, Value)
 	    local Container = New("Frame", {
 	        Size = UDim2.new(0,120,0,28),
-	        AutomaticSize = "Y",
+	        --AutomaticSize = "Y",
 	        BackgroundTransparency = 1,
 	        Parent = Colorpicker.UIElements.Inputs
 	    }, {
@@ -385,24 +395,24 @@ function Element:Colorpicker(Config, OnApply)
                     CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-5),
                 }),
             }),
-            New("UIStroke", {
-                ThemeTag = {
-                    Color = "Text",
-                },
-                Thickness = 1.2,
-                Transparency = Button.Variant == "Secondary" and .9 or .1,
-                ApplyStrokeMode = "Border",
-            })
+            -- New("UIStroke", {
+            --     ThemeTag = {
+            --         Color = "Text",
+            --     },
+            --     Thickness = 1.2,
+            --     Transparency = Button.Variant == "Secondary" and .9 or .1,
+            --     ApplyStrokeMode = "Border",
+            -- })
         })
         
         ButtonFrame.MouseEnter:Connect(function()
-            Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = .9}):Play()
+            Tween(ButtonFrame.Frame, 0.08, {BackgroundTransparency = .9}):Play()
         end)
         ButtonFrame.MouseLeave:Connect(function()
-            Tween(ButtonFrame.Frame, 0.1, {BackgroundTransparency = 1}):Play()
+            Tween(ButtonFrame.Frame, 0.08, {BackgroundTransparency = 1}):Play()
         end)
         ButtonFrame.MouseButton1Click:Connect(function()
-            ColorpickerFrame:Close()
+            ColorpickerFrame:Close()()
             task.spawn(function()
                 Button.Callback()
             end)
@@ -475,16 +485,28 @@ function Element:Colorpicker(Config, OnApply)
   		})
 
 		TransparencyDrag = New("ImageLabel", {
-			Size = UDim2.new(1,0,0,3),
-			AnchorPoint = Vector2.new(0,0.5),
-			Image = "rbxassetid://18747052224",
-			ScaleType = "Crop",
+		    Size = UDim2.new(0,14,0,14),
+		    AnchorPoint = Vector2.new(0.5,0.5),
+		    Position = UDim2.new(0.5,0,0,0),
+		    ThemeTag = {
+		        BackgroundColor3 = "Text",
+		    },
 			Parent = TransparencyDragHolder,
-			ThemeTag = {
-				ImageColor3 = "Text",
-			},
+			
+		}, {
+            New("UIStroke", {
+                Thickness = 2,
+                Transparency = .1,
+                ThemeTag = {
+		            Color = "Text",
+                },
+            }),
+            New("UICorner", {
+                CornerRadius = UDim.new(1,0),
+            })
+		    
 		})
-
+        
 		TransparencyColor = New("Frame", {
 			Size = UDim2.fromScale(1, 1),
 		}, {
@@ -501,8 +523,8 @@ function Element:Colorpicker(Config, OnApply)
 		})
 
 		TransparencySlider = New("Frame", {
-			Size = UDim2.fromOffset(20, 182+10),
-			Position = UDim2.fromOffset(160+10+20+10, 40),
+			Size = UDim2.fromOffset(10, 182+10),
+			Position = UDim2.fromOffset(160+10+10+10+10+10, 40),
 			Parent = ColorpickerFrame.UIElements.Main,
 			BackgroundTransparency = 1,
 		}, {
@@ -518,7 +540,7 @@ function Element:Colorpicker(Config, OnApply)
 				Size = UDim2.fromScale(1, 1),
 			}, {
 				New("UICorner", {
-					CornerRadius = UDim.new(0, 6),
+					CornerRadius = UDim.new(1,0),
 				}),
 			}),
 			TransparencyColor,
@@ -541,7 +563,8 @@ function Element:Colorpicker(Config, OnApply)
         Colorpicker.UIElements.SatVibMap.BackgroundColor3 = Color3.fromHSV(Hue, 1, 1)
         SatCursor.Position = UDim2.new(Sat, 0, 1 - Vib, 0)
         NewDisplayFrame.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
-        HueDrag.Position = UDim2.new(0, 0, Hue, 0)
+        HueDrag.BackgroundColor3 = Color3.fromHSV(Hue, 1, 1)
+        HueDrag.Position = UDim2.new(0.5, 0, Hue, 0)
         
         HexInput.Frame.TextBox.Text = "#" .. Color3.fromHSV(Hue, Sat, Vib):ToHex()
         RedInput.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["R"]
@@ -549,9 +572,11 @@ function Element:Colorpicker(Config, OnApply)
 		BlueInput.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["B"]
         
         if transparency or Colorpicker.Transparency then
-            TransparencyColor.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
 			NewDisplayFrame.BackgroundTransparency =  Colorpicker.Transparency or transparency
-			TransparencyDrag.Position = UDim2.new(0, 0, 1 -  Colorpicker.Transparency or transparency, 0)
+            TransparencyColor.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
+            TransparencyDrag.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
+			TransparencyDrag.BackgroundTransparency =  Colorpicker.Transparency or transparency
+			TransparencyDrag.Position = UDim2.new(0.5, 0, 1 -  Colorpicker.Transparency or transparency, 0)
 			AlphaInput.Frame.TextBox.Text = Colorpicker:Round((1 - Colorpicker.Transparency or transparency) * 100, 0) .. "%"
         end
     end
@@ -771,21 +796,23 @@ function Element:New(Config)
         end
     end
     
-    local clrpckr = Element:Colorpicker(Colorpicker, function(color, transparency)
-        if CanCallback then
-            Colorpicker:Update(color, transparency)
-            Colorpicker.Default = color
-            Colorpicker.Transparency = transparency
-            Colorpicker.Callback(color, transparency)
-        end
-    end)
     
-    Colorpicker:Update(Colorpicker.Default, Colorpicker.Transparency)
+    
+    --Colorpicker:Update(Colorpicker.Default, Colorpicker.Transparency)
 
     
     Colorpicker.UIElements.Colorpicker.MouseButton1Click:Connect(function()
         if CanCallback then
-            clrpckr.ColorpickerFrame:Open()
+            -- clrpckr.ColorpickerFrame:Open()
+            
+            Element:Colorpicker(Colorpicker, function(color, transparency)
+                if CanCallback then
+                    Colorpicker:Update(color, transparency)
+                    Colorpicker.Default = color
+                    Colorpicker.Transparency = transparency
+                    Colorpicker.Callback(color, transparency)
+                end
+            end).ColorpickerFrame:Open()
         end
     end)
     

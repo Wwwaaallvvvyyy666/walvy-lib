@@ -5,7 +5,7 @@ local Tween = Creator.Tween
 local NotificationModule = {
     Size = UDim2.new(0,300,1,-100-56),
     SizeLower = UDim2.new(0,300,1,-56),
-    UICorner = 12,
+    UICorner = 16,
     UIPadding = 14,
     ButtonPadding = 9,
     Holder = nil,
@@ -52,6 +52,7 @@ function NotificationModule.New(Config)
         Title = Config.Title or "Notification",
         Content = Config.Content or nil,
         Icon = Config.Icon or nil,
+        Background = Config.Background,
         Duration = Config.Duration or 5,
         Buttons = Config.Buttons or {},
         CanClose = true,
@@ -72,7 +73,7 @@ function NotificationModule.New(Config)
         ThemeTag = {
             Color = "Text"
         },
-        Transparency = .9,
+        Transparency = 1, -- - .9
         Thickness = .6,
     })
     
@@ -81,7 +82,7 @@ function NotificationModule.New(Config)
     if Notification.Icon then
         if Creator.Icon(Notification.Icon) and Creator.Icon(Notification.Icon)[2] then
             Icon = New("ImageLabel", {
-                Size = UDim2.new(0,28,0,28),
+                Size = UDim2.new(0,26,0,26),
                 Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
                 BackgroundTransparency = 1,
                 Image = Creator.Icon(Notification.Icon)[1],
@@ -93,7 +94,7 @@ function NotificationModule.New(Config)
             })
         elseif string.find(Notification.Icon, "rbxassetid") then
             Icon = New("ImageLabel", {
-                Size = UDim2.new(0,28,0,28),
+                Size = UDim2.new(0,26,0,26),
                 BackgroundTransparency = 1,
                 Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
                 Image = Notification.Icon
@@ -108,12 +109,20 @@ function NotificationModule.New(Config)
             ImageRectSize = Creator.Icon("x")[2].ImageRectSize,
             ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
             BackgroundTransparency = 1,
-            Size = UDim2.new(0,20,0,20),
+            Size = UDim2.new(0,16,0,16),
             Position = UDim2.new(1,-NotificationModule.UIPadding,0,NotificationModule.UIPadding),
             AnchorPoint = Vector2.new(1,0),
             ThemeTag = {
                 ImageColor3 = "Text"
             }
+        }, {
+            New("TextButton", {
+                Size = UDim2.new(1,8,1,8),
+                BackgroundTransparency = 1,
+                AnchorPoint = Vector2.new(0.5,0.5),
+                Position = UDim2.new(0.5,0,0.5,0),
+                Text = "",
+            })
         })
     end
     
@@ -122,7 +131,8 @@ function NotificationModule.New(Config)
         BackgroundTransparency = .9,
         ThemeTag = {
             BackgroundColor3 = "Text",
-        }
+        },
+        --Visible = false,
     })
     
     local TextContainer = New("Frame", {
@@ -235,11 +245,21 @@ function NotificationModule.New(Config)
         Position = UDim2.new(2,0,1,0),
         AnchorPoint = Vector2.new(0,1),
         AutomaticSize = "Y",
-        BackgroundTransparency = .4,
+        BackgroundTransparency = .25,
         ThemeTag = {
             BackgroundColor3 = "Accent"
         },
+        --ZIndex = 20
     }, {
+        New("ImageLabel", {
+            Name = "Background",
+            Image = Notification.Background,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,0,1,0),
+            ScaleType = "Crop",
+            --ZIndex = 19,
+        }),
+    
         UIStroke, UICorner,
         TextContainer,
         Icon, CloseButton,
@@ -259,7 +279,7 @@ function NotificationModule.New(Config)
         if not Notification.Closed then
             Notification.Closed = true
             Tween(MainContainer, 0.45, {Size = UDim2.new(1, 0, 0, -8)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-            Tween(Main, 0.45, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+            Tween(Main, 0.55, {Position = UDim2.new(2,0,1,0)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
             task.wait(.45)
             MainContainer:Destroy()
         end
@@ -282,7 +302,7 @@ function NotificationModule.New(Config)
     end)
     
     if CloseButton then
-        CloseButton.MouseButton1Click:Connect(function()
+        CloseButton.TextButton.MouseButton1Click:Connect(function()
             Notification:Close()
         end)
     end

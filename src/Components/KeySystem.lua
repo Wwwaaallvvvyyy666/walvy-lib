@@ -38,14 +38,14 @@ function KeySystem.new(Config, Filename, func)
             IconFrame.Image = Config.Icon
         elseif string.find(Config.Icon,"http") then
             local success, response = pcall(function()
-                if not isfile("WindUI/" .. Window.Folder .. "/Assets/Icon.png") then
+                if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
                     local response = request({
                         Url = Config.Icon,
                         Method = "GET",
                     }).Body
-                    writefile("WindUI/" .. Window.Folder .. "/Assets/Icon.png", response)
+                    writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
                 end
-                IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/Icon.png")
+                IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
             end)
             if not success then
                 IconFrame:Destroy()
@@ -346,7 +346,6 @@ function KeySystem.new(Config, Filename, func)
                 PaddingBottom = UDim.new(0,16),
             })
         }),
-        CloseButton
     })
     
     -- for _, values in next, KeySystemButtons do

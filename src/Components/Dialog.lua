@@ -33,6 +33,10 @@ function DialogModule.Create(Key)
             Active = false, -- true
             Visible = false, -- true
             Parent = Key and DialogModule.Window or DialogModule.Window.UIElements.Main.Main
+        }, {
+            New("UICorner", {
+                CornerRadius = UDim.new(0,DialogModule.Window.UICorner)
+            })
         })
     end
     

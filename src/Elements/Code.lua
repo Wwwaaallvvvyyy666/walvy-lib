@@ -30,7 +30,7 @@ function Element:New(Config)
         Size = UDim2.new(1,Code.CodeFrame.UIPadding*2,0,1),
         -- Position = UDim2.new(0.5,0,0,0),
         -- AnchorPoint = Vector2.new(0.5,0),
-        BackgroundTransparency = .94, 
+        BackgroundTransparency = 1, -- .94 
         ThemeTag = {
             BackgroundColor3 = "Text"
         },
@@ -38,22 +38,30 @@ function Element:New(Config)
         LayoutOrder = 1,
     })
     
-    local CopyButton = New("ImageButton", {
+    local CopyButton = New("ImageLabel", {
         Image = Creator.Icon("clipboard")[1],
         ImageRectSize = Creator.Icon("clipboard")[2].ImageRectSize,
         ImageRectOffset = Creator.Icon("clipboard")[2].ImageRectPosition,
         BackgroundTransparency = 1,
-        Size = UDim2.new(0,14,0,14),
+        Size = UDim2.new(0,16,0,16),
         Position = UDim2.new(1,40,0,0),
         AnchorPoint = Vector2.new(1,0),
         Parent = Code.CodeFrame.UIElements.Main.Title.Title
+    }, {
+        New("TextButton", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0,20,0,20),
+            Position = UDim2.new(0.5,0,0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            Text = "",
+        })
     })
     
     local TextLabel = New("TextLabel", {
         Text = "",
         TextColor3 = Color3.fromHex("#c9d1d9"),
         TextTransparency = 0,
-        TextSize = 15,
+        TextSize = 13,
         TextWrapped = false,
         LineHeight = 1.15,
         RichText = true,
@@ -63,7 +71,8 @@ function Element:New(Config)
         AutomaticSize = "XY",
     })
     
-    TextLabel.FontFace = Font.new("rbxassetid://16658246179", Enum.FontWeight.Medium)
+    --TextLabel.FontFace = Font.new("rbxassetid://16658246179", Enum.FontWeight.Medium)
+    TextLabel.Font = "Code"
     
     local ScrollingFrame = New("ScrollingFrame", {
         Size = UDim2.new(1,0,0,0),
@@ -90,10 +99,10 @@ function Element:New(Config)
             CornerRadius = UDim.new(0,8),
         }),
         New("UIPadding", {
-            PaddingTop = UDim.new(0,12),
-            PaddingLeft = UDim.new(0,12),
-            PaddingRight = UDim.new(0,12),
-            PaddingBottom = UDim.new(0,12),
+            PaddingTop = UDim.new(0,9),
+            PaddingLeft = UDim.new(0,9),
+            PaddingRight = UDim.new(0,9),
+            PaddingBottom = UDim.new(0,9),
         })
     })
     
@@ -120,15 +129,26 @@ function Element:New(Config)
         Code:Lock()
     end
 
-    CopyButton.MouseButton1Click:Connect(function()
+    CopyButton.TextButton.MouseButton1Click:Connect(function()
         if CanCallback then
-            toclipboard(Code.Code)
-            Config.WindUI:Notify({
-                Title = "Copied!",
-                Content = "The '" .. Code.Title .. "' copied to your clipboard.",
-                Icon = "clipboard-copy",
-                Duration = 5,
-            })
+            local success, result = pcall(function()
+                toclipboard(Code.Code)
+            end)
+            if success then
+                Config.WindUI:Notify({
+                    Title = "Success",
+                    Content = "The '" .. Code.Title .. "' copied to your clipboard.",
+                    Icon = "check",
+                    Duration = 5,
+                })
+            else
+                Config.WindUI:Notify({
+                    Title = "Error",
+                    Content = "The '" .. Code.Title .. "' is not copied. Error: " .. result,
+                    Icon = "x",
+                    Duration = 5,
+                })
+            end
         end
     end)
     return Code.__type, Code

@@ -24,7 +24,8 @@ local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
 
 WindUI.ScreenGui = New("ScreenGui", {
     Name = "WindUI",
-    Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or gethui and gethui() or game.CoreGui,
+    --Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or gethui and gethui() or game.CoreGui,
+    Parent = game.CoreGui,
     IgnoreGuiInset = true,
 }, {
     New("Folder", {
@@ -38,6 +39,9 @@ WindUI.ScreenGui = New("ScreenGui", {
     }),
     New("Folder", {
         Name = "KeySystem"
+    }),
+    New("Folder", {
+        Name = "Popups"
     }),
     New("Folder", {
         Name = "ToolTips"
@@ -70,15 +74,17 @@ function WindUI:AddTheme(LTheme)
 end
 
 function WindUI:SetTheme(Value)
-if Themes[Value] then
-    WindUI.Theme = Themes[Value]
-    Creator.SetTheme(Themes[Value])
-    Creator.UpdateTheme()
-    
-    return Themes[Value]
+    if Themes[Value] then
+        WindUI.Theme = Themes[Value]
+        Creator.SetTheme(Themes[Value])
+        Creator.UpdateTheme()
+        
+        return Themes[Value]
+    end
+    return nil
 end
-return nil
-end
+
+WindUI:SetTheme("Dark")
 
 function WindUI:GetThemes()
     return Themes
@@ -93,6 +99,12 @@ function WindUI:GetWindowSize()
     return Window.UIElements.Main.Size
 end
 
+
+function WindUI:Popup(PopupConfig)
+    PopupConfig.WindUI = WindUI
+    return require("./Components/Popup").new(PopupConfig)
+    
+end
 
 
 function WindUI:CreateWindow(Config)

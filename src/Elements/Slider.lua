@@ -1,5 +1,6 @@
 local Creator = require("../Creator")
 local New = Creator.New
+local Tween = Creator.Tween
 
 local Element = {}
 
@@ -130,7 +131,8 @@ function Element:New(Config)
                 Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
     
                 if Value ~= LastValue then
-                    Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
+                    Tween(Slider.UIElements.SliderIcon.Frame, 0.08, {Size = UDim2.new(delta,0,1,0)}):Play()
+                    --Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
                     Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
                     LastValue = Value
                     Slider.Callback(Value)
@@ -146,7 +148,8 @@ function Element:New(Config)
                         Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
     
                         if Value ~= LastValue then
-                            Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
+                            Tween(Slider.UIElements.SliderIcon.Frame, 0.08, {Size = UDim2.new(delta,0,1,0)}):Play()
+                            --Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
                             Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
                             LastValue = Value
                             Slider.Callback(Value)

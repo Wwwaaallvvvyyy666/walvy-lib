@@ -3,7 +3,7 @@ local New = Creator.New
 local Tween = Creator.Tween
 
 local Element = {
-    UICorner = 6,
+    UICorner = 8,
     UIPadding = 8,
 }
 
@@ -34,8 +34,8 @@ function Element:New(Config)
         BackgroundTransparency = .95,
         Parent = Input.InputFrame.UIElements.Main,
         Size = UDim2.new(0,30*5,0,30),
-        AnchorPoint = Vector2.new(1,0.5),
-        Position = UDim2.new(1,0,0.5,0),
+        AnchorPoint = Vector2.new(0.5,0.5),
+        Position = UDim2.new(1,-(30*5)/2,0.5,0),
         ThemeTag = {
             BackgroundColor3 = "Text",
         },
@@ -76,6 +76,9 @@ function Element:New(Config)
             PaddingLeft = UDim.new(0,Element.UIPadding),
             PaddingRight = UDim.new(0,Element.UIPadding),
             PaddingBottom = UDim.new(0,Element.UIPadding),
+        }),
+        New("UIScale", {
+            Scale = 1, -- 1.04
         })
     })
     
@@ -92,6 +95,15 @@ function Element:New(Config)
         return Input.InputFrame:Unlock()
     end
     
+    
+    function Input:Set(v)
+        if CanCallback then
+            Input.Callback(v)
+
+            Input.Value = v
+        end
+    end
+    
     if Input.Locked then
         Input:Lock()
     end
@@ -101,14 +113,17 @@ function Element:New(Config)
             Input.UIElements.Input.TextBox:ReleaseFocus()
             return
         end
-        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .8}):Play()
+        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .85}):Play()
+        Tween(Input.UIElements.Input, 0.1, {BackgroundTransparency = .93}):Play()
+        Tween(Input.UIElements.Input.UIScale, 0.1, {Scale = 1.04}):Play()
     end)
     
     Input.UIElements.Input.TextBox.FocusLost:Connect(function()
-        if CanCallback then
-            Input.Callback(Input.UIElements.Input.TextBox.Text)
-            Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
-        end
+        Input:Set(Input.UIElements.Input.TextBox.Text)
+        
+        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
+        Tween(Input.UIElements.Input, 0.1, {BackgroundTransparency = .95}):Play()
+        Tween(Input.UIElements.Input.UIScale, 0.1, {Scale = 1}):Play()
     end)
 
     return Input.__type, Input

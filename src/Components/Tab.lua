@@ -31,6 +31,7 @@ function TabModule.New(Config)
         Title = Config.Title or "Tab",
         Desc = Config.Desc,
         Icon = Config.Icon,
+        Locked = Config.Locked,
         Selected = false,
         Index = nil,
         Parent = Config.Parent,
@@ -43,44 +44,44 @@ function TabModule.New(Config)
     local WindUI = TabModule.WindUI
     
     TabModule.TabCount = TabModule.TabCount + 1
-  	local TabIndex = TabModule.TabCount
-  	Tab.Index = TabIndex
-  	
-  	Tab.UIElements.Main = New("TextButton", {
-  	    BackgroundTransparency = 1,
-  	    Size = UDim2.new(1,0,0,0),
-  	    AutomaticSize = "Y",
-  	    Parent = Config.Parent
-  	}, {
-  	    New("UIListLayout", {
-  	        SortOrder = "LayoutOrder",
-  	        Padding = UDim.new(0,10),
-  	        FillDirection = "Horizontal",
-  	        VerticalAlignment = "Center",
-  	    }),
-  	    New("TextLabel", {
-  	        Text = Tab.Title,
-  	        ThemeTag = {
-  	            TextColor3 = "Text"
-  	        },
-  	        TextTransparency = 0.4,
-  	        TextSize = 15,
-  	        Size = UDim2.new(1,0,0,0),
-  	        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-  	        TextWrapped = true,
-  	        RichText = true,
-  	        --AutomaticSize = "Y",
-  	        LayoutOrder = 2,
-  	        TextXAlignment = "Left",
-  	        BackgroundTransparency = 1,
-  	    }),
-  	    New("UIPadding", {
-  	        PaddingTop = UDim.new(0,6),
-  	        PaddingBottom = UDim.new(0,6),
-  	    })
-  	})
-  	
-  	local TextOffset = 0
+	local TabIndex = TabModule.TabCount
+	Tab.Index = TabIndex
+	
+	Tab.UIElements.Main = New("TextButton", {
+	    BackgroundTransparency = 1,
+	    Size = UDim2.new(1,0,0,0),
+	    AutomaticSize = "Y",
+	    Parent = Config.Parent
+	}, {
+	    New("UIListLayout", {
+	        SortOrder = "LayoutOrder",
+	        Padding = UDim.new(0,10),
+	        FillDirection = "Horizontal",
+	        VerticalAlignment = "Center",
+	    }),
+	    New("TextLabel", {
+	        Text = Tab.Title,
+	        ThemeTag = {
+	            TextColor3 = "Text"
+	        },
+	        TextTransparency = not Tab.Locked and 0.4 or .7,
+	        TextSize = 15,
+	        Size = UDim2.new(1,0,0,0),
+	        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+	        TextWrapped = true,
+	        RichText = true,
+	        AutomaticSize = "Y",
+	        LayoutOrder = 2,
+	        TextXAlignment = "Left",
+	        BackgroundTransparency = 1,
+	    }),
+	    New("UIPadding", {
+	        PaddingTop = UDim.new(0,6),
+	        PaddingBottom = UDim.new(0,6),
+	    })
+	})
+	
+	local TextOffset = 0
 
 --	Tab.UIElements.Main.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
 --	    Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,0,0,Tab.UIElements.Main.TextLabel.TextBounds.Y)
@@ -89,7 +90,7 @@ function TabModule.New(Config)
   	
   	if Tab.Icon and Creator.Icon(Tab.Icon) then
         local Icon = New("ImageLabel", {
-            ImageTransparency = 0.4,
+            ImageTransparency = not Tab.Locked and 0.4 or .7,
             Image = Creator.Icon(Tab.Icon)[1],
             ImageRectOffset = Creator.Icon(Tab.Icon)[2].ImageRectPosition,
             ImageRectSize = Creator.Icon(Tab.Icon)[2].ImageRectSize,
@@ -105,7 +106,7 @@ function TabModule.New(Config)
         TextOffset = -30
     elseif Tab.Icon and string.find(Tab.Icon, "rbxassetid://") then
         local Icon = New("ImageLabel", {
-            ImageTransparency = 0.4,
+            ImageTransparency = not Tab.Locked and 0.4 or .7,
             Image = Tab.Icon,
             Size = UDim2.new(0,18,0,18),
             LayoutOrder = 1,
@@ -193,7 +194,9 @@ function TabModule.New(Config)
 	Tab.ContainerFrame = ContainerFrameCanvas
 	
 	Tab.UIElements.Main.MouseButton1Click:Connect(function()
-	    TabModule:SelectTab(TabIndex)
+	    if not Tab.Locked then
+	        TabModule:SelectTab(TabIndex)
+	    end
 	end)
     
     local function updateSliderSize()
@@ -327,6 +330,7 @@ function TabModule.New(Config)
         ElementConfig.Parent = Tab.UIElements.ContainerFrame
         ElementConfig.Window = Window
         ElementConfig.Hover = false
+        --ElementConfig.Color = ElementConfig.Color
         ElementConfig.TextOffset = 0
         ElementConfig.IsButtons = ElementConfig.Buttons and #ElementConfig.Buttons > 0 and true or false
         
@@ -334,6 +338,7 @@ function TabModule.New(Config)
             __type = "Paragraph",
             Title = ElementConfig.Title or "Input",
             Desc = ElementConfig.Desc or nil,
+            --Color = ElementConfig.Color,
             Locked = ElementConfig.Locked or false,
         }
         local Paragraph = require("../Components/Element")(ElementConfig)
@@ -357,28 +362,43 @@ function TabModule.New(Config)
                 local Button = New("TextButton", {
                     Text = ButtonData.Title,
                     TextSize = 16,
-                    AutomaticSize = "Y",
-                    ThemeTag = {
+                    AutomaticSize = "XY",
+                    ThemeTag = not ElementConfig.Color and {
                         TextColor3 = "Accent",
                         BackgroundColor3 = "Text"
                     },
+                    TextColor3 = ElementConfig.Color and Color3.fromHex("#131313"),
+                    BackgroundColor3 = ElementConfig.Color and Color3.new(1,1,1),
                     FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
                     BackgroundTransparency = 0.1,
-                    Size = UDim2.new(1 / #ElementConfig.Buttons, -(((#ElementConfig.Buttons - 1) * 10) / #ElementConfig.Buttons), 0, 32),
+                    --Size = UDim2.new(1 / #ElementConfig.Buttons, -(((#ElementConfig.Buttons - 1) * 10) / #ElementConfig.Buttons), 0, 30),
+                    Size = UDim2.new(0, 0, 0, 30),
                     Parent = ButtonsContainer,
                 }, {
                     New("UICorner", {
                         CornerRadius = UDim.new(0,8)
+                    }),
+                    New("UIPadding", {
+                        PaddingLeft = UDim.new(0,10),
+                        PaddingRight = UDim.new(0,10),
+                    }),
+                    New("UIStroke", {
+                        Thickness = 1,
+                        Color = Color3.new(0,0,0),
+                        Transparency = ElementConfig.Color ~= "White" and 1 or 0.88,
+                        ApplyStrokeMode = "Border",
                     })
                 })
                 Button.MouseEnter:Connect(function()
-                    Tween(Button, 0.1, {BackgroundTransparency = .3}):Play()
+                    Tween(Button, 0.08, {BackgroundTransparency = .3}):Play()
                 end)
                 Button.MouseLeave:Connect(function()
-                    Tween(Button, 0.1, {BackgroundTransparency = .1}):Play()
+                    Tween(Button, 0.08, {BackgroundTransparency = .1}):Play()
                 end)
                 Button.MouseButton1Click:Connect(function()
-                    ButtonData.Callback()
+                    if ButtonData.Callback then
+                        ButtonData.Callback()
+                    end
                 end)
             end
         end
@@ -388,6 +408,9 @@ function TabModule.New(Config)
         end
         function ParagraphModule:SetDesc(Title)
             ParagraphModule.ParagraphFrame:SetDesc(Title)
+        end
+        function ParagraphModule:Destroy()
+            ParagraphModule.ParagraphFrame:Destroy()
         end
         
         table.insert(Tab.Elements, ParagraphModule)
@@ -404,6 +427,9 @@ function TabModule.New(Config)
         function Content:SetDesc(Title)
             Content.ButtonFrame:SetDesc(Title)
         end
+        function Content:Destroy()
+            Content.ButtonFrame:Destroy()
+        end
         
         return Content
     end
@@ -417,6 +443,9 @@ function TabModule.New(Config)
         end
         function Content:SetDesc(Title)
             Content.ToggleFrame:SetDesc(Title)
+        end
+        function Content:Destroy()
+            Content.ToggleFrame:Destroy()
         end
         
         return Content
@@ -432,6 +461,9 @@ function TabModule.New(Config)
         function Content:SetDesc(Title)
             Content.SliderFrame:SetDesc(Title)
         end
+        function Content:Destroy()
+            Content.SliderFrame:Destroy()
+        end
         
         return Content
     end
@@ -445,6 +477,9 @@ function TabModule.New(Config)
         end
         function Content:SetDesc(Title)
             Content.KeybindFrame:SetDesc(Title)
+        end
+        function Content:Destroy()
+            Content.KeybindFrame:Destroy()
         end
         
         return Content
@@ -460,6 +495,9 @@ function TabModule.New(Config)
         function Content:SetDesc(Title)
             Content.InputFrame:SetDesc(Title)
         end
+        function Content:Destroy()
+            Content.InputFrame:Destroy()
+        end
         
         return Content
     end
@@ -474,6 +512,9 @@ function TabModule.New(Config)
         end
         function Content:SetDesc(Title)
             Content.DropdownFrame:SetDesc(Title)
+        end
+        function Content:Destroy()
+            Content.DropdownFrame:Destroy()
         end
         
         return Content
@@ -491,6 +532,9 @@ function TabModule.New(Config)
         function Content:SetDesc(Title)
             Content.CodeFrame:SetDesc(Title)
         end
+        function Content:Destroy()
+            Content.CodeFrame:Destroy()
+        end
         
         return Content
     end
@@ -505,6 +549,9 @@ function TabModule.New(Config)
         end
         function Content:SetDesc(Title)
             Content.ColorpickerFrame:SetDesc(Title)
+        end
+        function Content:Destroy()
+            Content.ColorpickerFrame:Destroy()
         end
         
         return Content
@@ -571,40 +618,44 @@ function TabModule:OnChange(func)
 end
 
 function TabModule:SelectTab(TabIndex)
-    TabModule.SelectedTab = TabIndex
-    
-    for _, TabObject in next, TabModule.Tabs do
-        Tween(TabObject.UIElements.Main.TextLabel, 0.15, {TextTransparency = 0.4}):Play()
-        if TabObject.Icon and Creator.Icon(TabObject.Icon) then
-            Tween(TabObject.UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0.4}):Play()
+    if not TabModule.Tabs[TabIndex].Locked then
+        TabModule.SelectedTab = TabIndex
+        
+        for _, TabObject in next, TabModule.Tabs do
+            if not TabObject.Locked then
+                Tween(TabObject.UIElements.Main.TextLabel, 0.15, {TextTransparency = 0.4}):Play()
+                if TabObject.Icon and Creator.Icon(TabObject.Icon) then
+                    Tween(TabObject.UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0.4}):Play()
+                end
+                TabObject.Selected = false
+            end
         end
-		TabObject.Selected = false
-	end
-    Tween(TabModule.Tabs[TabIndex].UIElements.Main.TextLabel, 0.15, {TextTransparency = 0}):Play()
-    if TabModule.Tabs[TabIndex].Icon and Creator.Icon(TabModule.Tabs[TabIndex].Icon) then
-        Tween(TabModule.Tabs[TabIndex].UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0}):Play()
+        Tween(TabModule.Tabs[TabIndex].UIElements.Main.TextLabel, 0.15, {TextTransparency = 0}):Play()
+        if TabModule.Tabs[TabIndex].Icon and Creator.Icon(TabModule.Tabs[TabIndex].Icon) then
+            Tween(TabModule.Tabs[TabIndex].UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0}):Play()
+        end
+        TabModule.Tabs[TabIndex].Selected = true
+        
+        Tween(TabModule.TabHighlight, .25, {Position = UDim2.new(
+            0,
+            0,
+            0,
+            TabModule.Tabs[TabIndex].UIElements.Main.AbsolutePosition.Y - TabModule.Tabs[TabIndex].Parent.AbsolutePosition.Y
+            ), 
+            Size = UDim2.new(1,-13,0,TabModule.Tabs[TabIndex].UIElements.Main.AbsoluteSize.Y)
+        }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+    
+        task.spawn(function()
+            for _, ContainerObject in next, TabModule.Containers do
+                ContainerObject.AnchorPoint = Vector2.new(0,0.05)
+                ContainerObject.Visible = false
+            end
+            TabModule.Containers[TabIndex].Visible = true
+            Tween(TabModule.Containers[TabIndex], 0.15, {AnchorPoint = Vector2.new(0,0)}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
+        end)
+        
+        TabModule.OnChangeFunc(TabIndex)
     end
-	TabModule.Tabs[TabIndex].Selected = true
-	
-	Tween(TabModule.TabHighlight, .25, {Position = UDim2.new(
-	    0,
-	    0,
-	    0,
-	    TabModule.Tabs[TabIndex].UIElements.Main.AbsolutePosition.Y - TabModule.Tabs[TabIndex].Parent.AbsolutePosition.Y
-	), 
-	Size = UDim2.new(1,-13,0,TabModule.Tabs[TabIndex].UIElements.Main.AbsoluteSize.Y)
-	}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-	
-	task.spawn(function()
-	    for _, ContainerObject in next, TabModule.Containers do
-	        ContainerObject.AnchorPoint = Vector2.new(0,0.05)
-	        ContainerObject.Visible = false
-	    end
-	    TabModule.Containers[TabIndex].Visible = true
-	    Tween(TabModule.Containers[TabIndex], 0.15, {AnchorPoint = Vector2.new(0,0)}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
-	end)
-	
-	TabModule.OnChangeFunc(TabIndex)
 end
 
 return TabModule
