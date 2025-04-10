@@ -15,6 +15,7 @@ return function(Config)
         Icon = Config.Icon,
         Folder = Config.Folder,
         Background = Config.Background,
+        UserEnabled = Config.UserEnabled,
         Size = Config.Size and UDim2.new(
                     0, math.clamp(Config.Size.X.Offset, 480, 700),
                     0, math.clamp(Config.Size.Y.Offset, 350, 520)) or UDim2.new(0,580,0,460),
@@ -185,7 +186,7 @@ return function(Config)
     local ImageId, _ = game.Players:GetUserThumbnailAsync(game.Players.LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
     
     Window.UIElements.SideBarContainer = New("CanvasGroup", {
-        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,-52 -42 -(Window.UIPadding*2)),
+        Size = UDim2.new(0,Window.SideBarWidth-Window.UIPadding+4,1,Window.UserEnabled and -52 -42 -(Window.UIPadding*2) or -52 ),
         Position = UDim2.new(0,0,0,52),
         BackgroundTransparency = 1,
         GroupTransparency = 0,
@@ -483,6 +484,70 @@ return function(Config)
         end)
     end
     
+    local UserIcon
+    if Window.UserEnabled then
+        UserIcon = New("Frame", {
+            Size = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,42+(Window.UIPadding*2)),
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0,0,1,0),
+            AnchorPoint = Vector2.new(0,1),
+            Name = "UserIcon",
+        }, {
+            New("ImageLabel", {
+                Image = ImageId,
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0,42,0,42),
+                ThemeTag = {
+                    BackgroundColor3 = "Text",
+                },
+                BackgroundTransparency = .93,
+            }, {
+                New("UICorner", {
+                    CornerRadius = UDim.new(1,0)
+                })
+            }),
+            New("Frame", {
+                AutomaticSize = "XY",
+                BackgroundTransparency = 1,
+            }, {
+                New("TextLabel", {
+                    Text = game.Players.LocalPlayer.DisplayName,
+                    TextSize = 17,
+                    ThemeTag = {
+                        TextColor3 = "Text",
+                    },
+                    FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
+                    AutomaticSize = "XY",
+                    BackgroundTransparency = 1,
+                }),
+                New("TextLabel", {
+                    Text = game.Players.LocalPlayer.Name,
+                    TextSize = 15,
+                    TextTransparency = .4,
+                    ThemeTag = {
+                        TextColor3 = "Text",
+                    },
+                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                    AutomaticSize = "XY",
+                    BackgroundTransparency = 1,
+                }),
+                New("UIListLayout", {
+                    Padding = UDim.new(0,4),
+                    HorizontalAlignment = "Left",
+                })
+            }),
+            New("UIListLayout", {
+                Padding = UDim.new(0,Window.UIPadding),
+                FillDirection = "Horizontal",
+                VerticalAlignment = "Center",
+            }),
+            New("UIPadding", {
+                PaddingLeft = UDim.new(0,Window.UIPadding),
+                PaddingRight = UDim.new(0,Window.UIPadding),
+            })
+        })
+    end
+    
     local Outline1
     local Outline2
     if Window.HasOutline then
@@ -578,65 +643,7 @@ return function(Config)
             Window.UIElements.SideBarContainer,
             Window.UIElements.MainBar,
             
-            New("Frame", {
-                Size = UDim2.new(0,Window.UIElements.SideBarContainer.AbsoluteSize.X,0,42+(Window.UIPadding*2)),
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0,0,1,0),
-                AnchorPoint = Vector2.new(0,1),
-            }, {
-                New("ImageLabel", {
-                    Image = ImageId,
-                    BackgroundTransparency = 1,
-                    Size = UDim2.new(0,42,0,42),
-                    ThemeTag = {
-                        BackgroundColor3 = "Text",
-                    },
-                    BackgroundTransparency = .93,
-                }, {
-                    New("UICorner", {
-                        CornerRadius = UDim.new(1,0)
-                    })
-                }),
-                New("Frame", {
-                    AutomaticSize = "XY",
-                    BackgroundTransparency = 1,
-                }, {
-                    New("TextLabel", {
-                        Text = game.Players.LocalPlayer.DisplayName,
-                        TextSize = 17,
-                        ThemeTag = {
-                            TextColor3 = "Text",
-                        },
-                        FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
-                        AutomaticSize = "XY",
-                        BackgroundTransparency = 1,
-                    }),
-                    New("TextLabel", {
-                        Text = game.Players.LocalPlayer.Name,
-                        TextSize = 15,
-                        TextTransparency = .4,
-                        ThemeTag = {
-                            TextColor3 = "Text",
-                        },
-                        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                        AutomaticSize = "XY",
-                        BackgroundTransparency = 1,
-                    }),
-                    New("UIListLayout", {
-                        Padding = UDim.new(0,4),
-                        HorizontalAlignment = "Left",
-                    })
-                }),
-                New("UIListLayout", {
-                    Padding = UDim.new(0,Window.UIPadding),
-                    FillDirection = "Horizontal",
-                    VerticalAlignment = "Center",
-                }),
-                New("UIPadding", {
-                    PaddingLeft = UDim.new(0,Window.UIPadding),
-                    PaddingRight = UDim.new(0,Window.UIPadding),
-                })
-            }),
+            UserIcon,
             
             Outline2,
             New("Frame", { -- Topbar
@@ -1395,6 +1402,9 @@ return function(Config)
             -- }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
             
             Window.UIElements.SideBarContainer.GroupTransparency = 0
+            if UserIcon then
+                UserIcon.Visible = true
+            end
             
             --Tween(SearchButton.ImageLabel, .15, {ImageTransparency = 0}):Play()
             if Outline2 then
@@ -1419,7 +1429,9 @@ return function(Config)
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()--]]
             
             Window.UIElements.SideBarContainer.GroupTransparency = 1
-            
+            if UserIcon then
+                UserIcon.Visible = false
+            end            
             --Tween(SearchButton.ImageLabel, .15, {ImageTransparency = .4}):Play()
             
             CurrentSearchBar = SearchBar.new(
