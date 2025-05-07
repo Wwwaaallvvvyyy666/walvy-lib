@@ -32,42 +32,52 @@ function PopupModule.new(PopupConfig)
     local IconFrame
     
     if Popup.Icon then
-        local themetag = { ImageColor3 = "Text" }
+        -- local themetag = { ImageColor3 = "Text" }
         
-        if string.find(Popup.Icon, "rbxassetid://") or not Creator.Icon(tostring(Popup.Icon))[1] then
-            themetag = nil
-        end
-        IconFrame = New("ImageLabel", {
-            Size = UDim2.new(0,24,0,24),
-            BackgroundTransparency = 1,
-            LayoutOrder = -1,
-            ThemeTag = themetag
-        })
-        if string.find(Popup.Icon, "rbxassetid://") or string.find(Popup.Icon, "http://www.roblox.com/asset/?id=") then
-            IconFrame.Image = Popup.Icon
-        elseif string.find(Popup.Icon,"http") then
-            local success, response = pcall(function()
-                if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
-                    local response = request({
-                        Url = Popup.Icon,
-                        Method = "GET",
-                    }).Body
-                    writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
-                end
-                IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
-            end)
-            if not success then
-                IconFrame:Destroy()
+        -- if string.find(Popup.Icon, "rbxassetid://") or not Creator.Icon(tostring(Popup.Icon))[1] then
+        --     themetag = nil
+        -- end
+        -- IconFrame = New("ImageLabel", {
+        --     Size = UDim2.new(0,24,0,24),
+        --     BackgroundTransparency = 1,
+        --     LayoutOrder = -1,
+        --     ThemeTag = themetag
+        -- })
+        -- if string.find(Popup.Icon, "rbxassetid://") or string.find(Popup.Icon, "http://www.roblox.com/asset/?id=") then
+        --     IconFrame.Image = Popup.Icon
+        -- elseif string.find(Popup.Icon,"http") then
+        --     local success, response = pcall(function()
+        --         if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
+        --             local response = request({
+        --                 Url = Popup.Icon,
+        --                 Method = "GET",
+        --             }).Body
+        --             writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
+        --         end
+        --         IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
+        --     end)
+        --     if not success then
+        --         IconFrame:Destroy()
                 
-                warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
-            end
-        else
-            if Creator.Icon(tostring(Popup.Icon))[1] then
-                IconFrame.Image = Creator.Icon(Popup.Icon)[1]
-                IconFrame.ImageRectOffset = Creator.Icon(Popup.Icon)[2].ImageRectPosition
-                IconFrame.ImageRectSize = Creator.Icon(Popup.Icon)[2].ImageRectSize
-            end
-        end
+        --         warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
+        --     end
+        -- else
+        --     if Creator.Icon(tostring(Popup.Icon))[1] then
+        --         IconFrame.Image = Creator.Icon(Popup.Icon)[1]
+        --         IconFrame.ImageRectOffset = Creator.Icon(Popup.Icon)[2].ImageRectPosition
+        --         IconFrame.ImageRectSize = Creator.Icon(Popup.Icon)[2].ImageRectSize
+        --     end
+        -- end
+        
+        IconFrame = Creator.Image(
+            Popup.Icon,
+            Popup.Title,
+            Dialog.UICorner-4,
+            PopupConfig.WindUI.Window,
+            "Popup"
+        )
+        IconFrame.Size = UDim2.new(0,24,0,24)
+        IconFrame.LayoutOrder = -1
     end
     
     
@@ -116,7 +126,7 @@ function PopupModule.new(PopupConfig)
             TextXAlignment = "Left",
             Text = Popup.Content,
             TextSize = 18,
-            TextTransparency = .4,
+            TextTransparency = .2,
             ThemeTag = {
                 TextColor3 = "Text",
             },
@@ -195,96 +205,10 @@ function PopupModule.new(PopupConfig)
         }),
     })
 
-    
-    local function CreateButton(Title, Icon, Callback, Variant, Parent)
-        local themetagbg = "Text"
-        
-        local IconButtonFrame
-        if Icon and Icon ~= "" then
-            IconButtonFrame = New("ImageLabel", {
-                Image = Creator.Icon(Icon)[1],
-                ImageRectSize = Creator.Icon(Icon)[2].ImageRectSize,
-                ImageRectOffset = Creator.Icon(Icon)[2].ImageRectPosition,
-                Size = UDim2.new(0,24-3,0,24-3),
-                BackgroundTransparency = 1,
-                ThemeTag = {
-                    ImageColor3 = Variant ~= "Primary" and themetagbg or "Accent",
-                }
-            })
-        end
-        
-        local ButtonFrame = New("TextButton", {
-            
-            Size = UDim2.new(0,0,1,0),
-            AutomaticSize = "XY",
-            -- Parent = ButtonsContainer,
-            Parent = Parent,
-            ThemeTag = {
-                BackgroundColor3 = themetagbg,
-            },
-            BackgroundTransparency = Variant == "Primary" and .1 or Variant == "Secondary" and .85 or .95
-        }, {
-            New("UICorner", {
-                CornerRadius = UDim.new(0,12),
-            }),
-            
-            New("Frame", {
-                Size = UDim2.new(1,0,1,0),
-                ThemeTag = {
-                    BackgroundColor3 = Variant == "Primary" and "Accent" or themetagbg
-                },
-                BackgroundTransparency = 1 -- .9
-            }, {
-                New("UIStroke", {
-                    Thickness = 1.3,
-                    ThemeTag = {
-                        Color = "Text",
-                    },
-                    Transparency = Variant == "Tertiary" and .9 or 1,
-                }),
-                New("UIPadding", {
-                    PaddingLeft = UDim.new(0,12),
-                    PaddingRight = UDim.new(0,12),
-                }),
-                New("UICorner", {
-                    CornerRadius = UDim.new(0,12),
-                }),
-                New("UIListLayout", {
-                    FillDirection = "Horizontal",
-                    Padding = UDim.new(0,12),
-                    VerticalAlignment = "Center",
-                    HorizontalAlignment = "Center",
-                }),
-                IconButtonFrame,
-                New("TextLabel", {
-                    BackgroundTransparency = 1,
-                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                    Text = Title,
-                    ThemeTag = {
-                        TextColor3 = Variant ~= "Primary" and themetagbg or "Accent",
-                    },
-                    AutomaticSize = "XY",
-                    TextSize = 18,
-                })
-            })
-        })
-        
-        ButtonFrame.MouseEnter:Connect(function()
-            Tween(ButtonFrame.Frame, .067, {BackgroundTransparency = .9}):Play()
-        end)
-        ButtonFrame.MouseLeave:Connect(function()
-            Tween(ButtonFrame.Frame, .067, {BackgroundTransparency = 1}):Play()
-        end)
-        ButtonFrame.MouseButton1Up:Connect(function()
-            Dialog:Close()
-            Callback()
-        end)
-        
-        return ButtonFrame
-    end
+    local CreateButton = require("./UI").Button
     
     for _, values in next, Popup.Buttons do
-        CreateButton(values.Title, values.Icon, values.Callback, values.Variant, ButtonsContainer)
+        CreateButton(values.Title, values.Icon, values.Callback, values.Variant, ButtonsContainer, Dialog)
     end
     
     Dialog:Open()

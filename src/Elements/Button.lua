@@ -19,8 +19,14 @@ function Element:New(Config)
         Title = Button.Title,
         Desc = Button.Desc,
         Parent = Config.Parent,
+        -- Image = Config.Image,
+        -- ImageSize = Config.ImageSize,  
+        -- Thumbnail = Config.Thumbnail,
+        -- ThumbnailSize = Config.ThumbnailSize,
+        Window = Config.Window,
         TextOffset = 20,
         Hover = true,
+        Scalable = true,
     })
     
     Button.UIElements.ButtonIcon = New("ImageLabel",{
@@ -31,7 +37,7 @@ function Element:New(Config)
         Parent = Button.ButtonFrame.UIElements.Main,
         Size = UDim2.new(0,20,0,20),
         AnchorPoint = Vector2.new(1,0.5),
-        Position = UDim2.new(1,0,0.5,0),
+        Position = UDim2.new(1,-Button.ButtonFrame.UIPadding/2,0.5,0),
         ThemeTag = {
             ImageColor3 = "Text"
         }

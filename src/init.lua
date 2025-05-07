@@ -1,39 +1,44 @@
 local WindUI = {
     Window = nil,
     Theme = nil,
-    Themes = nil,
+    Creator = require("./Creator"),
+    Themes = require("./Themes/init"),
     Transparent = false,
     
-    TransparencyValue = .25,
+    TransparencyValue = .15,
+    
 }
 local RunService = game:GetService("RunService")
 
-local Themes = require("./Themes/init")
 local KeySystem = require("./Components/KeySystem")
-local Creator = require("./Creator")
+local Themes = WindUI.Themes
+local Creator = WindUI.Creator
 
 local New = Creator.New
 local Tween = Creator.Tween
 
-local LocalPlayer = game:GetService("Players") and game:GetService("Players").LocalPlayer or nil
+Creator.Themes = Themes
 
+local LocalPlayer = game:GetService("Players") and game:GetService("Players").LocalPlayer or nil
 WindUI.Themes = Themes
 
 local ProtectGui = protectgui or (syn and syn.protect_gui) or function() end
 
+local GUIParent = gethui and gethui() or game.CoreGui
+--local GUIParent = game.CoreGui
 
 WindUI.ScreenGui = New("ScreenGui", {
     Name = "WindUI",
-    Parent = gethui and gethui() or game.CoreGui,
-    --Parent = game.CoreGui,
+    Parent = GUIParent,
     IgnoreGuiInset = true,
+    ScreenInsets = "None",
 }, {
     New("Folder", {
         Name = "Window"
     }),
-    New("Folder", {
-        Name = "Notifications"
-    }),
+    -- New("Folder", {
+    --     Name = "Notifications"
+    -- }),
     New("Folder", {
         Name = "Dropdowns"
     }),
@@ -47,11 +52,19 @@ WindUI.ScreenGui = New("ScreenGui", {
         Name = "ToolTips"
     })
 })
-ProtectGui(WindUI.ScreenGui)
 
+WindUI.NotificationGui = New("ScreenGui", {
+    Name = "WindUI-Notifications",
+    Parent = GUIParent,
+    IgnoreGuiInset = true,
+})
+ProtectGui(WindUI.ScreenGui)
+ProtectGui(WindUI.NotificationGui)
+
+math.clamp(WindUI.TransparencyValue, 0, 0.4)
 
 local Notify = require("./Components/Notification")
-local Holder = Notify.Init(WindUI.ScreenGui.Notifications)
+local Holder = Notify.Init(WindUI.NotificationGui)
 
 function WindUI:Notify(Config)
     Config.Holder = Holder.Frame
@@ -103,7 +116,6 @@ end
 function WindUI:Popup(PopupConfig)
     PopupConfig.WindUI = WindUI
     return require("./Components/Popup").new(PopupConfig)
-    
 end
 
 
@@ -163,17 +175,17 @@ function WindUI:CreateWindow(Config)
     WindUI.Window = Window
     
     
-    function Window:ToggleTransparency(Value)
-        WindUI.Transparent = Value
-        WindUI.Window.Transparent = Value
+    -- function Window:ToggleTransparency(Value)
+    --     WindUI.Transparent = Value
+    --     WindUI.Window.Transparent = Value
         
-        Window.UIElements.Main.Background.BackgroundTransparency = Value and WindUI.TransparencyValue or 0
-        Window.UIElements.Main.Background.ImageLabel.ImageTransparency = Value and WindUI.TransparencyValue or 0
-        Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
-            NumberSequenceKeypoint.new(0, 1), 
-            NumberSequenceKeypoint.new(1, Value and 0.85 or 0.7),
-        }
-    end
+    --     Window.UIElements.Main.Background.BackgroundTransparency = Value and WindUI.TransparencyValue or 0
+    --     Window.UIElements.Main.Background.ImageLabel.ImageTransparency = Value and WindUI.TransparencyValue or 0
+    --     Window.UIElements.Main.Gradient.UIGradient.Transparency = NumberSequence.new{
+    --         NumberSequenceKeypoint.new(0, 1), 
+    --         NumberSequenceKeypoint.new(1, Value and 0.85 or 0.7),
+    --     }
+    -- end
     
     return Window
 end

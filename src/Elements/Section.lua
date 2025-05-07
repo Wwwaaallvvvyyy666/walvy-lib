@@ -9,7 +9,7 @@ function Element:New(Config)
         __type = "Section",
         Title = Config.Title or "Section",
         TextXAlignment = Config.TextXAlignment or "Left",
-        TextSize = Config.TextSize or 17,
+        TextSize = Config.TextSize or 19,
         UIElements = {},
     }
     

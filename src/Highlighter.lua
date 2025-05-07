@@ -8,12 +8,12 @@ local highlighter = {}
 local keywords = {
 	lua = {
 		"and", "break", "or", "else", "elseif", "if", "then", "until", "repeat", "while", "do", "for", "in", "end",
-		"local", "return", "function", "export"
+		"local", "return", "function", "export",
 	},
 	rbx = {
 		"game", "workspace", "script", "math", "string", "table", "task", "wait", "select", "next", "Enum",
-		"error", "warn", "tick", "assert", "shared", "loadstring", "tonumber", "tostring", "type",
-		"typeof", "unpack", "print", "Instance", "CFrame", "Vector3", "Vector2", "Color3", "UDim", "UDim2", "Ray", "BrickColor",
+		"tick", "assert", "shared", "loadstring", "tonumber", "tostring", "type",
+		"typeof", "unpack", "Instance", "CFrame", "Vector3", "Vector2", "Color3", "UDim", "UDim2", "Ray", "BrickColor",
 		"OverlapParams", "RaycastParams", "Axes", "Random", "Region3", "Rect", "TweenInfo",
 		"collectgarbage", "not", "utf8", "pcall", "xpcall", "_G", "setmetatable", "getmetatable", "os", "pairs", "ipairs"
 	},
@@ -23,17 +23,17 @@ local keywords = {
 }
 
 local colors = {
-    numbers = Color3.fromHex("#79c0ff"),
-    boolean = Color3.fromHex("#79c0ff"),
-    operator = Color3.fromHex("#ff7b72"),
-    lua = Color3.fromHex("#ff7b72"),
-    rbx = Color3.fromHex("#c9d1d9"), -- def
-    str = Color3.fromHex("#a5d6ff"),
-    comment = Color3.fromHex("#8b949e"),
-    null = Color3.fromHex("#79c0ff"),
-    call = Color3.fromHex("#d2a8ff"),    
-    self_call = Color3.fromHex("#d2a8ff"),
-    local_property = Color3.fromHex("#ff7b72"),
+    numbers = Color3.fromHex("#FAB387"),
+    boolean = Color3.fromHex("#FAB387"),
+    operator = Color3.fromHex("#94E2D5"),
+    lua = Color3.fromHex("#CBA6F7"),
+    rbx = Color3.fromHex("#F38BA8"), -- def
+    str = Color3.fromHex("#A6E3A1"),
+    comment = Color3.fromHex("#9399B2"),
+    null = Color3.fromHex("#F38BA8"), -- nil
+    call = Color3.fromHex("#89B4FA"),    
+    self_call = Color3.fromHex("#89B4FA"),
+    local_property = Color3.fromHex("#CBA6F7"),
 }
 
 local function createKeywordSet(keywords)

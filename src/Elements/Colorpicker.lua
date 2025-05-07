@@ -11,6 +11,9 @@ local RenderStepped = RunService.RenderStepped
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
+local UIComponent = require("../Components/UI")
+local CreateButton = UIComponent.Button
+local CreateInput = UIComponent.Input 
 
 local Element = {
     UICorner = 8,
@@ -95,12 +98,13 @@ function Element:Colorpicker(Config, OnApply)
   	
   	Colorpicker.UIElements.Inputs = New("Frame", {
   	    AutomaticSize = "XY",
+  	    Size = UDim2.new(0,0,0,0),
   	    Position = UDim2.fromOffset(Colorpicker.Transparency and 160+10+10+10+10+10+10+20 or 160+10+10+10+20, 40),
   	    BackgroundTransparency = 1,
   	    Parent = ColorpickerFrame.UIElements.Main
   	}, {
   	    New("UIListLayout", {
-  		    Padding = UDim.new(0, 10),
+  		    Padding = UDim.new(0, 5),
   		    FillDirection = "Vertical",
   	    })
   	})
@@ -227,88 +231,33 @@ function Element:Colorpicker(Config, OnApply)
 	})
 	
 	
-	function CreateInput(Title, Value)
-	    local Container = New("Frame", {
-	        Size = UDim2.new(0,120,0,28),
-	        --AutomaticSize = "Y",
-	        BackgroundTransparency = 1,
-	        Parent = Colorpicker.UIElements.Inputs
-	    }, {
-	        New("UIListLayout", {
-		        Padding = UDim.new(0,10),
-		        FillDirection = "Vertical",
-	        }),
-	        New("Frame",{
-                BackgroundTransparency = .95,
-                Size = UDim2.new(1,0,0,30),
-                AnchorPoint = Vector2.new(1,0.5),
-                Position = UDim2.new(1,0,0.5,0),
-                ThemeTag = {
-                    BackgroundColor3 = "Text",
-                },
-                ZIndex = 2
-            }, {
-                New("TextBox", {
-                    MultiLine = false,
-                    Size = UDim2.new(1,-40,0,0),
-                    AutomaticSize = "Y",
-                    BackgroundTransparency = 1,
-                    Position = UDim2.new(0,0,0.5,0),
-                    AnchorPoint = Vector2.new(0,0.5),
-                    ClearTextOnFocus = false,
-                    Text = Value,
-                    TextSize = 15,
-                    ClipsDescendants = true,
-                    TextXAlignment = "Left",
-                    FontFace = Font.new(Creator.Font),
-                    PlaceholderText = "",
-                    ThemeTag = {
-                        TextColor3 = "Text",
-                    }
-                }),
-                New("TextLabel", {
-	                Text = Title,
-	                TextSize = 16,
-	                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-	                ThemeTag = {
-	                    TextColor3 = "Text"
-	                },
-	                BackgroundTransparency = 1,
-	                TextXAlignment = "Right",
-	                Position = UDim2.new(1,0,0.5,0),
-	                AnchorPoint = Vector2.new(1,0.5),
-	                Size = UDim2.new(0,0,0,0),
-	                TextTransparency = .4,
-	                AutomaticSize = "XY",
-	            }),
-                New("UICorner", {
-                    CornerRadius = UDim.new(0,Element.UICorner)
-                }),
-                New("UIStroke", {
-                    ThemeTag = {
-                        Color = "Text",
-                    },
-                    Transparency = .93,
-                    ApplyStrokeMode = "Border",
-                    Thickness = 1,
-                }),
-                New("UIPadding", {
-                    PaddingTop = UDim.new(0,Element.UIPadding),
-                    PaddingLeft = UDim.new(0,Element.UIPadding),
-                    PaddingRight = UDim.new(0,Element.UIPadding),
-                    PaddingBottom = UDim.new(0,Element.UIPadding),
-                })
-            })
-	    })
-	
-	   -- Container.Frame.TextBox:GetPropertyChangedSignal("TextBounds"):Connect(function()
-    --         Container.Frame.TextBox.Size = UDim2.new(1,-40,0,Container.Frame.TextBox.TextBounds.Y)
-    --     end)
-	   -- Container.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
-    --         Container.Frame.TextLabel.Size = UDim2.new(0,Container.Frame.TextLabel.TextBounds.X,0,Container.Frame.TextLabel.TextBounds.Y)
-    --     end)
+	function CreateNewInput(Title, Value)
+	    local InputFrame = CreateInput(Title, nil, Colorpicker.UIElements.Inputs)
 	    
-	    return Container
+	    New("TextLabel", {
+	        BackgroundTransparency = 1,
+	        TextTransparency = .4,
+            TextSize = 17,
+            FontFace = Font.new(Creator.Font, Enum.FontWeight.Regular),
+            AutomaticSize = "XY",
+            ThemeTag = {
+                TextColor3 = "Placeholder",
+            },
+            AnchorPoint = Vector2.new(1,0.5),
+            Position = UDim2.new(1,-12,0.5,0),
+            Parent = InputFrame.Frame,
+            Text = Title,
+	    })
+	    
+	    New("UIScale", {
+            Parent = InputFrame,
+            Scale = .85,
+        })
+	    
+	    InputFrame.Frame.Frame.TextBox.Text = Value
+	    InputFrame.Size = UDim2.new(0,30*5,0,42)
+	    
+	    return InputFrame
 	end
 	
 	local function ToRGB(color)
@@ -319,18 +268,18 @@ function Element:Colorpicker(Config, OnApply)
         }
     end
 	
-	local HexInput = CreateInput("Hex", "#" .. Colorpicker.Default:ToHex())
+	local HexInput = CreateNewInput("Hex", "#" .. Colorpicker.Default:ToHex())
 	
-	local RedInput = CreateInput("Red", ToRGB(Colorpicker.Default)["R"])
-	local GreenInput = CreateInput("Green", ToRGB(Colorpicker.Default)["G"])
-	local BlueInput = CreateInput("Blue", ToRGB(Colorpicker.Default)["B"])
+	local RedInput = CreateNewInput("Red", ToRGB(Colorpicker.Default)["R"])
+	local GreenInput = CreateNewInput("Green", ToRGB(Colorpicker.Default)["G"])
+	local BlueInput = CreateNewInput("Blue", ToRGB(Colorpicker.Default)["B"])
 	local AlphaInput
 	if Colorpicker.Transparency then
-	    AlphaInput = CreateInput("Alpha", ((1 - Colorpicker.Transparency) * 100) .. "%")
+	    AlphaInput = CreateNewInput("Alpha", ((1 - Colorpicker.Transparency) * 100) .. "%")
 	end
 	
 	local ButtonsContent = New("Frame", {
-        Size = UDim2.new(1,0,0,32),
+        Size = UDim2.new(1,0,0,40),
         AutomaticSize = "Y",
         Position = UDim2.new(0,0,0,40+8+182+24),
         BackgroundTransparency = 1,
@@ -340,83 +289,26 @@ function Element:Colorpicker(Config, OnApply)
         New("UIListLayout", {
 		    Padding = UDim.new(0, 8),
 		    FillDirection = "Horizontal",
-		    HorizontalAlignment = "Center",
+		    HorizontalAlignment = "Right",
 	    }),
     })
 	
 	local Buttons = {
 	    {
 	        Title = "Cancel",
+	        Variant = "Secondary",
 	        Callback = function() end
 	    },
 	    {
 	        Title = "Apply",
+	        Icon = "chevron-right",
 	        Variant = "Primary",
 	        Callback = function() OnApply(Color3.fromHSV(Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib), Colorpicker.Transparency) end
 	    }
 	}
 	
 	for _,Button in next, Buttons do
-        if Button.Variant == nil or Button.Variant == "" then
-            Button.Variant = "Secondary"
-        end
-        local ButtonFrame = New("TextButton", {
-            Text = Button.Title or "Button",
-            TextSize = 16,
-            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-            ThemeTag = {
-                TextColor3 = Button.Variant == "Secondary" and "Text" or "Accent",
-                BackgroundColor3 = "Text",
-            },
-            BackgroundTransparency = Button.Variant == "Secondary" and .93 or .1 ,
-            Parent = ButtonsContent,
-            Size = UDim2.new(1 / #Buttons, -(((#Buttons - 1) * 10) / #Buttons), 1, 0),
-            --AutomaticSize = "X",
-        }, {
-            New("UICorner", {
-                CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-5),
-            }),
-            New("UIPadding", {
-                PaddingTop = UDim.new(0, 0),
-                PaddingLeft = UDim.new(0, ColorpickerFrame.UIPadding/1.85),
-                PaddingRight = UDim.new(0, ColorpickerFrame.UIPadding/1.85),
-                PaddingBottom = UDim.new(0, 0),
-            }),
-            New("Frame", {
-                Size = UDim2.new(1,(ColorpickerFrame.UIPadding/1.85)*2,1,0),
-                Position = UDim2.new(0.5,0,0.5,0),
-                AnchorPoint = Vector2.new(0.5,0.5),
-                ThemeTag = {
-                    BackgroundColor3 = Button.Variant == "Secondary" and "Text" or "Accent"
-                },
-                BackgroundTransparency = 1, -- .9
-            }, {
-                New("UICorner", {
-                    CornerRadius = UDim.new(0, ColorpickerFrame.UICorner-5),
-                }),
-            }),
-            -- New("UIStroke", {
-            --     ThemeTag = {
-            --         Color = "Text",
-            --     },
-            --     Thickness = 1.2,
-            --     Transparency = Button.Variant == "Secondary" and .9 or .1,
-            --     ApplyStrokeMode = "Border",
-            -- })
-        })
-        
-        ButtonFrame.MouseEnter:Connect(function()
-            Tween(ButtonFrame.Frame, 0.08, {BackgroundTransparency = .9}):Play()
-        end)
-        ButtonFrame.MouseLeave:Connect(function()
-            Tween(ButtonFrame.Frame, 0.08, {BackgroundTransparency = 1}):Play()
-        end)
-        ButtonFrame.MouseButton1Click:Connect(function()
-            ColorpickerFrame:Close()()
-            task.spawn(function()
-                Button.Callback()
-            end)
-        end)
+        CreateButton(Button.Title, Button.Icon, Button.Callback, Button.Variant, ButtonsContent, ColorpickerFrame)
     end
         
   	
@@ -566,10 +458,10 @@ function Element:Colorpicker(Config, OnApply)
         HueDrag.BackgroundColor3 = Color3.fromHSV(Hue, 1, 1)
         HueDrag.Position = UDim2.new(0.5, 0, Hue, 0)
         
-        HexInput.Frame.TextBox.Text = "#" .. Color3.fromHSV(Hue, Sat, Vib):ToHex()
-        RedInput.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["R"]
-		GreenInput.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["G"]
-		BlueInput.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["B"]
+        HexInput.Frame.Frame.TextBox.Text = "#" .. Color3.fromHSV(Hue, Sat, Vib):ToHex()
+        RedInput.Frame.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["R"]
+		GreenInput.Frame.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["G"]
+		BlueInput.Frame.Frame.TextBox.Text = ToRGB(Color3.fromHSV(Hue, Sat, Vib))["B"]
         
         if transparency or Colorpicker.Transparency then
 			NewDisplayFrame.BackgroundTransparency =  Colorpicker.Transparency or transparency
@@ -577,7 +469,7 @@ function Element:Colorpicker(Config, OnApply)
             TransparencyDrag.BackgroundColor3 = Color3.fromHSV(Hue, Sat, Vib)
 			TransparencyDrag.BackgroundTransparency =  Colorpicker.Transparency or transparency
 			TransparencyDrag.Position = UDim2.new(0.5, 0, 1 -  Colorpicker.Transparency or transparency, 0)
-			AlphaInput.Frame.TextBox.Text = Colorpicker:Round((1 - Colorpicker.Transparency or transparency) * 100, 0) .. "%"
+			AlphaInput.Frame.Frame.TextBox.Text = Colorpicker:Round((1 - Colorpicker.Transparency or transparency) * 100, 0) .. "%"
         end
     end
 
@@ -593,9 +485,13 @@ function Element:Colorpicker(Config, OnApply)
     
     -- oh no!
     
-    HexInput.Frame.TextBox.FocusLost:Connect(function(Enter)
+    local function clamp(val, min, max)
+        return math.clamp(tonumber(val) or 0, min, max)
+    end
+
+    HexInput.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
         if Enter then
-            local hex = HexInput.Frame.TextBox.Text:gsub("#", "")
+            local hex = HexInput.Frame.Frame.TextBox.Text:gsub("#", "")
             local Success, Result = pcall(Color3.fromHex, hex)
             if Success and typeof(Result) == "Color3" then
                 Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib = Color3.toHSV(Result)
@@ -605,57 +501,37 @@ function Element:Colorpicker(Config, OnApply)
         end
     end)
 
-    RedInput.Frame.TextBox.FocusLost:Connect(function(Enter)
-        if Enter then
-            local CurrentColor = GetRGB()
-            local Success, Result = pcall(Color3.fromRGB, tonumber(RedInput.Frame.TextBox.Text), CurrentColor["G"], CurrentColor["B"])
-            if Success and typeof(Result) == "Color3" then
-                if tonumber(RedInput.Frame.TextBox.Text) <= 255 then
-                    Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib = Color3.toHSV(Result)
-                    Colorpicker:Update()
-                end
+    local function updateColorFromInput(inputBox, component)
+        inputBox.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
+            if Enter then
+                local textBox = inputBox.Frame.Frame.TextBox
+                local current = GetRGB()
+                local clamped = clamp(textBox.Text, 0, 255)
+                textBox.Text = tostring(clamped)
+                                
+                current[component] = clamped
+                local Result = Color3.fromRGB(current.R, current.G, current.B)
+                Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib = Color3.toHSV(Result)
+                Colorpicker:Update()
             end
-        end
-    end)
-    
-    GreenInput.Frame.TextBox.FocusLost:Connect(function(Enter)
-        if Enter then
-            local CurrentColor = GetRGB()
-            local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], tonumber(GreenInput.Frame.TextBox.Text), CurrentColor["B"])
-            if Success and typeof(Result) == "Color3" then
-                if tonumber(GreenInput.Frame.TextBox.Text) <= 255 then
-                    Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib = Color3.toHSV(Result)
-                    Colorpicker:Update()
-                end
-            end
-        end
-    end)
-    
-    BlueInput.Frame.TextBox.FocusLost:Connect(function(Enter)
-        if Enter then
-            local CurrentColor = GetRGB()
-            local Success, Result = pcall(Color3.fromRGB, CurrentColor["R"], CurrentColor["G"], tonumber(BlueInput.Frame.TextBox.Text))
-            if Success and typeof(Result) == "Color3" then
-                if tonumber(BlueInput.Frame.TextBox.Text) <= 255 then
-                    Colorpicker.Hue, Colorpicker.Sat, Colorpicker.Vib = Color3.toHSV(Result)
-                    Colorpicker:Update()
-                end
-            end
-        end
-    end)
+        end)
+    end
+
+    updateColorFromInput(RedInput, "R")
+    updateColorFromInput(GreenInput, "G")
+    updateColorFromInput(BlueInput, "B")
     
     if Colorpicker.Transparency then
-		AlphaInput.Frame.TextBox.FocusLost:Connect(function(Enter)
-			if Enter then
-				pcall(function()
-					local Value = tonumber(AlphaInput.Frame.TextBox.Text)
-					if Value >= 0 and Value <= 100 then
-						Colorpicker.Transparency = 1 - Value * 0.01
-			            Colorpicker:Update(nil, Colorpicker.Transparency)
-					end
-				end)
-			end
-		end)
+        AlphaInput.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
+            if Enter then
+                local textBox = AlphaInput.Frame.Frame.TextBox
+                local clamped = clamp(textBox.Text, 0, 100)
+                textBox.Text = tostring(clamped)
+                            
+                Colorpicker.Transparency = 1 - clamped * 0.01
+                Colorpicker:Update(nil, Colorpicker.Transparency)
+            end
+        end)
     end
 
     -- fu
@@ -740,37 +616,16 @@ function Element:New(Config)
         Hover = false,
     })
     
-    Colorpicker.UIElements.Colorpicker = New("TextButton",{
-        BackgroundTransparency = 0,
-        Text = "",
-        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-        TextSize = 15,
-        TextTransparency = .4,
-        Active = false,
-        TextXAlignment = "Left",
-        BackgroundColor3 = Colorpicker.Default,
+    Colorpicker.UIElements.Colorpicker = Creator.NewRoundFrame(Element.UICorner, "Squircle",{
+        ImageTransparency = 0,
+        Active = true,
+        ImageColor3 = Colorpicker.Default,
         Parent = Colorpicker.ColorpickerFrame.UIElements.Main,
         Size = UDim2.new(0,30,0,30),
         AnchorPoint = Vector2.new(1,0.5),
-        TextTruncate = "AtEnd",
-        Position = UDim2.new(1,0,0.5,0),
-        ThemeTag = {
-            TextColor3 = "Text"
-        },
+        Position = UDim2.new(1,-Colorpicker.ColorpickerFrame.UIPadding/2,0.5,0),
         ZIndex = 2
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(0,Element.UICorner)
-        }),
-        New("UIStroke", {
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = .93,
-            ApplyStrokeMode = "Border",
-            Thickness = 1,
-        }),
-    })
+    }, nil, true)
     
     
     function Colorpicker:Lock()
@@ -797,14 +652,8 @@ function Element:New(Config)
     end
     
     
-    
-    --Colorpicker:Update(Colorpicker.Default, Colorpicker.Transparency)
-
-    
     Colorpicker.UIElements.Colorpicker.MouseButton1Click:Connect(function()
         if CanCallback then
-            -- clrpckr.ColorpickerFrame:Open()
-            
             Element:Colorpicker(Colorpicker, function(color, transparency)
                 if CanCallback then
                     Colorpicker:Update(color, transparency)

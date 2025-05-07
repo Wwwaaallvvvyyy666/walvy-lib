@@ -5,10 +5,16 @@ local Creator = require("../Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
+local UIComponent = require("./UI")
+local CreateButton = UIComponent.Button
+local CreateInput = UIComponent.Input 
 
 function KeySystem.new(Config, Filename, func)
     local KeyDialogInit = require("./Dialog").Init(Config.WindUI.ScreenGui.KeySystem)
     local KeyDialog = KeyDialogInit.Create(true)
+    
+    
+    local EnteredKey
     
     local ThumbnailSize = 200
     
@@ -131,43 +137,9 @@ function KeySystem.new(Config, Filename, func)
     --     KeyDialog:Close()()
     -- end)
 
-    local TextBox = New("TextBox", {
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1,0,1,0),
-        Text = "",
-        TextXAlignment = "Left",
-        PlaceholderText = "Enter Key...",
-        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-        ThemeTag = {
-            TextColor3 = "Text",
-            PlaceholderColor3 = "PlaceholderText"
-        },
-        TextSize = 18
-    })
-    
-    local TextBoxHolder = New("Frame", {
-        BackgroundTransparency = .95,
-        Size = UDim2.new(1,0,0,42),
-        ThemeTag = {
-            BackgroundColor3 = "Text",
-        },
-    }, {
-        New("UIStroke", {
-            Thickness = 1.3,
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = .9,
-        }),
-        New("UICorner", {
-            CornerRadius = UDim.new(0,12)
-        }),
-        TextBox,
-        New("UIPadding", {
-            PaddingLeft = UDim.new(0,12),
-            PaddingRight = UDim.new(0,12),
-        })
-    })
+    local InputFrame = CreateInput("Enter Key", "key", nil, function(k)
+        EnteredKey = k
+    end)
     
     local NoteText
     if Config.KeySystem.Note and Config.KeySystem.Note ~= "" then
@@ -203,90 +175,6 @@ function KeySystem.new(Config, Filename, func)
         })
     })
     
-    local function CreateButton(Title, Icon, Callback, Variant, Parent)
-        local themetagbg = "Text"
-        local ButtonFrame = New("TextButton", {
-            -- Size = UDim2.new(
-            --     (1 / #KeySystemButtons), 
-            --     -(((#KeySystemButtons - 1) * 9) / #KeySystemButtons), 
-            --     1, 
-            --     0
-            -- ),
-            Size = UDim2.new(0,0,1,0),
-            AutomaticSize = "XY",
-            -- Parent = ButtonsContainer,
-            Parent = Parent,
-            ThemeTag = {
-                BackgroundColor3 = themetagbg,
-            },
-            BackgroundTransparency = Variant == "Primary" and .1 or Variant == "Secondary" and .85 or .95
-        }, {
-            New("UICorner", {
-                CornerRadius = UDim.new(0,12),
-            }),
-            
-            New("Frame", {
-                Size = UDim2.new(1,0,1,0),
-                ThemeTag = {
-                    BackgroundColor3 = Variant == "Primary" and "Accent" or themetagbg
-                },
-                BackgroundTransparency = 1 -- .9
-            }, {
-                New("UIStroke", {
-                    Thickness = 1.3,
-                    ThemeTag = {
-                        Color = "Text",
-                    },
-                    Transparency = Variant == "Tertiary" and .9 or 1,
-                }),
-                New("UIPadding", {
-                    PaddingLeft = UDim.new(0,12),
-                    PaddingRight = UDim.new(0,12),
-                }),
-                New("UICorner", {
-                    CornerRadius = UDim.new(0,12),
-                }),
-                New("UIListLayout", {
-                    FillDirection = "Horizontal",
-                    Padding = UDim.new(0,12),
-                    VerticalAlignment = "Center",
-                    HorizontalAlignment = "Center",
-                }),
-                New("ImageLabel", {
-                    Image = Creator.Icon(Icon)[1],
-                    ImageRectSize = Creator.Icon(Icon)[2].ImageRectSize,
-                    ImageRectOffset = Creator.Icon(Icon)[2].ImageRectPosition,
-                    Size = UDim2.new(0,24-3,0,24-3),
-                    BackgroundTransparency = 1,
-                    ThemeTag = {
-                        ImageColor3 = Variant ~= "Primary" and themetagbg or "Accent",
-                    }
-                }),
-                New("TextLabel", {
-                    BackgroundTransparency = 1,
-                    FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-                    Text = Title,
-                    ThemeTag = {
-                        TextColor3 = Variant ~= "Primary" and themetagbg or "Accent",
-                    },
-                    AutomaticSize = "XY",
-                    TextSize = 18,
-                })
-            })
-        })
-        
-        ButtonFrame.MouseEnter:Connect(function()
-            Tween(ButtonFrame.Frame, .067, {BackgroundTransparency = .9}):Play()
-        end)
-        ButtonFrame.MouseLeave:Connect(function()
-            Tween(ButtonFrame.Frame, .067, {BackgroundTransparency = 1}):Play()
-        end)
-        ButtonFrame.MouseButton1Up:Connect(function()
-            Callback()
-        end)
-        
-        return ButtonFrame
-    end
     
     local ThumbnailFrame
     if Config.KeySystem.Thumbnail and Config.KeySystem.Thumbnail.Image then
@@ -337,7 +225,7 @@ function KeySystem.new(Config, Filename, func)
             }),
             TitleContainer,
             NoteText,
-            TextBoxHolder,
+            InputFrame,
             ButtonsContainer,
             New("UIPadding", {
                 PaddingTop = UDim.new(0,16),
@@ -370,7 +258,7 @@ function KeySystem.new(Config, Filename, func)
     end
     
     local SubmitButton = CreateButton("Submit", "arrow-right", function()
-        local Key = TextBox.Text
+        local Key = EnteredKey
         local isKey = tostring(Config.KeySystem.Key) == tostring(Key)
         if type(Config.KeySystem.Key) == "table" then
             isKey = table.find(Config.KeySystem.Key, tostring(Key))

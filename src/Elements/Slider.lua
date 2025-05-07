@@ -36,42 +36,28 @@ function Element:New(Config)
         Hover = false,
     })
     
-    Slider.UIElements.SliderIcon = New("ImageLabel", {
-        ImageTransparency = .9,
-        BackgroundTransparency= 1,
-        Image = "rbxassetid://18747052224",
-        ScaleType = "Crop",
-        Size = UDim2.new(0, 126, 0, 3),
+    Slider.UIElements.SliderIcon = Creator.NewRoundFrame(99, "Squircle", {
+        ImageTransparency = .95,
+        Size = UDim2.new(0, 126, 0, 4),
         Name = "Frame",
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         ThemeTag = {
-            ImageColor3 = "Text"
-        }
+            ImageColor3 = "Text",
+        },
     }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(1, 0),
-        }),
-        New("ImageLabel", {
+        Creator.NewRoundFrame(99, "Squircle", {
             Name = "Frame",
             Size = UDim2.new(delta, 0, 1, 0),
-            Image = "rbxassetid://18747052224",
-            ScaleType = "Crop",
-            BackgroundTransparency = 1,
-            ImageTransparency = .4,
+            ImageTransparency = .1,
             ThemeTag = {
-                ImageColor3 = "Text"
-            }
+                ImageColor3 = "Button",
+            },
         }, {
-            New("UICorner", {
-                CornerRadius = UDim.new(1, 0),
-            }),
-            New("ImageLabel", {
+            Creator.NewRoundFrame(99, "Squircle", {
                 Size = UDim2.new(0, 13, 0, 13),
                 Position = UDim2.new(1, 0, 0.5, 0),
                 AnchorPoint = Vector2.new(0.5, 0.5),
-                Image = "rbxassetid://18747052224",
-                BackgroundTransparency = 1,
                 ThemeTag = {
                     ImageColor3 = "Text",
                 },
@@ -83,7 +69,7 @@ function Element:New(Config)
         Size = UDim2.new(0, 0, 0, 0),
         AutomaticSize = "XY",
         AnchorPoint = Vector2.new(1, 0.5),
-        Position = UDim2.new(1, 0, 0.5, 0),
+        Position = UDim2.new(1, -Slider.SliderFrame.UIPadding/2, 0.5, 0),
         BackgroundTransparency = 1,
         Parent = Slider.SliderFrame.UIElements.Main,
     }, {

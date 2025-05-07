@@ -7,13 +7,19 @@ local Element = {
     UIPadding = 8,
 }
 
+
+local UIComponent = require("../Components/UI")
+local CreateButton = UIComponent.Button
+local CreateInput = UIComponent.Input 
+
 function Element:New(Config)
     local Input = {
         __type = "Input",
         Title = Config.Title or "Input",
         Desc = Config.Desc or nil,
         Locked = Config.Locked or false,
-        PlaceholderText = Config.PlaceholderText or "Enter Text...",
+        InputIcon = Config.InputIcon or false,
+        PlaceholderText = Config.Placeholder or "Enter Text...",
         Value = Config.Value or "",
         Callback = Config.Callback or function() end,
         ClearTextOnFocus = Config.ClearTextOnFocus or false,
@@ -21,71 +27,27 @@ function Element:New(Config)
     }
     
     local CanCallback = true
-    
+
     Input.InputFrame = require("../Components/Element")({
         Title = Input.Title,
         Desc = Input.Desc,
         Parent = Config.Parent,
-        TextOffset = 160,
+        TextOffset = (30*6)+10,
         Hover = false,
     })
     
-    Input.UIElements.Input = New("Frame",{
-        BackgroundTransparency = .95,
-        Parent = Input.InputFrame.UIElements.Main,
-        Size = UDim2.new(0,30*5,0,30),
-        AnchorPoint = Vector2.new(0.5,0.5),
-        Position = UDim2.new(1,-(30*5)/2,0.5,0),
-        ThemeTag = {
-            BackgroundColor3 = "Text",
-        },
-        ZIndex = 2
-    }, {
-        New("TextBox", {
-            MultiLine = false,
-            Size = UDim2.new(1,0,0,0),
-            AutomaticSize = "Y",
-            BackgroundTransparency = 1,
-            Position = UDim2.new(0,0,0.5,0),
-            AnchorPoint = Vector2.new(0,0.5),
-            ClearTextOnFocus = Input.ClearTextOnFocus,
-            Text = Input.Value,
-            TextSize = 15,
-            ClipsDescendants = true,
-            TextXAlignment = "Left",
-            FontFace = Font.new(Creator.Font),
-            PlaceholderText = Input.PlaceholderText,
-            ThemeTag = {
-                TextColor3 = "Text",
-                PlaceholderColor3 = "PlaceholderText",
-            }
-        }),
-        New("UICorner", {
-            CornerRadius = UDim.new(0,Element.UICorner)
-        }),
-        New("UIStroke", {
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = .93,
-            ApplyStrokeMode = "Border",
-            Thickness = 1,
-        }),
-        New("UIPadding", {
-            PaddingTop = UDim.new(0,Element.UIPadding),
-            PaddingLeft = UDim.new(0,Element.UIPadding),
-            PaddingRight = UDim.new(0,Element.UIPadding),
-            PaddingBottom = UDim.new(0,Element.UIPadding),
-        }),
-        New("UIScale", {
-            Scale = 1, -- 1.04
-        })
+    local InputComponent = CreateInput(Input.PlaceholderText, Input.InputIcon, Input.InputFrame.UIElements.Main, function(v)
+        Input:Set(v)
+    end)
+    InputComponent.Size = UDim2.new(0,30*6,0,42)
+    InputComponent.AnchorPoint = Vector2.new(1,0.5)
+    InputComponent.Position = UDim2.new(1,-Input.InputFrame.UIPadding/2,0.5,0)
+    
+    New("UIScale", {
+        Parent = InputComponent,
+        Scale = .85,
     })
     
-    -- Input.UIElements.Input.TextBox:GetPropertyChangedSignal("TextBounds"):Connect(function()
-    --     Input.UIElements.Input.TextBox.Size = UDim2.new(1,0,0,Input.UIElements.Input.TextBox.TextBounds.Y)
-    -- end)
-
     function Input:Lock()
         CanCallback = false
         return Input.InputFrame:Lock()
@@ -99,32 +61,17 @@ function Element:New(Config)
     function Input:Set(v)
         if CanCallback then
             Input.Callback(v)
-
+            
+            InputComponent.Frame.Frame.TextBox.Text = v
             Input.Value = v
         end
     end
     
+    Input:Set(Input.Value)
+    
     if Input.Locked then
         Input:Lock()
     end
-    
-    Input.UIElements.Input.TextBox.Focused:Connect(function()
-        if not CanCallback then
-            Input.UIElements.Input.TextBox:ReleaseFocus()
-            return
-        end
-        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .85}):Play()
-        Tween(Input.UIElements.Input, 0.1, {BackgroundTransparency = .93}):Play()
-        Tween(Input.UIElements.Input.UIScale, 0.1, {Scale = 1.04}):Play()
-    end)
-    
-    Input.UIElements.Input.TextBox.FocusLost:Connect(function()
-        Input:Set(Input.UIElements.Input.TextBox.Text)
-        
-        Tween(Input.UIElements.Input.UIStroke, 0.1, {Transparency = .93}):Play()
-        Tween(Input.UIElements.Input, 0.1, {BackgroundTransparency = .95}):Play()
-        Tween(Input.UIElements.Input.UIScale, 0.1, {Scale = 1}):Play()
-    end)
 
     return Input.__type, Input
 end

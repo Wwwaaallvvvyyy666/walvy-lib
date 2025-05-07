@@ -1,4 +1,4 @@
-<h1 align="center">WindUI</h1align> 
+<h1 align="center">WindUI</h1> 
 
 <hr />
 
@@ -12,4 +12,4 @@
 
 
 > [Discord Server](https://discord.gg/Q6HkNG4vwP)
-> [Documentation](https://tree-hub.vercel.app/docs/WindUI)
+> [Documentation](https://Footagesus.github.io/WindUI-Docs/)

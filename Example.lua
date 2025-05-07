@@ -1,7 +1,11 @@
-local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+-- Test
+
+
 
 -- Set theme:
--- WindUI:SetTheme("Dark")
+--WindUI:SetTheme("Light")
 
 --- EXAMPLE !!!
 
@@ -25,7 +29,7 @@ end
 local Confirmed = false
 
 WindUI:Popup({
-    Title = "Welcome!",
+    Title = "Welcome! Popup Example",
     Icon = "info",
     Content = "This is an Example UI for the " .. gradient("WindUI", Color3.fromHex("#00FF87"), Color3.fromHex("#60EFFF")) .. " Lib",
     Buttons = {
@@ -33,7 +37,7 @@ WindUI:Popup({
             Title = "Cancel",
             --Icon = "",
             Callback = function() end,
-            Variant = "Tertiary", -- Primary, Secondary, Tertiary
+            Variant = "Secondary", -- Primary, Secondary, Tertiary
         },
         {
             Title = "Continue",
@@ -57,12 +61,16 @@ local Window = WindUI:CreateWindow({
     Size = UDim2.fromOffset(580, 460),
     Transparent = true,
     Theme = "Dark",
-    UserEnabled = false,
+    User = {
+        Enabled = true, -- <- or false
+        Callback = function() print("clicked") end, -- <- optional
+        Anonymous = true -- <- or true
+    },
     SideBarWidth = 200,
     --Background = "rbxassetid://13511292247", -- rbxassetid only
     HasOutline = true,
     -- remove it below if you don't want to use the key system in your script.
-    KeySystem = { 
+    KeySystem = { -- <- keysystem enabled
         Key = { "1234", "5678" },
         Note = "Example Key System. \n\nThe Key is '1234' or '5678",
         -- Thumbnail = {
@@ -97,121 +105,97 @@ local Tabs = {
     ButtonTab = Window:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
     CodeTab = Window:Tab({ Title = "Code", Icon = "code", Desc = "Displays and manages code snippets." }),
     ColorPickerTab = Window:Tab({ Title = "ColorPicker", Icon = "paintbrush", Desc = "Choose and customize colors easily." }),
+    DialogTab = Window:Tab({ Title = "Dialog", Icon = "message-square", Desc = "Dialog lol" }),
     NotificationTab = Window:Tab({ Title = "Notification", Icon = "bell", Desc = "Configure and view notifications." }),
     ToggleTab = Window:Tab({ Title = "Toggle", Icon = "toggle-left", Desc = "Switch settings on and off." }),
     SliderTab = Window:Tab({ Title = "Slider", Icon = "sliders-horizontal", Desc = "Adjust values smoothly with sliders." }),
     InputTab = Window:Tab({ Title = "Input", Icon = "keyboard", Desc = "Accept text and numerical input." }),
+    KeybindTab = Window:Tab({ Title = "Keybind", Icon = "keyboard-off" }),
     DropdownTab = Window:Tab({ Title = "Dropdown", Icon = "chevrons-up-down", Desc = "Select from multiple options." }),
-    b = Window:Divider(),
-    WindowTab = Window:Tab({ Title = "Window and File Configuration", Icon = "settings", Desc = "Manage window settings and file configurations." }),
+    divider1 = Window:Divider(),
+    --
+    WindowTab = Window:Tab({ 
+        Title = "Window and File Configuration", 
+        Icon = "settings", 
+        Desc = "Manage window settings and file configurations.", 
+        ShowTabTitle = true
+    }),
+
     CreateThemeTab = Window:Tab({ Title = "Create Theme", Icon = "palette", Desc = "Design and apply custom themes." }),
     be = Window:Divider(),
     LongTab = Window:Tab({ Title = "Long and empty tab. Looong and empty.. tab.", Icon = "frown", Desc = "Long Description" }),
     LockedTab = Window:Tab({ Title = "Locked Tab", Icon = "lock", Desc = "This tab is locked", Locked = true }),
+    TabWithoutIcon = Window:Tab({ Title = "Tab Without icon", ShowTabTitle = true }),
+    Tests = Window:Tab({ Title = "Tests", Icon = "settings", ShowTabTitle = true }),
 }
 
 Window:SelectTab(1)
 
-
 Tabs.ParagraphTab:Paragraph({
-    Title = "Default",
-    Desc = "Normal Paragraph",
-    Image = "bird",
-    --Color = "Red"
-    Buttons = {
-        {
-            Title = "Ok!",
-        },
-        {
-            Title = "Ok!",
-        }
-    }
+    Title = "Paragraph with Image & Thumbnail",
+    Desc = "Test Paragraph",
+    Image = "https://play-lh.googleusercontent.com/7cIIPlWm4m7AGqVpEsIfyL-HW4cQla4ucXnfalMft1TMIYQIlf2vqgmthlZgbNAQoaQ",
+    ImageSize = 34, -- default 30
+    Thumbnail = "https://tr.rbxcdn.com/180DAY-59af3523ad8898216dbe1043788837bf/768/432/Image/Webp/noFilter",
+    ThumbnailSize = 120 -- Thumbnail height
 })
 Tabs.ParagraphTab:Paragraph({
-    Title = "Danger (Error)",
-    Desc = "Red Paragraph",
-    Image = "triangle-alert",
-    Color = "Red",
+    Title = "Paragraph with Image & Thumbnail & Buttons",
+    Desc = "Test Paragraph",
+    Image = "https://play-lh.googleusercontent.com/7cIIPlWm4m7AGqVpEsIfyL-HW4cQla4ucXnfalMft1TMIYQIlf2vqgmthlZgbNAQoaQ",
+    ImageSize = 34, -- default 30
+    Thumbnail = "https://tr.rbxcdn.com/180DAY-59af3523ad8898216dbe1043788837bf/768/432/Image/Webp/noFilter",
+    ThumbnailSize = 120, -- Thumbnail height
     Buttons = {
         {
-            Title = "Ok!",
+            Title = "Button 1",
+            Variant = "Primary",
+            Callback = function() print("1 Button") end,
+            Icon = "bird",
         },
         {
-            Title = "Ok!",
-        }
-    }
-})
-Tabs.ParagraphTab:Paragraph({
-    Title = "Warning",
-    Desc = "Orange Paragraph",
-    Image = "triangle-alert",
-    Color = "Orange",
-    Buttons = {
-        {
-            Title = "Ok!",
+            Title = "Button 2",
+            Variant = "Primary",
+            Callback = function() print("2 Button") end,
+            Icon = "bird",
         },
         {
-            Title = "Ok!",
-        }
-    }
-})
-Tabs.ParagraphTab:Paragraph({
-    Title = "Success",
-    Desc = "Green Paragraph",
-    Image = "check",
-    Color = "Green",
-    Buttons = {
-        {
-            Title = "Ok!",
+            Title = "Button 3",
+            Variant = "Primary",
+            Callback = function() print("3 Button") end,
+            Icon = "bird",
         },
-        {
-            Title = "Ok!",
-        }
-    }
-})
-Tabs.ParagraphTab:Paragraph({
-    Title = "Info",
-    Desc = "Blue Paragraph",
-    Image = "info",
-    Color = "Blue",
-    Buttons = {
-        {
-            Title = "Ok!",
-        },
-        {
-            Title = "Ok!",
-        }
-    }
-})
-Tabs.ParagraphTab:Paragraph({
-    Title = "Grey",
-    Desc = "Grey Paragraph",
-    Image = "bird",
-    Color = "Grey",
-    Buttons = {
-        {
-            Title = "Ok!",
-        },
-        {
-            Title = "Ok!",
-        }
-    }
-})
-Tabs.ParagraphTab:Paragraph({
-    Title = "White",
-    Desc = "White Paragraph",
-    Image = "bird",
-    Color = "White",
-    Buttons = {
-        {
-            Title = "Ok!",
-        },
-        {
-            Title = "Ok!",
-        }
     }
 })
 
+for _,i in next, { "Default", "Red", "Orange", "Green", "Blue", "Grey", "White" } do
+    Tabs.ParagraphTab:Paragraph({
+        Title = i,
+        Desc = "Paragraph with color",
+        Image = "bird",
+        Color = i ~= "Default" and i or nil,
+        Buttons = {
+            {
+                Title = "Button 1",
+                Variant = "Primary",
+                Callback = function() print("1 Button") end,
+                Icon = "bird",
+            },
+            {
+                Title = "Button 2",
+                Variant = "Primary",
+                Callback = function() print("2 Button") end,
+                Icon = "bird",
+            },
+            {
+                Title = "Button 3",
+                Variant = "Primary",
+                Callback = function() print("3 Button") end,
+                Icon = "bird",
+            },
+        }
+    })
+end
 
 
 
@@ -246,29 +230,47 @@ Tabs.ButtonTab:Button({
 
 
 Tabs.CodeTab:Code({
-    Title = "example-code.lua",
-    Code = [[
-local message = "Hello"
-print(message)
+    Title = "example-code.luau",
+    Code = [[-- Example Luau code to test syntax highlighting
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
 
-if message == "Hello" then
-    print("Greetings!")
+local function factorial(n)
+    if n <= 1 then
+        return 1
+    else
+        return n * factorial(n - 1)
+    end
+end
+
+local result = factorial(5)
+print("Factorial of 5 is:", result)
+
+local playerName = "Player"
+local score = 100
+
+if score >= 100 then
+    print(playerName .. " earned an achievement!")
+else
+    warn("Need more points.")
+end
+
+-- Table with nested values
+local playerStats = {
+    name = "Player",
+    health = 100,
+    inventory = {"sword", "shield", "potion"}
+}
+
+for i, item in ipairs(playerStats.inventory) do
+    print("Item in inventory:", item)
 end]],
 })
 
 Tabs.CodeTab:Code({
-    Title = "example-code-2-longggggg-looooonnnnnnggggggggggggggg.lua",
-    Code = [[
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
-
-local Window = WindUI:CreateWindow({
-    Title = "WindUI Example",
-    Icon = "image",
-    Author = ".ftgs",
-    Folder = "CloudHub",
-    Size = UDim2.fromOffset(580, 460),
-})]],
+    Code = [[print("WindUI on top!")]],
 })
+
 
 
 Tabs.ColorPickerTab:Colorpicker({
@@ -282,6 +284,52 @@ Tabs.ColorPickerTab:Colorpicker({
     Default = Color3.fromRGB(0, 0, 255),
     Transparency = 0,
     Callback = function(color) print("Background color: " .. tostring(color)) end
+})
+
+
+Tabs.DialogTab:Button({
+    Title = "Create Example Dialog",
+    Callback = function()
+        Window:Dialog({
+            Title = "Example Dialog",
+            Content = "Example Content. lalala",
+            Icon = "bird",
+            Buttons = {
+                {
+                    Title = "LOL!",
+                    Icon = "bird",
+                    Variant = "Tertiary",
+                    Callback = function()
+                        print("lol")
+                    end,
+                },
+                {
+                    Title = "Cool!",
+                    Icon = "bird",
+                    Variant = "Tertiary",
+                    Callback = function()
+                        print("Cool")
+                    end,
+                },
+                {
+                    Title = "Ok!",
+                    Icon = "bird",
+                    Variant = "Secondary",
+                    Callback = function()
+                        print("Ok")
+                    end,
+                },
+                {
+                    Title = "Awesome!",
+                    Icon = "bird",
+                    Variant = "Primary",
+                    Callback = function() 
+                        print("Awesome")
+                    end,
+                }
+            }
+        })
+    end,
 })
 
 
@@ -324,20 +372,35 @@ Tabs.NotificationTab:Button({
 
 Tabs.ToggleTab:Toggle({
     Title = "Enable Feature",
-    Default = true,
+    --Image = "bird",
+    Value = true,
     Callback = function(state) print("Feature enabled: " .. tostring(state)) end
 })
 
 Tabs.ToggleTab:Toggle({
     Title = "Activate Mode",
-    Default = false,
+    Value = false,
     Callback = function(state) print("Mode activated: " .. tostring(state)) end
 })
 Tabs.ToggleTab:Toggle({
     Title = "Toggle with icon",
     Icon = "check",
-    Default = false,
+    Value = false,
     Callback = function(state) print("Toggle with icon activated: " .. tostring(state)) end
+})
+
+Tabs.ToggleTab:Toggle({
+    Title = "New Toggle Type 'Checkbox'",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state) print("'Checkbox' Toggle activated: " .. tostring(state)) end
+})
+Tabs.ToggleTab:Toggle({
+    Title = "New Toggle Type 'Checkbox' with custom icon",
+    Icon = "bird",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state) print("'Checkbox' Toggle with icon activated: " .. tostring(state)) end
 })
 
 
@@ -364,16 +427,35 @@ Tabs.SliderTab:Slider({
 
 Tabs.InputTab:Input({
     Title = "Username",
-    Default = "Guest",
+    Value = "Guest",
     Placeholder = "Enter your username",
     Callback = function(input) print("Username: " .. input) end
 })
 
 Tabs.InputTab:Input({
     Title = "Password",
-    Default = "",
+    Value = "",
     Placeholder = "Enter your password",
     Callback = function(input) print("Password entered.") end
+})
+
+
+Tabs.InputTab:Input({
+    Title = "Input with icon",
+    Value = "pisun",
+    InputIcon = "bird",
+    Placeholder = "Enter pisun",
+    Callback = function(input) print("pisun entered.") end
+})
+
+
+Tabs.KeybindTab:Keybind({
+    Title = "Keybind Example",
+    Desc = "Keybind to open ui",
+    Value = "G",
+    Callback = function(v)
+        Window:SetToggleKey(Enum.KeyCode[v])
+    end
 })
 
 
@@ -385,10 +467,14 @@ Tabs.DropdownTab:Dropdown({
 })
 
 Tabs.DropdownTab:Dropdown({
-    Title = "Choose a Category",
+    Title = "Choose a Category (Multi)",
     Values = { "Category A", "Category B", "Category C" },
-    Value = "Category A",
-    Callback = function(option) print("Category selected: " .. option) end
+    Value = { "Category A" },
+    Multi = true,
+    AllowNone = true,
+    Callback = function(option) 
+        print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+    end
 })
 
 
@@ -532,7 +618,7 @@ local themes = WindUI:GetThemes()
 local ThemeAccent = themes[currentThemeName].Accent
 local ThemeOutline = themes[currentThemeName].Outline
 local ThemeText = themes[currentThemeName].Text
-local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+local ThemePlaceholderText = themes[currentThemeName].Placeholder
 
 function updateTheme()
     WindUI:AddTheme({
@@ -540,7 +626,7 @@ function updateTheme()
         Accent = ThemeAccent,
         Outline = ThemeOutline,
         Text = ThemeText,
-        PlaceholderText = ThemePlaceholderText
+        Placeholder = ThemePlaceholderText
     })
     WindUI:SetTheme(currentThemeName)
 end
@@ -589,5 +675,193 @@ Tabs.CreateThemeTab:Button({
     Title = "Update Theme",
     Callback = function()
         updateTheme()
+    end
+})
+
+local InviteCode = "ApbHXtAwU2"
+local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
+
+local Response = game:GetService("HttpService"):JSONDecode(WindUI.Creator.Request({
+    Url = DiscordAPI,
+    Method = "GET",
+    Headers = {
+        ["User-Agent"] = "RobloxBot/1.0",
+        ["Accept"] = "application/json"
+    }
+}).Body)
+
+if Response and Response.guild then
+    local DiscordInfo = Tabs.Tests:Paragraph({
+        Title = Response.guild.name,
+        Desc = 
+            ' <font color="#52525b">•</font> Member Count : ' .. tostring(Response.approximate_member_count) .. 
+            '\n <font color="#16a34a">•</font> Online Count : ' .. tostring(Response.approximate_presence_count)
+        ,
+        Image = "https://cdn.discordapp.com/icons/" .. Response.guild.id .. "/" .. Response.guild.icon .. ".png?size=1024",
+        ImageSize = 42,
+    })
+
+    Tabs.Tests:Button({
+        Title = "Update Info",
+        --Image = "refresh-ccw",
+        Callback = function()
+            local UpdatedResponse = game:GetService("HttpService"):JSONDecode(WindUI.Creator.Request({
+                Url = DiscordAPI,
+                Method = "GET",
+            }).Body)
+            
+            if UpdatedResponse and UpdatedResponse and UpdatedResponse.guild then
+                DiscordInfo:SetDesc(
+                    ' <font color="#52525b">•</font> Member Count : ' .. tostring(UpdatedResponse.approximate_member_count) .. 
+                    '\n <font color="#16a34a">•</font> Online Count : ' .. tostring(UpdatedResponse.approximate_presence_count)
+                )
+            end
+        end
+    })
+else
+    Tabs.Tests:Paragraph({
+        Title = "Error when receiving information about the Discord server",
+        Desc = game:GetService("HttpService"):JSONEncode(Response),
+        Image = "triangle-alert",
+        ImageSize = 26,
+        Color = "Red",
+    })
+end
+
+
+
+local function parseJSON(luau_table, indent, level, visited)
+    indent = indent or 2
+    level = level or 0
+    visited = visited or {}
+    
+    local currentIndent = string.rep(" ", level * indent)
+    local nextIndent = string.rep(" ", (level + 1) * indent)
+    
+    if luau_table == nil then
+        return "null"
+    end
+    
+    local dataType = type(luau_table)
+    
+    if dataType == "table" then
+        if visited[luau_table] then
+            return "\"[Circular Reference]\""
+        end
+        
+        visited[luau_table] = true
+        
+        local isArray = true
+        local maxIndex = 0
+        
+        for k, _ in pairs(luau_table) do
+            if type(k) == "number" and k > maxIndex then
+                maxIndex = k
+            end
+            if type(k) ~= "number" or k <= 0 or math.floor(k) ~= k then
+                isArray = false
+                break
+            end
+        end
+        
+        local count = 0
+        for _ in pairs(luau_table) do
+            count = count + 1
+        end
+        if count ~= maxIndex and isArray then
+            isArray = false
+        end
+        
+        if count == 0 then
+            return "{}"
+        end
+        
+        if isArray then
+            if count == 0 then
+                return "[]"
+            end
+            
+            local result = "[\n"
+            
+            for i = 1, maxIndex do
+                result = result .. nextIndent .. parseJSON(luau_table[i], indent, level + 1, visited)
+                if i < maxIndex then
+                    result = result .. ","
+                end
+                result = result .. "\n"
+            end
+            
+            result = result .. currentIndent .. "]"
+            return result
+        else
+            local result = "{\n"
+            local first = true
+            
+            local keys = {}
+            for k in pairs(luau_table) do
+                table.insert(keys, k)
+            end
+            table.sort(keys, function(a, b)
+                if type(a) == type(b) then
+                    return tostring(a) < tostring(b)
+                else
+                    return type(a) < type(b)
+                end
+            end)
+            
+            for _, k in ipairs(keys) do
+                local v = luau_table[k]
+                if not first then
+                    result = result .. ",\n"
+                else
+                    first = false
+                end
+                
+                if type(k) == "string" then
+                    result = result .. nextIndent .. "\"" .. k .. "\": "
+                else
+                    result = result .. nextIndent .. "\"" .. tostring(k) .. "\": "
+                end
+                
+                result = result .. parseJSON(v, indent, level + 1, visited)
+            end
+            
+            result = result .. "\n" .. currentIndent .. "}"
+            return result
+        end
+    elseif dataType == "string" then
+        local escaped = luau_table:gsub("\\", "\\\\")
+        escaped = escaped:gsub("\"", "\\\"")
+        escaped = escaped:gsub("\n", "\\n")
+        escaped = escaped:gsub("\r", "\\r")
+        escaped = escaped:gsub("\t", "\\t")
+        
+        return "\"" .. escaped .. "\""
+    elseif dataType == "number" then
+        return tostring(luau_table)
+    elseif dataType == "boolean" then
+        return luau_table and "true" or "false"
+    elseif dataType == "function" then
+        return "\"function\""
+    else
+        return "\"" .. dataType .. "\""
+    end
+end
+
+local function tableToClipboard(luau_table, indent)
+    indent = indent or 4
+    local jsonString = parseJSON(luau_table, indent)
+    setclipboard(jsonString)
+    return jsonString
+end
+
+Tabs.Tests:Section({
+    Title = "Get WindUI JSON"
+})
+
+Tabs.Tests:Button({
+    Title = "Get WindUI JSON",
+    Callback = function()
+        tableToClipboard(WindUI)
     end
 })

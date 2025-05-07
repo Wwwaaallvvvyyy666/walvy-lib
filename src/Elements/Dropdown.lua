@@ -6,12 +6,15 @@ local Creator = require("../Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
+local UIComponent = require("../Components/UI")
+local CreateLabel = UIComponent.Label 
+
 local Element = {
-    UICorner = 8,
-    UIPadding = 8,
+    UICorner = 10,
+    UIPadding = 12,
     MenuCorner = 14,
-    MenuPadding = 7,
-    TabPadding = 10,
+    MenuPadding = 5,
+    TabPadding = 6,
 }
 
 function Element:New(Config)
@@ -38,56 +41,36 @@ function Element:New(Config)
         Title = Dropdown.Title,
         Desc = Dropdown.Desc,
         Parent = Config.Parent,
-        TextOffset = 160,
+        TextOffset = (30*6)+10,
         Hover = false,
     })
     
-    Dropdown.UIElements.Dropdown = New("TextButton",{
-        BackgroundTransparency = .95,
-        Text = "",
-        FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-        TextSize = 15,
-        TextTransparency = .4,
-        TextXAlignment = "Left",
-        Parent = Dropdown.DropdownFrame.UIElements.Main,
-        Size = UDim2.new(0,30*5,0,30),
-        AnchorPoint = Vector2.new(1,0.5),
-        TextTruncate = "AtEnd",
-        Position = UDim2.new(1,0,0.5,0),
+    
+    Dropdown.UIElements.Dropdown = CreateLabel("", nil, Dropdown.DropdownFrame.UIElements.Main)
+    
+    Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.TextTruncate = "AtEnd"
+    Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size = UDim2.new(1, Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size.X.Offset - 18 - 12 - 12,0,0)
+    
+    Dropdown.UIElements.Dropdown.Size = UDim2.new(0,30*6,0,42)
+    Dropdown.UIElements.Dropdown.AnchorPoint = Vector2.new(1,0.5)
+    Dropdown.UIElements.Dropdown.Position = UDim2.new(1,-Dropdown.DropdownFrame.UIPadding/2,0.5,0)
+    
+    New("UIScale", {
+        Parent = Dropdown.UIElements.Dropdown,
+        Scale = .85,
+    })
+    
+    local DropdownIcon = New("ImageLabel", {
+        Image = Creator.Icon("chevron-down")[1],
+        ImageRectOffset = Creator.Icon("chevron-down")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("chevron-down")[2].ImageRectSize,
+        Size = UDim2.new(0,18,0,18),
+        Position = UDim2.new(1,-12,0.5,0),
         ThemeTag = {
-            BackgroundColor3 = "Text",
-            TextColor3 = "Text"
+            ImageColor3 = "Text"
         },
-        ZIndex = 2
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(0,Element.UICorner)
-        }),
-        New("UIStroke", {
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = .93,
-            ApplyStrokeMode = "Border",
-            Thickness = 1,
-        }),
-        New("UIPadding", {
-            PaddingTop = UDim.new(0,Element.UIPadding),
-            PaddingLeft = UDim.new(0,Element.UIPadding),
-            PaddingRight = UDim.new(0,Element.UIPadding*2 + 18),
-            PaddingBottom = UDim.new(0,Element.UIPadding),
-        }),
-        New("ImageLabel", {
-            Image = Creator.Icon("chevron-down")[1],
-            ImageRectOffset = Creator.Icon("chevron-down")[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon("chevron-down")[2].ImageRectSize,
-            Size = UDim2.new(0,18,0,18),
-            Position = UDim2.new(1,Element.UIPadding + 18,0.5,0),
-            ThemeTag = {
-                ImageColor3 = "Text"
-            },
-            AnchorPoint = Vector2.new(1,0.5),
-        })
+        AnchorPoint = Vector2.new(1,0.5),
+        Parent = Dropdown.UIElements.Dropdown.Frame
     })
 
     Dropdown.UIElements.UIListLayout = New("UIListLayout", {
@@ -110,7 +93,7 @@ function Element:New(Config)
         }),
         New("UIStroke", {
             Thickness = 1,
-            Transparency = .93,
+            Transparency = 1, -- .93
             ThemeTag = {
                 Color = "Text"
             }
@@ -148,7 +131,7 @@ function Element:New(Config)
         Active = false,
         GroupTransparency = 1, -- 0
         Parent = Config.Window.SuperParent.Parent.Dropdowns,
-
+        AnchorPoint = Vector2.new(1,0),
     }, {
         Dropdown.UIElements.Menu,
         New("UIPadding", {
@@ -183,18 +166,18 @@ function Element:New(Config)
 		if #Dropdown.Values > 10 then
 			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, 392)
 		else
-			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + Element.MenuPadding*2 +1)
+			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + Element.MenuPadding*2 + 2)
 		end
 	end
     
     function UpdatePosition()
-        local Add = -35
-        if Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y + Add < Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y + 10 then
+        local Add = - Dropdown.UIElements.Dropdown.AbsoluteSize.Y
+        if Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y - Dropdown.UIElements.Dropdown.AbsoluteSize.Y + Add < Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y + 10 then
             Add = Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y
                 - (Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y)
                 + 10
         end
-        Dropdown.UIElements.MenuCanvas.Position = UDim2.fromOffset(Dropdown.UIElements.Dropdown.AbsolutePosition.X - 1, Dropdown.UIElements.Dropdown.AbsolutePosition.Y - Add)
+        Dropdown.UIElements.MenuCanvas.Position = UDim2.new(0, Dropdown.UIElements.Dropdown.AbsolutePosition.X + Dropdown.UIElements.Dropdown.AbsoluteSize.X + 1, 0, Dropdown.UIElements.Dropdown.AbsolutePosition.Y + Dropdown.UIElements.Dropdown.AbsoluteSize.Y - Add)
     end
     
     function Dropdown:Display()
@@ -212,7 +195,7 @@ function Element:New(Config)
 			Str = Dropdown.Value or ""
 		end
 
-		Dropdown.UIElements.Dropdown.Text = (Str == "" and "--" or Str)
+		Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Text = (Str == "" and "--" or Str)
 	end
     
     function Dropdown:Refresh(Values)
@@ -377,7 +360,7 @@ function Element:New(Config)
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
         
-        Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 180}):Play()
+        Tween(DropdownIcon, .15, {Rotation = 180}):Play()
         Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 0}):Play()
         
         UpdatePosition()
@@ -391,7 +374,7 @@ function Element:New(Config)
                 0.8, 0
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
-        Tween(Dropdown.UIElements.Dropdown.ImageLabel, .15, {Rotation = 0}):Play()
+        Tween(DropdownIcon, .15, {Rotation = 0}):Play()
         Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 1}):Play()
         task.wait(.1)
         Dropdown.UIElements.MenuCanvas.Visible = false

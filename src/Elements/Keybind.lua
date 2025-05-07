@@ -9,6 +9,9 @@ local Element = {
     UIPadding = 8,
 }
 
+local UIComponent = require("../Components/UI")
+local CreateLabel = UIComponent.Label 
+
 function Element:New(Config)
     local Keybind = {
         __type = "Keybind",
@@ -32,44 +35,29 @@ function Element:New(Config)
         Hover = Keybind.CanChange,
     })
     
-    Keybind.UIElements.Keybind = New("TextLabel",{
-        BackgroundTransparency = .95,
-        Text = Keybind.Value,
-        TextSize = 15,
-        TextXAlignment = "Right",
-        --AutomaticSize = "XY",
-        FontFace = Font.new(Creator.Font),
-        Parent = Keybind.KeybindFrame.UIElements.Main,
-        Size = UDim2.new(0,0,0,0),
-        AnchorPoint = Vector2.new(1,0.5),
-        Position = UDim2.new(1,0,0.5,0),
-        ThemeTag = {
-            BackgroundColor3 = "Text",
-            TextColor3 = "Text",
-        },
-        ZIndex = 2
-    }, {
-        New("UICorner", {
-            CornerRadius = UDim.new(0,Element.UICorner)
-        }),
-        New("UIStroke", {
-            ThemeTag = {
-                Color = "Text",
-            },
-            Transparency = .93,
-            ApplyStrokeMode = "Border",
-            Thickness = 1,
-        }),
-        New("UIPadding", {
-            PaddingTop = UDim.new(0,Element.UIPadding),
-            PaddingLeft = UDim.new(0,Element.UIPadding),
-            PaddingRight = UDim.new(0,Element.UIPadding),
-            PaddingBottom = UDim.new(0,Element.UIPadding),
-        })
-    })
+    Keybind.UIElements.Keybind = CreateLabel(Keybind.Value, nil, Keybind.KeybindFrame.UIElements.Main)
     
-    Keybind.UIElements.Keybind:GetPropertyChangedSignal("TextBounds"):Connect(function()
-        Keybind.UIElements.Keybind.Size = UDim2.new(0,Keybind.UIElements.Keybind.TextBounds.X+(Element.UIPadding*2),0,Keybind.UIElements.Keybind.TextBounds.Y+(Element.UIPadding*2))
+    Keybind.UIElements.Keybind.Size = UDim2.new(
+            0,
+            12+12+Keybind.UIElements.Keybind.Frame.Frame.TextLabel.TextBounds.X,
+            0,
+            42
+        )
+    Keybind.UIElements.Keybind.AnchorPoint = Vector2.new(1,0.5)
+    Keybind.UIElements.Keybind.Position = UDim2.new(1,-Keybind.KeybindFrame.UIPadding/2,0.5,0)
+
+    New("UIScale", {
+        Parent = Keybind.UIElements.Keybind,
+        Scale = .85,
+    })
+
+    Keybind.UIElements.Keybind.Frame.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+        Keybind.UIElements.Keybind.Size = UDim2.new(
+            0,
+            12+12+Keybind.UIElements.Keybind.Frame.Frame.TextLabel.TextBounds.X,
+            0,
+            42
+        )
     end)
 
     function Keybind:Lock()
@@ -89,7 +77,7 @@ function Element:New(Config)
         if CanCallback then
             if Keybind.CanChange then
                 Keybind.Picking = true
-                Keybind.UIElements.Keybind.Text = "..."
+                Keybind.UIElements.Keybind.Frame.Frame.TextLabel.Text = "..."
                 
                 task.wait(0.2)
                 
@@ -110,7 +98,7 @@ function Element:New(Config)
 	                    if Input.KeyCode.Name == Key or Key == "MouseLeft" and Input.UserInputType == Enum.UserInputType.MouseButton1 or Key == "MouseRight" and Input.UserInputType == Enum.UserInputType.MouseButton2 then
 		                    Keybind.Picking = false
 		    
-		                    Keybind.UIElements.Keybind.Text = Key
+		                    Keybind.UIElements.Keybind.Frame.Frame.TextLabel.Text = Key
 		                    Keybind.Value = Key
 		
 		                    Event:Disconnect()

@@ -1,13 +1,13 @@
-# 1.5.4
+# 1.6.0
 ### Changelog:  
-- Colorpicker small remake
-- Fixed BackgroundImage
-- Added `Window:SetBackgroundImage()`
-- Added `Window:SetToggleKey()`
-- Added Notification Background Image
-- Added Paragraph Colors (`Alert`)
-- Added UI Expansion Indicator
-- Added `:Destroy()` for elements
-- Added User Icon
-- Added Popup (Advanced Dialog)
-- Fixed bugs
+
+- Fixed UserIcon & Added Callback
+- Fixed Colorpicker bug
+- Added `ShowTabTitle: boolean` to `Tab` Element
+- Added `Thumbnail: string` to `Paragraph` Element
+- Added `CheckBox` type for `Toggle`
+- Added Bottom Drag line
+- Added Search System
+- Removed Scrolling slider (I'll return it later)
+- Removed `Locked` from `Code` Element 
+- Redesigned UI
