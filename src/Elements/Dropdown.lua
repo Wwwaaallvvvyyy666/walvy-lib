@@ -12,7 +12,7 @@ local CreateLabel = UIComponent.Label
 local Element = {
     UICorner = 10,
     UIPadding = 12,
-    MenuCorner = 14,
+    MenuCorner = 15,
     MenuPadding = 5,
     TabPadding = 6,
 }
@@ -41,33 +41,31 @@ function Element:New(Config)
         Title = Dropdown.Title,
         Desc = Dropdown.Desc,
         Parent = Config.Parent,
-        TextOffset = (30*6)+10,
+        TextOffset = 0,
         Hover = false,
     })
     
     
-    Dropdown.UIElements.Dropdown = CreateLabel("", nil, Dropdown.DropdownFrame.UIElements.Main)
+    Dropdown.UIElements.Dropdown = CreateLabel("", nil, Dropdown.DropdownFrame.UIElements.Container)
     
     Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.TextTruncate = "AtEnd"
     Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size = UDim2.new(1, Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size.X.Offset - 18 - 12 - 12,0,0)
     
-    Dropdown.UIElements.Dropdown.Size = UDim2.new(0,30*6,0,42)
-    Dropdown.UIElements.Dropdown.AnchorPoint = Vector2.new(1,0.5)
-    Dropdown.UIElements.Dropdown.Position = UDim2.new(1,-Dropdown.DropdownFrame.UIPadding/2,0.5,0)
+    Dropdown.UIElements.Dropdown.Size = UDim2.new(1,0,0,40)
     
-    New("UIScale", {
-        Parent = Dropdown.UIElements.Dropdown,
-        Scale = .85,
-    })
+    -- New("UIScale", {
+    --     Parent = Dropdown.UIElements.Dropdown,
+    --     Scale = .85,
+    -- })
     
     local DropdownIcon = New("ImageLabel", {
-        Image = Creator.Icon("chevron-down")[1],
-        ImageRectOffset = Creator.Icon("chevron-down")[2].ImageRectPosition,
-        ImageRectSize = Creator.Icon("chevron-down")[2].ImageRectSize,
+        Image = Creator.Icon("chevrons-up-down")[1],
+        ImageRectOffset = Creator.Icon("chevrons-up-down")[2].ImageRectPosition,
+        ImageRectSize = Creator.Icon("chevrons-up-down")[2].ImageRectSize,
         Size = UDim2.new(0,18,0,18),
         Position = UDim2.new(1,-12,0.5,0),
         ThemeTag = {
-            ImageColor3 = "Text"
+            ImageColor3 = "Icon"
         },
         AnchorPoint = Vector2.new(1,0.5),
         Parent = Dropdown.UIElements.Dropdown.Frame
@@ -78,38 +76,30 @@ function Element:New(Config)
         FillDirection = "Vertical"
     })
 
-    Dropdown.UIElements.Menu = New("Frame", {
+    Dropdown.UIElements.Menu = Creator.NewRoundFrame(Element.MenuCorner, "Squircle", {
         ThemeTag = {
-            BackgroundColor3 = "Accent",
+            ImageColor3 = "Background",
         },
-        BackgroundTransparency = 0.15,
-        Size = UDim2.new(1,0,1,0)
+        ImageTransparency = 0.05,
+        Size = UDim2.new(1,0,1,0),
+        AnchorPoint = Vector2.new(1,0),
+        Position = UDim2.new(1,0,0,0),
     }, {
---         New("UISizeConstraint", {
---			MinSize = Vector2.new(190, 0),
---		}),
-        New("UICorner", {
-            CornerRadius = UDim.new(0,Element.MenuCorner)
+        New("UIPadding", {
+            PaddingTop = UDim.new(0, Element.MenuPadding),
+            PaddingLeft = UDim.new(0, Element.MenuPadding),
+            PaddingRight = UDim.new(0, Element.MenuPadding),
+            PaddingBottom = UDim.new(0, Element.MenuPadding),
         }),
-        New("UIStroke", {
-            Thickness = 1,
-            Transparency = 1, -- .93
-            ThemeTag = {
-                Color = "Text"
-            }
-        }),
-		New("Frame", {
+		New("CanvasGroup", {
 		    BackgroundTransparency = 1,
 		    Size = UDim2.new(1,0,1,0),
-		    Name = "CanvasGroup",
+		    --Name = "CanvasGroup",
 		    ClipsDescendants = true
 		}, {
-            New("UIPadding", {
-                PaddingTop = UDim.new(0, Element.MenuPadding),
-                PaddingLeft = UDim.new(0, Element.MenuPadding),
-                PaddingRight = UDim.new(0, Element.MenuPadding),
-                PaddingBottom = UDim.new(0, Element.MenuPadding),
-            }),
+		    New("UICorner", {
+		        CornerRadius = UDim.new(0,Element.MenuCorner - Element.MenuPadding),
+		    }),
             New("ScrollingFrame", {
                 Size = UDim2.new(1,0,1,0),
                 ScrollBarThickness = 0,
@@ -117,6 +107,7 @@ function Element:New(Config)
                 AutomaticCanvasSize = "Y",
                 CanvasSize = UDim2.new(0,0,0,0),
                 BackgroundTransparency = 1,
+                ScrollBarImageTransparency = 1,
             }, {
                 Dropdown.UIElements.UIListLayout,
             })
@@ -130,16 +121,16 @@ function Element:New(Config)
         Visible = false,
         Active = false,
         GroupTransparency = 1, -- 0
-        Parent = Config.Window.SuperParent.Parent.Dropdowns,
+        Parent = Config.WindUI.DropdownGui,
         AnchorPoint = Vector2.new(1,0),
     }, {
         Dropdown.UIElements.Menu,
-        New("UIPadding", {
-            PaddingTop = UDim.new(0,1),
-            PaddingLeft = UDim.new(0,1),
-            PaddingRight = UDim.new(0,1),
-            PaddingBottom = UDim.new(0,1),
-        }),
+        -- New("UIPadding", {
+        --     PaddingTop = UDim.new(0,1),
+        --     PaddingLeft = UDim.new(0,1),
+        --     PaddingRight = UDim.new(0,1),
+        --     PaddingBottom = UDim.new(0,1),
+        -- }),
         New("UISizeConstraint", {
             MinSize = Vector2.new(190,0)
         })
@@ -166,19 +157,31 @@ function Element:New(Config)
 		if #Dropdown.Values > 10 then
 			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, 392)
 		else
-			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + Element.MenuPadding*2 + 2)
+			Dropdown.UIElements.MenuCanvas.Size = UDim2.fromOffset(Dropdown.UIElements.UIListLayout.AbsoluteContentSize.X, Dropdown.UIElements.UIListLayout.AbsoluteContentSize.Y + Element.MenuPadding)
 		end
 	end
     
     function UpdatePosition()
-        local Add = - Dropdown.UIElements.Dropdown.AbsoluteSize.Y
-        if Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y - Dropdown.UIElements.Dropdown.AbsoluteSize.Y + Add < Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y + 10 then
-            Add = Dropdown.UIElements.MenuCanvas.AbsoluteSize.Y
-                - (Camera.ViewportSize.Y - Dropdown.UIElements.Dropdown.AbsolutePosition.Y)
-                + 10
+        local button = Dropdown.UIElements.Dropdown
+        local menu = Dropdown.UIElements.MenuCanvas
+        
+        local availableSpaceBelow = Camera.ViewportSize.Y - (button.AbsolutePosition.Y + button.AbsoluteSize.Y) - Element.MenuPadding - 54
+        local requiredSpace = menu.AbsoluteSize.Y + Element.MenuPadding
+        
+        local offset = -54 -- topbar offset
+        if availableSpaceBelow < requiredSpace then
+            offset = requiredSpace - availableSpaceBelow - 54
         end
-        Dropdown.UIElements.MenuCanvas.Position = UDim2.new(0, Dropdown.UIElements.Dropdown.AbsolutePosition.X + Dropdown.UIElements.Dropdown.AbsoluteSize.X + 1, 0, Dropdown.UIElements.Dropdown.AbsolutePosition.Y + Dropdown.UIElements.Dropdown.AbsoluteSize.Y - Add)
+        
+        menu.Position = UDim2.new(
+            0, 
+            button.AbsolutePosition.X + button.AbsoluteSize.X,
+            0, 
+            button.AbsolutePosition.Y + button.AbsoluteSize.Y - offset + Element.MenuPadding 
+        )
     end
+    
+    
     
     function Dropdown:Display()
 		local Values = Dropdown.Values
@@ -224,8 +227,8 @@ function Element:New(Config)
             }, {
                 New("UIPadding", {
                     PaddingTop = UDim.new(0,Element.TabPadding),
-                    PaddingLeft = UDim.new(0,Element.TabPadding),
-                    PaddingRight = UDim.new(0,Element.TabPadding),
+                    PaddingLeft = UDim.new(0,Element.TabPadding+2),
+                    PaddingRight = UDim.new(0,Element.TabPadding+2),
                     PaddingBottom = UDim.new(0,Element.TabPadding),
                 }),
                 New("UICorner", {
@@ -273,7 +276,7 @@ function Element:New(Config)
             if TabMain.Selected then
                 TabMain.UIElements.TabItem.BackgroundTransparency = .93
                 TabMain.UIElements.TabItem.ImageLabel.ImageTransparency = .1
-                TabMain.UIElements.TabItem.TextLabel.Position = UDim2.new(0,18+Element.TabPadding,0.5,0)
+                TabMain.UIElements.TabItem.TextLabel.Position = UDim2.new(0,18+Element.TabPadding+2,0.5,0)
                 TabMain.UIElements.TabItem.TextLabel.TextTransparency = 0
             end
             
@@ -284,11 +287,11 @@ function Element:New(Config)
             local function Callback()
                 Dropdown:Display()
                 task.spawn(function()
-                    Dropdown.Callback(Dropdown.Value)
+                    Creator.SafeCallback(Dropdown.Callback, Dropdown.Value)
                 end)
             end
             
-            TabMain.UIElements.TabItem.MouseButton1Click:Connect(function()
+            Creator.AddSignal(TabMain.UIElements.TabItem.MouseButton1Click, function()
                 if Dropdown.Multi then
                     if not TabMain.Selected then
                         TabMain.Selected = true
@@ -346,7 +349,6 @@ function Element:New(Config)
     RecalculateListSize()
     
     function Dropdown:Open()
-        Dropdown.Opened = true
         Dropdown.UIElements.MenuCanvas.Visible = true
         Dropdown.UIElements.MenuCanvas.Active = true
         Dropdown.UIElements.Menu.Size = UDim2.new(
@@ -360,7 +362,12 @@ function Element:New(Config)
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
         
-        Tween(DropdownIcon, .15, {Rotation = 180}):Play()
+        task.spawn(function()
+            task.wait(.1)
+            Dropdown.Opened = true
+        end)
+        
+        --Tween(DropdownIcon, .15, {Rotation = 180}):Play()
         Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 0}):Play()
         
         UpdatePosition()
@@ -374,20 +381,20 @@ function Element:New(Config)
                 0.8, 0
             )
         }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
-        Tween(DropdownIcon, .15, {Rotation = 0}):Play()
+        --Tween(DropdownIcon, .15, {Rotation = 0}):Play()
         Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 1}):Play()
         task.wait(.1)
         Dropdown.UIElements.MenuCanvas.Visible = false
         Dropdown.UIElements.MenuCanvas.Active = false
     end
     
-    Dropdown.UIElements.Dropdown.MouseButton1Click:Connect(function()
+    Creator.AddSignal(Dropdown.UIElements.Dropdown.MouseButton1Click, function()
         if CanCallback then
             Dropdown:Open()
         end
     end)
     
-    UserInputService.InputBegan:Connect(function(Input)
+    Creator.AddSignal(UserInputService.InputBegan, function(Input)
 		if
 			Input.UserInputType == Enum.UserInputType.MouseButton1
 			or Input.UserInputType == Enum.UserInputType.Touch
@@ -395,17 +402,19 @@ function Element:New(Config)
 			local AbsPos, AbsSize = Dropdown.UIElements.MenuCanvas.AbsolutePosition, Dropdown.UIElements.MenuCanvas.AbsoluteSize
 			if
 				Config.Window.CanDropdown
+				and Dropdown.Opened
 				and (Mouse.X < AbsPos.X
-				or Mouse.X > AbsPos.X + AbsSize.X
-				or Mouse.Y < (AbsPos.Y - 20 - 1)
-				or Mouse.Y > AbsPos.Y + AbsSize.Y)
+                    or Mouse.X > AbsPos.X + AbsSize.X
+                    or Mouse.Y < (AbsPos.Y - 20 - 1)
+                    or Mouse.Y > AbsPos.Y + AbsSize.Y
+                )
 			then
 				Dropdown:Close()
 			end
 		end
 	end)
     
-    Dropdown.UIElements.Dropdown:GetPropertyChangedSignal("AbsolutePosition"):Connect(UpdatePosition)
+    Creator.AddSignal(Dropdown.UIElements.Dropdown:GetPropertyChangedSignal("AbsolutePosition"), UpdatePosition)
     
     return Dropdown.__type, Dropdown
 end

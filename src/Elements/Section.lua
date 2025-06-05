@@ -8,24 +8,53 @@ function Element:New(Config)
     local Section = {
         __type = "Section",
         Title = Config.Title or "Section",
+        Icon = Config.Icon,
         TextXAlignment = Config.TextXAlignment or "Left",
         TextSize = Config.TextSize or 19,
         UIElements = {},
     }
     
+    local Icon
+    if Section.Icon then
+        Icon = Creator.Image(
+            Section.Icon,
+            Section.Icon .. ":" .. Section.Title,
+            0,
+            Config.Window.Folder,
+            Section.__type,
+            true
+        )
+        Icon.Size = UDim2.new(0,24,0,24)
+    end
+    
     Section.UIElements.Main = New("TextLabel", {
         BackgroundTransparency = 1,
-        TextXAlignment = Section.TextXAlignment,
-        AutomaticSize = "Y",
+        TextXAlignment = "Left",
+        AutomaticSize = "XY",
         TextSize = Section.TextSize,
         ThemeTag = {
             TextColor3 = "Text",
         },
         FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
-        Parent = Config.Parent,
-        Size = UDim2.new(1,0,0,0),
+        --Parent = Config.Parent,
+        --Size = UDim2.new(1,0,0,0),
         Text = Section.Title,
+    })
+
+    local Main = New("Frame", {
+        Size = UDim2.new(1,0,0,0),
+        BackgroundTransparency = 1,
+        AutomaticSize = "Y",
+        Parent = Config.Parent,
     }, {
+        Icon,
+        Section.UIElements.Main,
+        New("UIListLayout", {
+            Padding = UDim.new(0,8),
+            FillDirection = "Horizontal",
+            VerticalAlignment = "Center",
+            HorizontalAlignment = Section.TextXAlignment,
+        }),
         New("UIPadding", {
             PaddingTop = UDim.new(0,4),
             PaddingBottom = UDim.new(0,2),

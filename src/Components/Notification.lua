@@ -52,7 +52,9 @@ function NotificationModule.New(Config)
         Title = Config.Title or "Notification",
         Content = Config.Content or nil,
         Icon = Config.Icon or nil,
+        IconThemed = Config.IconThemed,
         Background = Config.Background,
+        BackgroundImageTransparency = Config.BackgroundImageTransparency,
         Duration = Config.Duration or 5,
         Buttons = Config.Buttons or {},
         CanClose = true,
@@ -80,26 +82,38 @@ function NotificationModule.New(Config)
     local Icon
 
     if Notification.Icon then
-        if Creator.Icon(Notification.Icon) and Creator.Icon(Notification.Icon)[2] then
-            Icon = New("ImageLabel", {
-                Size = UDim2.new(0,26,0,26),
-                Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
-                BackgroundTransparency = 1,
-                Image = Creator.Icon(Notification.Icon)[1],
-                ImageRectSize = Creator.Icon(Notification.Icon)[2].ImageRectSize,
-                ImageRectOffset = Creator.Icon(Notification.Icon)[2].ImageRectPosition,
-                ThemeTag = {
-                    ImageColor3 = "Text"
-                }
-            })
-        elseif string.find(Notification.Icon, "rbxassetid") then
-            Icon = New("ImageLabel", {
-                Size = UDim2.new(0,26,0,26),
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
-                Image = Notification.Icon
-            })
-        end
+        -- if Creator.Icon(Notification.Icon) and Creator.Icon(Notification.Icon)[2] then
+        --     Icon = New("ImageLabel", {
+        --         Size = UDim2.new(0,26,0,26),
+        --         Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
+        --         BackgroundTransparency = 1,
+        --         Image = Creator.Icon(Notification.Icon)[1],
+        --         ImageRectSize = Creator.Icon(Notification.Icon)[2].ImageRectSize,
+        --         ImageRectOffset = Creator.Icon(Notification.Icon)[2].ImageRectPosition,
+        --         ThemeTag = {
+        --             ImageColor3 = "Text"
+        --         }
+        --     })
+        -- elseif string.find(Notification.Icon, "rbxassetid") then
+        --     Icon = New("ImageLabel", {
+        --         Size = UDim2.new(0,26,0,26),
+        --         BackgroundTransparency = 1,
+        --         Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding),
+        --         Image = Notification.Icon
+        --     })
+        -- end
+        
+        Icon = Creator.Image(
+            Notification.Icon,
+            Notification.Title .. ":" .. Notification.Icon,
+            0,
+            Config.Window,
+            "Notification",
+            Notification.IconThemed
+        )
+        Icon.Size = UDim2.new(0,26,0,26)
+        Icon.Position = UDim2.new(0,NotificationModule.UIPadding,0,NotificationModule.UIPadding)
+        -- Icon.LayoutOrder = -1
     end
     
     local CloseButton
@@ -188,57 +202,6 @@ function NotificationModule.New(Config)
         })
     end
     
-    -- local ButtonsContainer
-    -- if typeof(Notification.Buttons) == "table" and #Notification.Buttons > 0 then
-    --     ButtonsContainer = New("Frame", {
-    --         Position = UDim2.new(0.5,0,0,TextContainer.UIListLayout.AbsoluteContentSize.Y+(NotificationModule.UIPadding*2)),
-    --         Size = UDim2.new(1,-NotificationModule.UIPadding*2,0,0),
-    --         AnchorPoint = Vector2.new(0.5,0),
-    --         AutomaticSize = "Y",
-    --         BackgroundTransparency = 1,
-    --     }, {
-    --         New("UIListLayout", {
-    --             Padding = UDim.new(0,10),
-    --             FillDirection = "Horizontal"
-    --         })
-    --     })
-    --     TextContainer.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    --         ButtonsContainer.Position = UDim2.new(0.5,0,0,TextContainer.UIListLayout.AbsoluteContentSize.Y+(NotificationModule.UIPadding*2))
-    --     end)
-    --     for _,Data in next, Notification.Buttons do
-    --         local ButtonData = New("TextButton", {
-    --             Size = UDim2.new(1 / #Notification.Buttons, -(((#Notification.Buttons - 1) * 10) / #Notification.Buttons), 0, 0),
-    --             AutomaticSize = "Y",
-    --             ThemeTag = {
-    --                 BackgroundColor3 = "Text",
-    --                 TextColor3 = "Accent"
-    --             },
-    --             Parent = ButtonsContainer,
-    --             Text = Data.Name,
-    --             TextWrapped = true,
-    --             RichText = true,
-    --             FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-    --             TextSize = 16,
-    --         }, {
-    --             New("UICorner", {
-    --                 CornerRadius = UDim.new(0,NotificationModule.UICorner-6)
-    --             }),
-    --             New("UIPadding", {
-    --                 PaddingTop = UDim.new(0,NotificationModule.ButtonPadding),
-    --                 PaddingLeft = UDim.new(0,NotificationModule.ButtonPadding),
-    --                 PaddingRight = UDim.new(0,NotificationModule.ButtonPadding),
-    --                 PaddingBottom = UDim.new(0,NotificationModule.ButtonPadding),
-    --             })
-    --         })
-            
-    --         ButtonData.MouseButton1Click:Connect(function()
-    --             if Data.Callback then
-    --                 Data.Callback()
-    --             end
-    --             Notification:Close()
-    --         end)
-    --     end
-    -- end
     
     local Main = New("CanvasGroup", {
         Size = UDim2.new(1,0,0,0),
@@ -257,6 +220,7 @@ function NotificationModule.New(Config)
             BackgroundTransparency = 1,
             Size = UDim2.new(1,0,1,0),
             ScaleType = "Crop",
+            ImageTransparency = Notification.BackgroundImageTransparency
             --ZIndex = 19,
         }),
     
@@ -302,7 +266,7 @@ function NotificationModule.New(Config)
     end)
     
     if CloseButton then
-        CloseButton.TextButton.MouseButton1Click:Connect(function()
+        Creator.AddSignal(CloseButton.TextButton.MouseButton1Click, function()
             Notification:Close()
         end)
     end

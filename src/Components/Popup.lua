@@ -10,6 +10,7 @@ function PopupModule.new(PopupConfig)
         Title = PopupConfig.Title or "Dialog",
         Content = PopupConfig.Content,
         Icon = PopupConfig.Icon,
+        IconThemed = PopupConfig.IconThemed,
         Thumbnail = PopupConfig.Thumbnail,
         Buttons = PopupConfig.Buttons
     }
@@ -32,49 +33,13 @@ function PopupModule.new(PopupConfig)
     local IconFrame
     
     if Popup.Icon then
-        -- local themetag = { ImageColor3 = "Text" }
-        
-        -- if string.find(Popup.Icon, "rbxassetid://") or not Creator.Icon(tostring(Popup.Icon))[1] then
-        --     themetag = nil
-        -- end
-        -- IconFrame = New("ImageLabel", {
-        --     Size = UDim2.new(0,24,0,24),
-        --     BackgroundTransparency = 1,
-        --     LayoutOrder = -1,
-        --     ThemeTag = themetag
-        -- })
-        -- if string.find(Popup.Icon, "rbxassetid://") or string.find(Popup.Icon, "http://www.roblox.com/asset/?id=") then
-        --     IconFrame.Image = Popup.Icon
-        -- elseif string.find(Popup.Icon,"http") then
-        --     local success, response = pcall(function()
-        --         if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
-        --             local response = request({
-        --                 Url = Popup.Icon,
-        --                 Method = "GET",
-        --             }).Body
-        --             writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
-        --         end
-        --         IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
-        --     end)
-        --     if not success then
-        --         IconFrame:Destroy()
-                
-        --         warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
-        --     end
-        -- else
-        --     if Creator.Icon(tostring(Popup.Icon))[1] then
-        --         IconFrame.Image = Creator.Icon(Popup.Icon)[1]
-        --         IconFrame.ImageRectOffset = Creator.Icon(Popup.Icon)[2].ImageRectPosition
-        --         IconFrame.ImageRectSize = Creator.Icon(Popup.Icon)[2].ImageRectSize
-        --     end
-        -- end
-        
         IconFrame = Creator.Image(
             Popup.Icon,
-            Popup.Title,
-            Dialog.UICorner-4,
+            Popup.Title .. ":" .. Popup.Icon,
+            0,
             PopupConfig.WindUI.Window,
-            "Popup"
+            "Popup",
+            PopupConfig.IconThemed
         )
         IconFrame.Size = UDim2.new(0,24,0,24)
         IconFrame.LayoutOrder = -1
@@ -85,6 +50,7 @@ function PopupModule.new(PopupConfig)
         AutomaticSize = "XY",
         BackgroundTransparency = 1,
         Text = Popup.Title,
+        TextXAlignment = "Left",
         FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
         ThemeTag = {
             TextColor3 = "Text",
@@ -212,6 +178,9 @@ function PopupModule.new(PopupConfig)
     end
     
     Dialog:Open()
+    
+    
+    return Popup
 end
 
 return PopupModule

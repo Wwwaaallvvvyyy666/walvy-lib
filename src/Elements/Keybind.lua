@@ -44,14 +44,14 @@ function Element:New(Config)
             42
         )
     Keybind.UIElements.Keybind.AnchorPoint = Vector2.new(1,0.5)
-    Keybind.UIElements.Keybind.Position = UDim2.new(1,-Keybind.KeybindFrame.UIPadding/2,0.5,0)
+    Keybind.UIElements.Keybind.Position = UDim2.new(1,0,0.5,0)
 
     New("UIScale", {
         Parent = Keybind.UIElements.Keybind,
         Scale = .85,
     })
 
-    Keybind.UIElements.Keybind.Frame.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+    Creator.AddSignal(Keybind.UIElements.Keybind.Frame.Frame.TextLabel:GetPropertyChangedSignal("TextBounds"), function()
         Keybind.UIElements.Keybind.Size = UDim2.new(
             0,
             12+12+Keybind.UIElements.Keybind.Frame.Frame.TextLabel.TextBounds.X,
@@ -69,11 +69,16 @@ function Element:New(Config)
         return Keybind.KeybindFrame:Unlock()
     end
     
+    function Keybind:Set(v)
+        Keybind.Value = v
+        Keybind.UIElements.Keybind.Frame.Frame.TextLabel.Text = v
+    end
+    
     if Keybind.Locked then
         Keybind:Lock()
     end
 
-    Keybind.KeybindFrame.UIElements.Main.MouseButton1Click:Connect(function()
+    Creator.AddSignal(Keybind.KeybindFrame.UIElements.Main.MouseButton1Click, function()
         if CanCallback then
             if Keybind.CanChange then
                 Keybind.Picking = true
@@ -109,10 +114,10 @@ function Element:New(Config)
             end
         end
     end) 
-    UserInputService.InputBegan:Connect(function(input)
+    Creator.AddSignal(UserInputService.InputBegan, function(input)
         if CanCallback then
             if input.KeyCode.Name == Keybind.Value then
-                Keybind.Callback(input.KeyCode.Name)
+                Creator.SafeCallback(Keybind.Callback, input.KeyCode.Name)
             end
         end
     end)

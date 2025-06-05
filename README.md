@@ -2,7 +2,11 @@
 
 <hr />
 
-<img src="docs/banner.png" width="100%">
+<picture>
+    <source srcset="docs/banner-dark.png" media="(prefers-color-scheme: dark)">
+    <source srcset="docs/banner-light.png" media="(prefers-color-scheme: light)">
+    <img src="docs/banner-light.png" alt="WindUI Banner">
+</picture>
 
 <hr />
 

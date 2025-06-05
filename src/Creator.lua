@@ -17,6 +17,8 @@ local Creator = {
     CanDraggable = true,
     Theme = nil,
     Themes = nil,
+    WindUI = nil,
+    Signals = {},
     Objects = {},
     FontObjects = {},
     Request = http_request or (syn and syn.request) or request,
@@ -80,6 +82,43 @@ local Creator = {
     }
 }
 
+function Creator.Init(WindUI)
+    Creator.WindUI = WindUI
+end
+
+
+function Creator.AddSignal(Signal, Function)
+	table.insert(Creator.Signals, Signal:Connect(Function))
+end
+
+function Creator.DisconnectAll()
+	for idx, signal in next, Creator.Signals do
+		local Connection = table.remove(Creator.Signals, idx)
+		Connection:Disconnect()
+	end
+end
+
+-- ↓ Debug mode
+function Creator.SafeCallback(Function, ...)
+	if not Function then
+		return
+	end
+
+	local Success, Event = pcall(Function, ...)
+	if not Success then
+		local _, i = Event:find(":%d+: ")
+
+
+	    warn("[ WindUI: DEBUG Mode ] " .. Event)
+	    
+		return Creator.WindUI:Notify({
+			Title = "DEBUG Mode: Error",
+			Content = not i and Event or Event:sub(i + 1),
+			Duration = 8,
+		})
+	end
+end
+
 function Creator.SetTheme(Theme)
     Creator.Theme = Theme
     Creator.UpdateTheme(nil, true)
@@ -103,7 +142,7 @@ end
 
 function Creator.AddThemeObject(Object, Properties)
     Creator.Objects[Object] = { Object = Object, Properties = Properties }
-    Creator.UpdateTheme(Object)
+    Creator.UpdateTheme(Object, false)
     return Object
 end
 
@@ -284,12 +323,14 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
     return DragModule
 end
 
-function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag)
+function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
     local function SanitizeFilename(str)
-        str = str:gsub("%s+", "-")
+        str = str:gsub("[%s/\\:*?\"<>|]+", "-")
         str = str:gsub("[^%w%-_%.]", "")
         return str
     end
+    
+    Name = SanitizeFilename(Name)
     
     local ImageFrame = New("Frame", {
         Size = UDim2.new(0,0,0,0), -- czjzjznsmMdj
@@ -300,8 +341,8 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag)
             Size = UDim2.new(1,0,1,0),
             BackgroundTransparency = 1,
             ScaleType = "Crop",
-            ThemeTag = Creator.Icon(Img) and {
-                ImageColor3 = IsThemeTag and "Text" 
+            ThemeTag = (Creator.Icon(Img) or Themed) and {
+                ImageColor3 = IsThemeTag and "Icon" 
             } or nil,
         }, {
             New("UICorner", {
@@ -317,20 +358,22 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag)
     if string.find(Img,"http") then
         local FileName = "WindUI/" .. Folder .. "/Assets/." .. Type .. "-" .. Name .. ".png"
         local success, response = pcall(function()
-            if not isfile(FileName) then
-                local response = Creator.Request({
-                    Url = Img,
-                    Method = "GET",
-                }).Body
-                
-                writefile(FileName, response)
-            end
-            ImageFrame.ImageLabel.Image = getcustomasset(FileName)
+            task.spawn(function()
+                if not isfile(FileName) then
+                    local response = Creator.Request({
+                        Url = Img,
+                        Method = "GET",
+                    }).Body
+                    
+                    writefile(FileName, response)
+                end
+                ImageFrame.ImageLabel.Image = getcustomasset(FileName)
+            end)
         end)
         if not success then
-            ImageFrame:Destroy()
-            
             warn("[ WindUI.Creator ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
+            
+            ImageFrame:Destroy()
         end
     elseif string.find(Img,"rbxassetid") then
         ImageFrame.ImageLabel.Image = Img

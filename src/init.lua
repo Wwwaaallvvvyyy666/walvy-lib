@@ -7,10 +7,12 @@ local WindUI = {
     
     TransparencyValue = .15,
     
+    ConfigManager = nil
 }
 local RunService = game:GetService("RunService")
 
 local KeySystem = require("./Components/KeySystem")
+
 local Themes = WindUI.Themes
 local Creator = WindUI.Creator
 
@@ -39,9 +41,9 @@ WindUI.ScreenGui = New("ScreenGui", {
     -- New("Folder", {
     --     Name = "Notifications"
     -- }),
-    New("Folder", {
-        Name = "Dropdowns"
-    }),
+    -- New("Folder", {
+    --     Name = "Dropdowns"
+    -- }),
     New("Folder", {
         Name = "KeySystem"
     }),
@@ -54,12 +56,19 @@ WindUI.ScreenGui = New("ScreenGui", {
 })
 
 WindUI.NotificationGui = New("ScreenGui", {
-    Name = "WindUI-Notifications",
+    Name = "WindUI/Notifications",
+    Parent = GUIParent,
+    IgnoreGuiInset = true,
+})
+WindUI.DropdownGui = New("ScreenGui", {
+    Name = "WindUI/Dropdowns",
     Parent = GUIParent,
     IgnoreGuiInset = true,
 })
 ProtectGui(WindUI.ScreenGui)
 ProtectGui(WindUI.NotificationGui)
+ProtectGui(WindUI.DropdownGui)
+
 
 math.clamp(WindUI.TransparencyValue, 0, 0.4)
 

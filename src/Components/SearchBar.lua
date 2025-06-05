@@ -135,9 +135,9 @@ function SearchBar.new(TabModule, Parent, OnClose)
                         ImageRectOffset = Creator.Icon("search")[2].ImageRectPosition,
                         BackgroundTransparency = 1,
                         ThemeTag = {
-                            ImageColor3 = "Text",
+                            ImageColor3 = "Icon",
                         },
-                        ImageTransparency = .2,
+                        ImageTransparency = .05,
                         Size = UDim2.new(0,SearchBarModule.IconSize,0,SearchBarModule.IconSize)
                     }),
                     TextBox,
@@ -326,13 +326,13 @@ function SearchBar.new(TabModule, Parent, OnClose)
             or (((SearchBarModule.Padding-2)*2) + Tab.Main.Frame.Title.TextBounds.Y)
         )
 
-        Tab.Main.MouseEnter:Connect(function()
+        Creator.AddSignal(Tab.Main.MouseEnter, function()
             Tween(Tab.Main, .04, {ImageTransparency = .95}):Play()
         end)
-        Tab.Main.InputEnded:Connect(function()
+        Creator.AddSignal(Tab.Main.InputEnded, function()
             Tween(Tab.Main, .08, {ImageTransparency = 1}):Play()
         end)
-        Tab.Main.MouseButton1Click:Connect(function()
+        Creator.AddSignal(Tab.Main.MouseButton1Click, function()
             if Callback then
                 Callback()
             end
@@ -447,11 +447,11 @@ function SearchBar.new(TabModule, Parent, OnClose)
         end
     end
     
-    TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+    Creator.AddSignal(TextBox:GetPropertyChangedSignal("Text"), function()
         SearchBarModule:Search(TextBox.Text)
     end)
     
-    ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Creator.AddSignal(ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
         --task.wait()
         Tween(ScrollingFrame, .06, {Size = UDim2.new(
             1,
@@ -486,7 +486,7 @@ function SearchBar.new(TabModule, Parent, OnClose)
         end)
     end
     
-    CloseButton.TextButton.MouseButton1Click:Connect(function()
+    Creator.AddSignal(CloseButton.TextButton.MouseButton1Click, function()
         SearchBarModule:Close()
     end)
     

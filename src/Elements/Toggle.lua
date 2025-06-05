@@ -65,18 +65,19 @@ function Element:New(Config)
     end
 
     ToggleFrame.AnchorPoint = Vector2.new(1,0.5)
-    ToggleFrame.Position = UDim2.new(1,-Toggle.ToggleFrame.UIPadding/2,0.5,0)
+    ToggleFrame.Position = UDim2.new(1,0,0.5,0)
         
     function Toggle:Set(v)
         if CanCallback then
             ToggleFunc:Set(v)
             Toggled = v
+            Toggle.Value = v
         end
     end
 
     Toggle:Set(Toggled)
 
-    Toggle.ToggleFrame.UIElements.Main.MouseButton1Click:Connect(function()
+    Creator.AddSignal(Toggle.ToggleFrame.UIElements.Main.MouseButton1Click, function()
         Toggle:Set(not Toggled)
     end)
     

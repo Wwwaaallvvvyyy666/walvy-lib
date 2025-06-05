@@ -29,42 +29,53 @@ function KeySystem.new(Config, Filename, func)
     local IconFrame
     
     if Config.Icon then
-        local themetag = { ImageColor3 = "Text" }
+        -- local themetag = { ImageColor3 = "Text" }
         
-        if string.find(Config.Icon, "rbxassetid://") or not Creator.Icon(tostring(Config.Icon))[1] then
-            themetag = nil
-        end
-        IconFrame = New("ImageLabel", {
-            Size = UDim2.new(0,24,0,24),
-            BackgroundTransparency = 1,
-            LayoutOrder = -1,
-            ThemeTag = themetag
-        })
-        if string.find(Config.Icon, "rbxassetid://") or string.find(Config.Icon, "http://www.roblox.com/asset/?id=") then
-            IconFrame.Image = Config.Icon
-        elseif string.find(Config.Icon,"http") then
-            local success, response = pcall(function()
-                if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
-                    local response = request({
-                        Url = Config.Icon,
-                        Method = "GET",
-                    }).Body
-                    writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
-                end
-                IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
-            end)
-            if not success then
-                IconFrame:Destroy()
+        -- if string.find(Config.Icon, "rbxassetid://") or not Creator.Icon(tostring(Config.Icon))[1] then
+        --     themetag = nil
+        -- end
+        -- IconFrame = New("ImageLabel", {
+        --     Size = UDim2.new(0,24,0,24),
+        --     BackgroundTransparency = 1,
+        --     LayoutOrder = -1,
+        --     ThemeTag = themetag
+        -- })
+        -- if string.find(Config.Icon, "rbxassetid://") or string.find(Config.Icon, "http://www.roblox.com/asset/?id=") then
+        --     IconFrame.Image = Config.Icon
+        -- elseif string.find(Config.Icon,"http") then
+        --     local success, response = pcall(function()
+        --         if not isfile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png") then
+        --             local response = request({
+        --                 Url = Config.Icon,
+        --                 Method = "GET",
+        --             }).Body
+        --             writefile("WindUI/" .. Window.Folder .. "/Assets/.Icon.png", response)
+        --         end
+        --         IconFrame.Image = getcustomasset("WindUI/" .. Window.Folder .. "/Assets/.Icon.png")
+        --     end)
+        --     if not success then
+        --         IconFrame:Destroy()
                 
-                warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
-            end
-        else
-            if Creator.Icon(tostring(Config.Icon))[1] then
-                IconFrame.Image = Creator.Icon(Config.Icon)[1]
-                IconFrame.ImageRectOffset = Creator.Icon(Config.Icon)[2].ImageRectPosition
-                IconFrame.ImageRectSize = Creator.Icon(Config.Icon)[2].ImageRectSize
-            end
-        end
+        --         warn("[ WindUI ]  '" .. identifyexecutor() .. "' doesnt support the URL Images. Error: " .. response)
+        --     end
+        -- else
+        --     if Creator.Icon(tostring(Config.Icon))[1] then
+        --         IconFrame.Image = Creator.Icon(Config.Icon)[1]
+        --         IconFrame.ImageRectOffset = Creator.Icon(Config.Icon)[2].ImageRectPosition
+        --         IconFrame.ImageRectSize = Creator.Icon(Config.Icon)[2].ImageRectSize
+        --     end
+        -- end
+        
+        IconFrame = Creator.Image(
+            Config.Icon,
+            Config.Title .. ":" .. Config.Icon,
+            0,
+            Config.WindUI.Window,
+            "KeySystem",
+            Config.IconThemed
+        )
+        IconFrame.Size = UDim2.new(0,24,0,24)
+        IconFrame.LayoutOrder = -1
     end
     
     local Title = New("TextLabel", {
@@ -116,27 +127,6 @@ function KeySystem.new(Config, Filename, func)
         IconAndTitleContainer, KeySystemTitle,
     })
     
-    -- local CloseButton = New("TextButton", {
-    --     Size = UDim2.new(0,24,0,24),
-    --     BackgroundTransparency = 1,
-    --     AnchorPoint = Vector2.new(1,0),
-    --     Position = UDim2.new(1,0,0,0),
-    -- }, {
-    --     New("ImageLabel", {
-    --         Image = Creator.Icon("x")[1],
-    --         ImageRectOffset = Creator.Icon("x")[2].ImageRectPosition,
-    --         ImageRectSize = Creator.Icon("x")[2].ImageRectSize,
-    --         ThemeTag = {
-    --             ImageColor3 = "Text",
-    --         },
-    --         BackgroundTransparency = 1,
-    --         Size = UDim2.new(1,-3,1,-3),
-    --     })
-    -- })
-    -- CloseButton.MouseButton1Up:Connect(function()
-    --     KeyDialog:Close()()
-    -- end)
-
     local InputFrame = CreateInput("Enter Key", "key", nil, function(k)
         EnteredKey = k
     end)

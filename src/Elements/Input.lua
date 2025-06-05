@@ -17,6 +17,7 @@ function Element:New(Config)
         __type = "Input",
         Title = Config.Title or "Input",
         Desc = Config.Desc or nil,
+        Type = Config.Type or "Input", -- Input or Textarea
         Locked = Config.Locked or false,
         InputIcon = Config.InputIcon or false,
         PlaceholderText = Config.Placeholder or "Enter Text...",
@@ -32,20 +33,18 @@ function Element:New(Config)
         Title = Input.Title,
         Desc = Input.Desc,
         Parent = Config.Parent,
-        TextOffset = (30*6)+10,
+        TextOffset = 0,
         Hover = false,
     })
     
-    local InputComponent = CreateInput(Input.PlaceholderText, Input.InputIcon, Input.InputFrame.UIElements.Main, function(v)
+    local InputComponent = CreateInput(Input.PlaceholderText, Input.InputIcon, Input.InputFrame.UIElements.Container, Input.Type, function(v)
         Input:Set(v)
     end)
-    InputComponent.Size = UDim2.new(0,30*6,0,42)
-    InputComponent.AnchorPoint = Vector2.new(1,0.5)
-    InputComponent.Position = UDim2.new(1,-Input.InputFrame.UIPadding/2,0.5,0)
+    InputComponent.Size = UDim2.new(1,0,0,Input.Type == "Input" and 42 or 42+56+50)
     
     New("UIScale", {
         Parent = InputComponent,
-        Scale = .85,
+        Scale = 1,
     })
     
     function Input:Lock()
@@ -60,7 +59,7 @@ function Element:New(Config)
     
     function Input:Set(v)
         if CanCallback then
-            Input.Callback(v)
+            Creator.SafeCallback(Input.Callback, v)
             
             InputComponent.Frame.Frame.TextBox.Text = v
             Input.Value = v

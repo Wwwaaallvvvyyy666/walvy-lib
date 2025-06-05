@@ -106,25 +106,25 @@ function UIComponents.Button(Title, Icon, Callback, Variant, Parent, Dialog)
         })
     })
     
-    ButtonFrame.MouseEnter:Connect(function()
+    Creator.AddSignal(ButtonFrame.MouseEnter, function()
         Tween(ButtonFrame.Frame, .047, {ImageTransparency = .95}):Play()
     end)
-    ButtonFrame.MouseLeave:Connect(function()
+    Creator.AddSignal(ButtonFrame.MouseLeave, function()
         Tween(ButtonFrame.Frame, .047, {ImageTransparency = 1}):Play()
     end)
-    ButtonFrame.MouseButton1Up:Connect(function()
+    Creator.AddSignal(ButtonFrame.MouseButton1Up, function()
         if Dialog then
             Dialog:Close()()
         end
         if Callback then
-            Callback()
+            Creator.SafeCallback(Callback)
         end
     end)
     
     return ButtonFrame
 end
 
-function UIComponents.Input(Placeholder, Icon, Parent, Callback)
+function UIComponents.Input(Placeholder, Icon, Parent, Type, Callback)
     local Radius = 10
     local IconInputFrame
     if Icon and Icon ~= "" then
@@ -142,14 +142,16 @@ function UIComponents.Input(Placeholder, Icon, Parent, Callback)
     
     local TextBox = New("TextBox", {
         BackgroundTransparency = 1,
-        TextSize = 18,
+        TextSize = 16,
         FontFace = Font.new(Creator.Font, Enum.FontWeight.Regular),
         Size = UDim2.new(1,IconInputFrame and -29 or 0,1,0),
         PlaceholderText = Placeholder,
         ClearTextOnFocus = false,
         ClipsDescendants = true,
-        MultiLine = false,
+        MultiLine = Type == "Input" and false or true,
+        TextWrapped = Type == "Input" and false or true,
         TextXAlignment = "Left",
+        TextYAlignment = Type == "Input" and "Center" or "Top",
         --AutomaticSize = "XY",
         ThemeTag = {
             PlaceholderColor3 = "PlaceholderText",
@@ -187,13 +189,15 @@ function UIComponents.Input(Placeholder, Icon, Parent, Callback)
                 ImageTransparency = .95
             }, {
                 New("UIPadding", {
+                    PaddingTop = UDim.new(0,Type == "Input" and 0 or 12),
                     PaddingLeft = UDim.new(0,12),
                     PaddingRight = UDim.new(0,12),
+                    PaddingBottom = UDim.new(0,Type == "Input" and 0 or 12),
                 }),
                 New("UIListLayout", {
                     FillDirection = "Horizontal",
                     Padding = UDim.new(0,8),
-                    VerticalAlignment = "Center",
+                    VerticalAlignment = Type == "Input" and "Center" or "Top",
                     HorizontalAlignment = "Left",
                 }),
                 IconInputFrame,
@@ -202,7 +206,7 @@ function UIComponents.Input(Placeholder, Icon, Parent, Callback)
         })
     })
     
-    -- InputFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+    -- InputFrame:GetPropertyChangedSignal("AbsoluteSize"), function()
     --     TextBox.Size = UDim2.new(
     --         0,
     --         IconInputFrame and InputFrame.AbsoluteSize.X -29-12 or InputFrame.AbsoluteSize.X-12,
@@ -211,9 +215,9 @@ function UIComponents.Input(Placeholder, Icon, Parent, Callback)
     --     )
     -- end)
     
-    TextBox.FocusLost:Connect(function()
+    Creator.AddSignal(TextBox.FocusLost, function()
         if Callback then
-            Callback(TextBox.Text)
+            Creator.SafeCallback(Callback, TextBox.Text)
         end
     end)
     
@@ -238,7 +242,7 @@ function UIComponents.Label(Text, Icon, Parent)
     
     local TextLabel = New("TextLabel", {
         BackgroundTransparency = 1,
-        TextSize = 18,
+        TextSize = 16,
         FontFace = Font.new(Creator.Font, Enum.FontWeight.Regular),
         Size = UDim2.new(1,IconLabelFrame and -29 or 0,1,0),
         TextXAlignment = "Left",
@@ -400,7 +404,7 @@ function UIComponents.Toggle(Value, Icon, Parent, Callback)
 
         task.spawn(function()
             if Callback then
-                Callback(Toggled)
+                Creator.SafeCallback(Callback, Toggled)
             end
         end)
         
@@ -487,7 +491,7 @@ function UIComponents.Checkbox(Value, Icon, Parent, Callback)
 
         task.spawn(function()
             if Callback then
-                Callback(Toggled)
+                Creator.SafeCallback(Callback, Toggled)
             end
         end)
     end
@@ -496,10 +500,11 @@ function UIComponents.Checkbox(Value, Icon, Parent, Callback)
 end
 
 function UIComponents.ScrollSlider(ScrollingFrame, Parent, Window, Thickness)
+
     local Slider = New("Frame", {
-        Size = UDim2.new(0, Thickness, 1, -Window.UIPadding * 2),
+        Size = UDim2.new(0, Thickness, 1,0),
         BackgroundTransparency = 1,
-        Position = UDim2.new(1, -Window.UIPadding/3, 0, Window.UIPadding),
+        Position = UDim2.new(1, 0, 0, 0),
         AnchorPoint = Vector2.new(1, 0),
         Parent = Parent,
         ZIndex = 999,
@@ -523,97 +528,136 @@ function UIComponents.ScrollSlider(ScrollingFrame, Parent, Window, Thickness)
         Parent = Thumb,
     })
 
+    local isDragging = false
+    local dragOffset = 0
+
     local function updateSliderSize()
         local container = ScrollingFrame
         local canvasSize = container.AbsoluteCanvasSize.Y
         local windowSize = container.AbsoluteWindowSize.Y
 
-        local visibleRatio = math.clamp(windowSize / math.max(canvasSize, 1), 0, 1)
+        if canvasSize <= windowSize then
+            Thumb.Visible = false
+            return
+        end
 
+        local visibleRatio = math.clamp(windowSize / canvasSize, 0.1, 1)
         Thumb.Size = UDim2.new(1, 0, visibleRatio, 0)
-        Thumb.Visible = visibleRatio < 1 and canvasSize > windowSize
+        Thumb.Visible = true
     end
 
-    local function updateScrollingFramePosition()
+    local function updateScrollingFramePosition()        
         local thumbPositionY = Thumb.Position.Y.Scale
-        local canvasSize = math.max(ScrollingFrame.AbsoluteCanvasSize.Y - ScrollingFrame.AbsoluteWindowSize.Y, 1)
-    
-        local maxThumbPos = 1 - Thumb.Size.Y.Scale
+        local canvasSize = ScrollingFrame.AbsoluteCanvasSize.Y
+        local windowSize = ScrollingFrame.AbsoluteWindowSize.Y
+        local maxScroll = math.max(canvasSize - windowSize, 0)
+        
+        if maxScroll <= 0 then return end
+        
+        local maxThumbPos = math.max(1 - Thumb.Size.Y.Scale, 0)
+        if maxThumbPos <= 0 then return end
+        
         local scrollRatio = thumbPositionY / maxThumbPos
-    
+        
         ScrollingFrame.CanvasPosition = Vector2.new(
             ScrollingFrame.CanvasPosition.X,
-            scrollRatio * canvasSize
+            scrollRatio * maxScroll
         )
     end
 
     local function updateThumbPosition()
+        if isDragging then return end 
+        
         local canvasPosition = ScrollingFrame.CanvasPosition.Y
-        local canvasSize = math.max(ScrollingFrame.AbsoluteCanvasSize.Y - ScrollingFrame.AbsoluteWindowSize.Y, 1)
-        local newThumbPosition = canvasPosition / canvasSize
-
-        local maxPos = 1 - Thumb.Size.Y.Scale
-        newThumbPosition = math.clamp(newThumbPosition, 0, maxPos)
+        local canvasSize = ScrollingFrame.AbsoluteCanvasSize.Y
+        local windowSize = ScrollingFrame.AbsoluteWindowSize.Y
+        local maxScroll = math.max(canvasSize - windowSize, 0)
+        
+        if maxScroll <= 0 then
+            Thumb.Position = UDim2.new(0, 0, 0, 0)
+            return
+        end
+        
+        local scrollRatio = canvasPosition / maxScroll
+        local maxThumbPos = math.max(1 - Thumb.Size.Y.Scale, 0)
+        local newThumbPosition = math.clamp(scrollRatio * maxThumbPos, 0, maxThumbPos)
 
         Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
     end
 
-    Slider.InputBegan:Connect(function(input)
-        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch)
-          and not (input.Position.Y >= Thumb.AbsolutePosition.Y and input.Position.Y <= Thumb.AbsolutePosition.Y + Thumb.AbsoluteSize.Y) then
-
-            local sliderSize = Slider.AbsoluteSize.Y - Thumb.AbsoluteSize.Y
-            local sliderPosition = Slider.AbsolutePosition.Y
-            local thumbHalfSize = Thumb.AbsoluteSize.Y / 2
-
-            local newThumbPosition = (input.Position.Y - sliderPosition - thumbHalfSize) / sliderSize
-
-            local maxPos = 1 - Thumb.Size.Y.Scale
-            newThumbPosition = math.clamp(newThumbPosition, 0, maxPos)
-
-            Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
-            updateScrollingFramePosition()
+    Creator.AddSignal(Slider.InputBegan, function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+            local thumbTop = Thumb.AbsolutePosition.Y
+            local thumbBottom = thumbTop + Thumb.AbsoluteSize.Y
+            
+            if not (input.Position.Y >= thumbTop and input.Position.Y <= thumbBottom) then
+                local sliderTop = Slider.AbsolutePosition.Y
+                local sliderHeight = Slider.AbsoluteSize.Y
+                local thumbHeight = Thumb.AbsoluteSize.Y
+                
+                local targetY = input.Position.Y - sliderTop - thumbHeight / 2
+                local maxThumbPos = sliderHeight - thumbHeight
+                
+                local newThumbPosScale = math.clamp(targetY / maxThumbPos, 0, 1 - Thumb.Size.Y.Scale)
+                
+                Thumb.Position = UDim2.new(0, 0, newThumbPosScale, 0)
+                updateScrollingFramePosition()
+            end
         end
     end)
 
-    Hitbox.InputBegan:Connect(function(input)
+    Creator.AddSignal(Hitbox.InputBegan, function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            local mouseOffset = input.Position.Y - Thumb.AbsolutePosition.Y
-            local connection
+            isDragging = true
+            dragOffset = input.Position.Y - Thumb.AbsolutePosition.Y
+            
+            local moveConnection
+            local releaseConnection
 
-            connection = UserInputService.InputChanged:Connect(function(changedInput)
+            moveConnection = UserInputService.InputChanged:Connect(function(changedInput)
                 if changedInput.UserInputType == Enum.UserInputType.MouseMovement or changedInput.UserInputType == Enum.UserInputType.Touch then
-                    local sliderSize = Slider.AbsoluteSize.Y - Thumb.AbsoluteSize.Y
-                    local sliderPosition = Slider.AbsolutePosition.Y
-
-                    local newThumbPosition = (changedInput.Position.Y - sliderPosition - mouseOffset) / sliderSize
-
-                    local maxPos = 1 - Thumb.Size.Y.Scale
-                    newThumbPosition = math.clamp(newThumbPosition, 0, maxPos)
-
-                    Thumb.Position = UDim2.new(0, 0, newThumbPosition, 0)
+                    local sliderTop = Slider.AbsolutePosition.Y
+                    local sliderHeight = Slider.AbsoluteSize.Y
+                    local thumbHeight = Thumb.AbsoluteSize.Y
+                    
+                    local newY = changedInput.Position.Y - sliderTop - dragOffset
+                    local maxThumbPos = sliderHeight - thumbHeight
+                    
+                    local newThumbPosScale = math.clamp(newY / maxThumbPos, 0, 1 - Thumb.Size.Y.Scale)
+                    
+                    Thumb.Position = UDim2.new(0, 0, newThumbPosScale, 0)
                     updateScrollingFramePosition()
                 end
             end)
 
-            local releaseConnection
             releaseConnection = UserInputService.InputEnded:Connect(function(endInput)
                 if endInput.UserInputType == Enum.UserInputType.MouseButton1 or endInput.UserInputType == Enum.UserInputType.Touch then
-                    if connection then connection:Disconnect() end
+                    isDragging = false
+                    if moveConnection then moveConnection:Disconnect() end
                     if releaseConnection then releaseConnection:Disconnect() end
                 end
             end)
         end
     end)
 
-    ScrollingFrame:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateSliderSize)
+    Creator.AddSignal(ScrollingFrame:GetPropertyChangedSignal("AbsoluteWindowSize"), function()
+        updateSliderSize()
+        updateThumbPosition()
+    end)
+    
+    Creator.AddSignal(ScrollingFrame:GetPropertyChangedSignal("AbsoluteCanvasSize"), function()
+        updateSliderSize()
+        updateThumbPosition()
+    end)
+
+    Creator.AddSignal(ScrollingFrame:GetPropertyChangedSignal("CanvasPosition"), function()
+        if not isDragging then
+            updateThumbPosition()
+        end
+    end)
 
     updateSliderSize()
     updateThumbPosition()
-
-    ScrollingFrame:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
-        updateThumbPosition()
-    end)
 
     return Slider
 end
@@ -821,11 +865,11 @@ function UIComponents.Code(Code, Title, Parent, Callback)
         })
     })
     
-    CopyButton.MouseEnter:Connect(function()
+    Creator.AddSignal(CopyButton.MouseEnter, function()
         Tween(CopyButton.Button, .05, {ImageTransparency = .95}):Play()
         Tween(CopyButton.Button.UIScale, .05, {Scale = .9}):Play()
     end)
-    CopyButton.InputEnded:Connect(function()
+    Creator.AddSignal(CopyButton.InputEnded, function()
         Tween(CopyButton.Button, .08, {ImageTransparency = 1}):Play()
         Tween(CopyButton.Button.UIScale, .08, {Scale = 1}):Play()
     end)
@@ -908,7 +952,7 @@ function UIComponents.Code(Code, Title, Parent, Callback)
         CopyButton,
     })
     
-    TextLabel:GetPropertyChangedSignal("TextBounds"):Connect(function()
+    Creator.AddSignal(TextLabel:GetPropertyChangedSignal("TextBounds"), function()
         ScrollingFrame.Size = UDim2.new(1,0,0,TextLabel.TextBounds.Y + ((CodeModule.Padding+3)*2))
     end)
     
@@ -918,7 +962,7 @@ function UIComponents.Code(Code, Title, Parent, Callback)
     
     CodeModule.Set(Code)
 
-    CopyButton.MouseButton1Click:Connect(function()
+    Creator.AddSignal(CopyButton.MouseButton1Click, function()
         if Callback then
             Callback()
             local CheckIcon = Creator.Icon("check")

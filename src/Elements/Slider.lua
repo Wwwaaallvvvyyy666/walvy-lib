@@ -27,21 +27,36 @@ function Element:New(Config)
     local delta = (Value - (Slider.Value.Min or 0)) / ((Slider.Value.Max or 100) - (Slider.Value.Min or 0))
     
     local CanCallback = true
+    local IsFloat = Slider.Step % 1 ~= 0
+    
+    local function FormatValue(val)
+        if IsFloat then
+            return string.format("%.2f", val)
+        else
+            return tostring(math.floor(val + 0.5))
+        end
+    end
+    
+    local function CalculateValue(rawValue)
+        if IsFloat then
+            return math.floor(rawValue / Slider.Step + 0.5) * Slider.Step
+        else
+            return math.floor(rawValue / Slider.Step + 0.5) * Slider.Step
+        end
+    end
     
     Slider.SliderFrame = require("../Components/Element")({
         Title = Slider.Title,
         Desc = Slider.Desc,
         Parent = Config.Parent,
-        TextOffset = 160,
+        TextOffset = 0,
         Hover = false,
     })
     
     Slider.UIElements.SliderIcon = Creator.NewRoundFrame(99, "Squircle", {
         ImageTransparency = .95,
-        Size = UDim2.new(0, 126, 0, 4),
+        Size = UDim2.new(1, -60-8, 0, 4),
         Name = "Frame",
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
         ThemeTag = {
             ImageColor3 = "Text",
         },
@@ -66,12 +81,11 @@ function Element:New(Config)
     })
     
     Slider.UIElements.SliderContainer = New("Frame", {
-        Size = UDim2.new(0, 0, 0, 0),
-        AutomaticSize = "XY",
-        AnchorPoint = Vector2.new(1, 0.5),
-        Position = UDim2.new(1, -Slider.SliderFrame.UIPadding/2, 0.5, 0),
+        Size = UDim2.new(1, 0, 0, 0),
+        AutomaticSize = "Y",
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundTransparency = 1,
-        Parent = Slider.SliderFrame.UIElements.Main,
+        Parent = Slider.SliderFrame.UIElements.Container,
     }, {
         New("UIListLayout", {
             Padding = UDim.new(0, 8),
@@ -81,8 +95,8 @@ function Element:New(Config)
         Slider.UIElements.SliderIcon,
         New("TextBox", {
             Size = UDim2.new(0,60,0,0),
-            TextXAlignment = "Right",
-            Text = tostring(Value),
+            TextXAlignment = "Left",
+            Text = FormatValue(Value),
             ThemeTag = {
                 TextColor3 = "Text"
             },
@@ -114,31 +128,31 @@ function Element:New(Config)
                 Value = math.clamp(Value, Slider.Value.Min or 0, Slider.Value.Max or 100)
                 
                 local delta = math.clamp((Value - (Slider.Value.Min or 0)) / ((Slider.Value.Max or 100) - (Slider.Value.Min or 0)), 0, 1)
-                Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
+                Value = CalculateValue(Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min))
     
                 if Value ~= LastValue then
                     Tween(Slider.UIElements.SliderIcon.Frame, 0.08, {Size = UDim2.new(delta,0,1,0)}):Play()
-                    --Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
-                    Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
+                    Slider.UIElements.SliderContainer.TextBox.Text = FormatValue(Value)
+                    Slider.Value.Default = FormatValue(Value)
                     LastValue = Value
-                    Slider.Callback(Value)
+                    Creator.SafeCallback(Slider.Callback, FormatValue(Value))
                 end
     
                 if input then
                     isTouch = (input.UserInputType == Enum.UserInputType.Touch)
-                    Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = false
+                    Slider.SliderFrame.Parent.ScrollingEnabled = false
                     HoldingSlider = true
                     moveconnection = game:GetService("RunService").RenderStepped:Connect(function()
                         local inputPosition = isTouch and input.Position.X or game:GetService("UserInputService"):GetMouseLocation().X
-                        local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.Size.X.Offset, 0, 1)
-                        Value = math.floor((Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min)) / Slider.Step + 0.5) * Slider.Step
+                        local delta = math.clamp((inputPosition - Slider.UIElements.SliderIcon.AbsolutePosition.X) / Slider.UIElements.SliderIcon.AbsoluteSize.X, 0, 1)
+                        Value = CalculateValue(Slider.Value.Min + delta * (Slider.Value.Max - Slider.Value.Min))
     
                         if Value ~= LastValue then
                             Tween(Slider.UIElements.SliderIcon.Frame, 0.08, {Size = UDim2.new(delta,0,1,0)}):Play()
-                            --Slider.UIElements.SliderIcon.Frame.Size = UDim2.new(delta, 0, 1, 0)
-                            Slider.UIElements.SliderContainer.TextBox.Text = tostring(Value)
+                            Slider.UIElements.SliderContainer.TextBox.Text = FormatValue(Value)
+                            Slider.Value.Default = FormatValue(Value)
                             LastValue = Value
-                            Slider.Callback(Value)
+                            Creator.SafeCallback(Slider.Callback, FormatValue(Value))
                         end
                     end)
                     releaseconnection = game:GetService("UserInputService").InputEnded:Connect(function(endInput)
@@ -146,7 +160,7 @@ function Element:New(Config)
                             moveconnection:Disconnect()
                             releaseconnection:Disconnect()
                             HoldingSlider = false
-                            Slider.SliderFrame.UIElements.Main.Parent.Parent.ScrollingEnabled = true
+                            Slider.SliderFrame.Parent.ScrollingEnabled = true
                         end
                     end)
                 end
@@ -154,18 +168,18 @@ function Element:New(Config)
         end
     end
     
-    Slider.UIElements.SliderContainer.TextBox.FocusLost:Connect(function(enterPressed)
+    Creator.AddSignal(Slider.UIElements.SliderContainer.TextBox.FocusLost, function(enterPressed)
         if enterPressed then
             local newValue = tonumber(Slider.UIElements.SliderContainer.TextBox.Text)
             if newValue then
                 Slider:Set(newValue)
             else
-                Slider.UIElements.SliderContainer.TextBox.Text = tostring(LastValue)
+                Slider.UIElements.SliderContainer.TextBox.Text = FormatValue(LastValue)
             end
         end
     end)
     
-    Slider.UIElements.SliderContainer.InputBegan:Connect(function(input)
+    Creator.AddSignal(Slider.UIElements.SliderContainer.InputBegan, function(input)
         Slider:Set(Value, input)
     end)
     

@@ -33,9 +33,11 @@ end
 
 function TabModule.New(Config)
     local Tab = {
+        __type = "Tab",
         Title = Config.Title or "Tab",
         Desc = Config.Desc,
         Icon = Config.Icon,
+        IconThemed = Config.IconThemed,
         Locked = Config.Locked,
         ShowTabTitle = Config.ShowTabTitle,
         Selected = false,
@@ -95,36 +97,23 @@ function TabModule.New(Config)
 --	    Tab.UIElements.Main.Size = UDim2.new(1,TextOffset,0,Tab.UIElements.Main.TextLabel.TextBounds.Y+6+6)
 --	end)
   	
-  	if Tab.Icon and Creator.Icon(Tab.Icon) then
-        Icon = New("ImageLabel", {
-            ImageTransparency = not Tab.Locked and 0.5 or .7,
-            Image = Creator.Icon(Tab.Icon)[1],
-            ImageRectOffset = Creator.Icon(Tab.Icon)[2].ImageRectPosition,
-            ImageRectSize = Creator.Icon(Tab.Icon)[2].ImageRectSize,
-            Size = UDim2.new(0,18,0,18),
-            LayoutOrder = 1,
-            ThemeTag = {
-                ImageColor3 = "Text"
-            },
-            BackgroundTransparency = 1,
-            Parent = Tab.UIElements.Main,
-        })
+  	if Tab.Icon then
+        Icon = Creator.Image(
+            Tab.Icon,
+            Tab.Icon .. ":" .. Tab.Title,
+            0,
+            TabModule.Window.Folder,
+            Tab.__type,
+            true,
+            Tab.IconThemed
+        )
+        Icon.Size = UDim2.new(0,18,0,18)
+        Icon.Parent = Tab.UIElements.Main
+        Icon.ImageLabel.ImageTransparency = not Tab.Locked and 0 or .7
         Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-30,0,0)
         TextOffset = -30
-    elseif Tab.Icon and string.find(Tab.Icon, "rbxassetid://") then
-        Icon = New("ImageLabel", {
-            ImageTransparency = not Tab.Locked and 0.5 or .7,
-            Image = Tab.Icon,
-            Size = UDim2.new(0,18,0,18),
-            LayoutOrder = 1,
-            ThemeTag = {
-                ImageColor3 = "Text"
-            },
-            BackgroundTransparency = 1,
-            Parent = Tab.UIElements.Main,
-        })
-        Tab.UIElements.Main.TextLabel.Size = UDim2.new(1,-30,0,0)
-        TextOffset = -30
+        
+        Tab.UIElements.Icon = Icon
 	end
 	
 	Tab.UIElements.ContainerFrame = New("ScrollingFrame", {
@@ -147,7 +136,8 @@ function TabModule.New(Config)
         }),
         New("UIListLayout", {
             SortOrder = "LayoutOrder",
-            Padding = UDim.new(0,6)
+            Padding = UDim.new(0,6),
+            HorizontalAlignment = "Center",
         })
     })
 
@@ -214,14 +204,14 @@ function TabModule.New(Config)
 	
 	Tab.ContainerFrame = ContainerFrameCanvas
 	
-	Tab.UIElements.Main.MouseButton1Click:Connect(function()
+	Creator.AddSignal(Tab.UIElements.Main.MouseButton1Click, function()
 	    if not Tab.Locked then
 	        TabModule:SelectTab(TabIndex)
 	    end
 	end)
 	
     -- soon
-    --CreateScrollSlider(Tab.UIElements.ContainerFrame, Tab.UIElements.ContainerFrameCanvas, Window, 3)
+    CreateScrollSlider(Tab.UIElements.ContainerFrame, Tab.UIElements.ContainerFrameCanvas, Window, 3)
 
 	
 	-- ToolTip
@@ -247,7 +237,7 @@ function TabModule.New(Config)
             end
         end
         
-        Tab.UIElements.Main.InputBegan:Connect(function()
+        Creator.AddSignal(Tab.UIElements.Main.InputBegan, function()
             IsHovering = true
             hoverTimer = task.spawn(function()
                 task.wait(0.35)
@@ -267,7 +257,7 @@ function TabModule.New(Config)
             end)
         end)
         
-        Tab.UIElements.Main.InputEnded:Connect(removeToolTip)
+        Creator.AddSignal(Tab.UIElements.Main.InputEnded, removeToolTip)
     end
 	-- WTF
 	
@@ -282,6 +272,27 @@ function TabModule.New(Config)
         Colorpicker = require("../Elements/Colorpicker"),
         Section     = require("../Elements/Section"),
     }
+    
+    function Tab:Divider()
+        local Divider = New("Frame", {
+            Size = UDim2.new(1,0,0,1),
+            Position = UDim2.new(0.5,0,0.5,0),
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundTransparency = .9,
+            ThemeTag = {
+                BackgroundColor3 = "Text"
+            }
+        })
+        local MainDivider = New("Frame", {
+            Parent = Tab.UIElements.ContainerFrame,
+            Size = UDim2.new(1,-7,0,5),
+            BackgroundTransparency = 1,
+        }, {
+            Divider
+        })
+        
+        return MainDivider
+    end
     
     function Tab:Paragraph(ElementConfig)  
         ElementConfig.Parent = Tab.UIElements.ContainerFrame  
@@ -303,15 +314,10 @@ function TabModule.New(Config)
         ParagraphModule.ParagraphFrame = Paragraph  
         if ElementConfig.Buttons and #ElementConfig.Buttons > 0 then  
             local ButtonsContainer = New("Frame", {  
-                Size = UDim2.new(1,0,0,38),  
+                Size = UDim2.new(0,0,0,38),  
                 BackgroundTransparency = 1,  
-                Position = UDim2.new(0,0,0,
-                    ElementConfig.Image 
-                        and Paragraph.ImageSize > Paragraph.UIElements.Main.Title.AbsoluteSize.Y 
-                            and Paragraph.ImageSize+Paragraph.UIPadding 
-                            or Paragraph.UIElements.Main.Title.AbsoluteSize.Y + Paragraph.UIPadding + (ElementConfig.ThumbnailSize or 0)
-                ),  
-                Parent = Paragraph.UIElements.Main
+                AutomaticSize = "Y",
+                Parent = Paragraph.UIElements.Container
             }, {  
                 New("UIListLayout", {  
                     Padding = UDim.new(0,10),  
@@ -322,8 +328,8 @@ function TabModule.New(Config)
   
             for _,Button in next, ElementConfig.Buttons do  
                 local ButtonFrame = CreateButton(Button.Title, Button.Icon, Button.Callback, "White", ButtonsContainer)  
-                ButtonFrame.Size = UDim2.new(1,0,0,38)  
-                ButtonFrame.AutomaticSize = "None"  
+                ButtonFrame.Size = UDim2.new(0,0,0,38)  
+                ButtonFrame.AutomaticSize = "X"  
             end
         end  
           
@@ -393,10 +399,10 @@ function TabModule.New(Config)
                 ImageRectOffset = Creator.Icon("frown")[2].ImageRectPosition,
                 ImageRectSize = Creator.Icon("frown")[2].ImageRectSize,
                 ThemeTag = {
-                    ImageColor3 = "Text"
+                    ImageColor3 = "Icon"
                 },
                 BackgroundTransparency = 1,
-                ImageTransparency = .4,
+                ImageTransparency = .6,
             }),
             New("TextLabel", {
                 AutomaticSize = "XY",
@@ -405,7 +411,7 @@ function TabModule.New(Config)
                     TextColor3 = "Text"
                 },
                 TextSize = 18,
-                TextTransparency = .4,
+                TextTransparency = .5,
                 BackgroundTransparency = 1,
                 FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
             })
@@ -415,7 +421,7 @@ function TabModule.New(Config)
         --     Empty.TextLabel.Size = UDim2.new(0,Empty.TextLabel.TextBounds.X,0,Empty.TextLabel.TextBounds.Y)
         -- end)
         
-        Tab.UIElements.ContainerFrame.ChildAdded:Connect(function()
+        Creator.AddSignal(Tab.UIElements.ContainerFrame.ChildAdded, function()
             Empty.Visible = false
         end)
 	end)
@@ -434,15 +440,15 @@ function TabModule:SelectTab(TabIndex)
         for _, TabObject in next, TabModule.Tabs do
             if not TabObject.Locked then
                 Tween(TabObject.UIElements.Main.TextLabel, 0.15, {TextTransparency = 0.45}):Play()
-                if TabObject.Icon and Creator.Icon(TabObject.Icon) then
-                    Tween(TabObject.UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0.5}):Play()
+                if TabObject.UIElements.Icon then
+                    Tween(TabObject.UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.5}):Play()
                 end
                 TabObject.Selected = false
             end
         end
         Tween(TabModule.Tabs[TabIndex].UIElements.Main.TextLabel, 0.15, {TextTransparency = 0}):Play()
-        if TabModule.Tabs[TabIndex].Icon and Creator.Icon(TabModule.Tabs[TabIndex].Icon) then
-            Tween(TabModule.Tabs[TabIndex].UIElements.Main.ImageLabel, 0.15, {ImageTransparency = 0.15}):Play()
+        if TabModule.Tabs[TabIndex].UIElements.Icon then
+            Tween(TabModule.Tabs[TabIndex].UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.15}):Play()
         end
         TabModule.Tabs[TabIndex].Selected = true
         

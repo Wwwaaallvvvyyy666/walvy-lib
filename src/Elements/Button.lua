@@ -37,7 +37,7 @@ function Element:New(Config)
         Parent = Button.ButtonFrame.UIElements.Main,
         Size = UDim2.new(0,20,0,20),
         AnchorPoint = Vector2.new(1,0.5),
-        Position = UDim2.new(1,-Button.ButtonFrame.UIPadding/2,0.5,0),
+        Position = UDim2.new(1,0,0.5,0),
         ThemeTag = {
             ImageColor3 = "Text"
         }
@@ -56,10 +56,10 @@ function Element:New(Config)
         Button:Lock()
     end
 
-    Button.ButtonFrame.UIElements.Main.MouseButton1Click:Connect(function()
+    Creator.AddSignal(Button.ButtonFrame.UIElements.Main.MouseButton1Click, function()
         if CanCallback then
             task.spawn(function()
-                Button.Callback()
+                Creator.SafeCallback(Button.Callback)
             end)
         end
     end)

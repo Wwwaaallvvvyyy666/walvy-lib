@@ -489,7 +489,7 @@ function Element:Colorpicker(Config, OnApply)
         return math.clamp(tonumber(val) or 0, min, max)
     end
 
-    HexInput.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
+    Creator.AddSignal(HexInput.Frame.Frame.TextBox.FocusLost, function(Enter)
         if Enter then
             local hex = HexInput.Frame.Frame.TextBox.Text:gsub("#", "")
             local Success, Result = pcall(Color3.fromHex, hex)
@@ -502,7 +502,7 @@ function Element:Colorpicker(Config, OnApply)
     end)
 
     local function updateColorFromInput(inputBox, component)
-        inputBox.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
+        Creator.AddSignal(inputBox.Frame.Frame.TextBox.FocusLost, function(Enter)
             if Enter then
                 local textBox = inputBox.Frame.Frame.TextBox
                 local current = GetRGB()
@@ -522,7 +522,7 @@ function Element:Colorpicker(Config, OnApply)
     updateColorFromInput(BlueInput, "B")
     
     if Colorpicker.Transparency then
-        AlphaInput.Frame.Frame.TextBox.FocusLost:Connect(function(Enter)
+        Creator.AddSignal(AlphaInput.Frame.Frame.TextBox.FocusLost, function(Enter)
             if Enter then
                 local textBox = AlphaInput.Frame.Frame.TextBox
                 local clamped = clamp(textBox.Text, 0, 100)
@@ -537,7 +537,7 @@ function Element:Colorpicker(Config, OnApply)
     -- fu
     
     local SatVibMap = Colorpicker.UIElements.SatVibMap
-    SatVibMap.InputBegan:Connect(function(Input)
+    Creator.AddSignal(SatVibMap.InputBegan, function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 			while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 				local MinX = SatVibMap.AbsolutePosition.X
@@ -557,7 +557,7 @@ function Element:Colorpicker(Config, OnApply)
 		end
     end)
 
-    HueSlider.InputBegan:Connect(function(Input)
+    Creator.AddSignal(HueSlider.InputBegan, function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 			while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 				local MinY = HueSlider.AbsolutePosition.Y
@@ -573,7 +573,7 @@ function Element:Colorpicker(Config, OnApply)
     end)
     
     if Colorpicker.Transparency then
-		TransparencySlider.InputBegan:Connect(function(Input)
+		Creator.AddSignal(TransparencySlider.InputBegan, function(Input)
 			if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 				while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
 					local MinY = TransparencySlider.AbsolutePosition.Y
@@ -623,7 +623,7 @@ function Element:New(Config)
         Parent = Colorpicker.ColorpickerFrame.UIElements.Main,
         Size = UDim2.new(0,30,0,30),
         AnchorPoint = Vector2.new(1,0.5),
-        Position = UDim2.new(1,-Colorpicker.ColorpickerFrame.UIPadding/2,0.5,0),
+        Position = UDim2.new(1,0,0.5,0),
         ZIndex = 2
     }, nil, true)
     
@@ -643,23 +643,26 @@ function Element:New(Config)
 
     
     function Colorpicker:Update(Color,Transparency)
-        Colorpicker.UIElements.Colorpicker.BackgroundTransparency = Transparency or 0
-        Colorpicker.UIElements.Colorpicker.BackgroundColor3 = Color
+        Colorpicker.UIElements.Colorpicker.ImageTransparency = Transparency or 0
+        Colorpicker.UIElements.Colorpicker.ImageColor3 = Color
         Colorpicker.Default = Color
         if Transparency then
             Colorpicker.Transparency = Transparency
         end
     end
     
+    function Colorpicker:Set(c,t)
+        return Colorpicker:Update(c,t)
+    end
     
-    Colorpicker.UIElements.Colorpicker.MouseButton1Click:Connect(function()
+    Creator.AddSignal(Colorpicker.UIElements.Colorpicker.MouseButton1Click, function()
         if CanCallback then
             Element:Colorpicker(Colorpicker, function(color, transparency)
                 if CanCallback then
                     Colorpicker:Update(color, transparency)
                     Colorpicker.Default = color
                     Colorpicker.Transparency = transparency
-                    Colorpicker.Callback(color, transparency)
+                    Creator.SafeCallback(Colorpicker.Callback, color, transparency)
                 end
             end).ColorpickerFrame:Open()
         end
