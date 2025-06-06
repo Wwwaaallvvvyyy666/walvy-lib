@@ -125,6 +125,7 @@ function UIComponents.Button(Title, Icon, Callback, Variant, Parent, Dialog)
 end
 
 function UIComponents.Input(Placeholder, Icon, Parent, Type, Callback)
+    Type = Type or "Input"
     local Radius = 10
     local IconInputFrame
     if Icon and Icon ~= "" then

@@ -69,6 +69,7 @@ ProtectGui(WindUI.ScreenGui)
 ProtectGui(WindUI.NotificationGui)
 ProtectGui(WindUI.DropdownGui)
 
+Creator.Init(WindUI)
 
 math.clamp(WindUI.TransparencyValue, 0, 0.4)
 

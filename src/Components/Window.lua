@@ -1006,7 +1006,7 @@ return function(Config)
             task.wait(0.4)
             Config.Parent.Parent:Destroy()
             
-            Creator.DisconnectAll()
+            --Creator.DisconnectAll()
         end
         
         return Close

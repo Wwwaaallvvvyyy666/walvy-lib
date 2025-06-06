@@ -323,7 +323,7 @@ Tabs.ColorPickerTab:Colorpicker({
 Tabs.DialogTab:Button({
     Title = "Create Example Dialog",
     Callback = function()
-        Window:Dialog({
+        Window:b({
             Title = "Example Dialog",
             Content = "Example Content. lalala",
             Icon = "bird",

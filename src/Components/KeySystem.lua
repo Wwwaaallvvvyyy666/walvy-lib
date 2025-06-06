@@ -127,7 +127,7 @@ function KeySystem.new(Config, Filename, func)
         IconAndTitleContainer, KeySystemTitle,
     })
     
-    local InputFrame = CreateInput("Enter Key", "key", nil, function(k)
+    local InputFrame = CreateInput("Enter Key", "key", nil, nil, function(k)
         EnteredKey = k
     end)
     
@@ -249,9 +249,11 @@ function KeySystem.new(Config, Filename, func)
     
     local SubmitButton = CreateButton("Submit", "arrow-right", function()
         local Key = EnteredKey
-        local isKey = tostring(Config.KeySystem.Key) == tostring(Key)
+        local isKey
         if type(Config.KeySystem.Key) == "table" then
             isKey = table.find(Config.KeySystem.Key, tostring(Key))
+        else
+            isKey = tostring(Config.KeySystem.Key) == tostring(Key)
         end
         
         if isKey then
@@ -264,16 +266,6 @@ function KeySystem.new(Config, Filename, func)
             
             task.wait(.4)
             func(true)
-        else
-            local OldColor = TextBoxHolder.UIStroke.Color
-            local OldBGColor = TextBoxHolder.BackgroundColor3
-            Tween(TextBoxHolder.UIStroke, 0.1, {Color = Color3.fromHex("#ff1e1e"), Transparency= .65}):Play()
-            Tween(TextBoxHolder, 0.1, {BackgroundColor3= Color3.fromHex("#ff1e1e"), Transparency= .8}):Play()
-            
-            task.wait(.5)
-            
-            Tween(TextBoxHolder.UIStroke, 0.15, {Color = OldColor, Transparency = .9}):Play()
-            Tween(TextBoxHolder, 0.15, {BackgroundColor3 = OldBGColor, Transparency = .95}):Play()
         end
     end, "Primary", ButtonsContainer)
     

@@ -77,7 +77,7 @@ function DialogModule.Create(Key)
         }),
         Creator.NewRoundFrame(Dialog.UICorner, "SquircleOutline", {
             Size = UDim2.new(1,0,1,0),
-            ImageTransparency = .9,
+            ImageTransparency = 1,
             ThemeTag = {
                 ImageColor3 = "Outline",
             },

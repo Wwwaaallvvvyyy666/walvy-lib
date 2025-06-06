@@ -5,8 +5,6 @@ local Tween = Creator.Tween
 
 local UserInputService = game:GetService("UserInputService")
 
--- fuck
--- i need to rewrite this
 
 return function(Config)
     local Element = {
