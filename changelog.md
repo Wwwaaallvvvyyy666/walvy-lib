@@ -1,21 +1,12 @@
-# 1.6.1
-## Changelog:  
-- `Added`: `Window:SetBackgroundImageTransparency()`
-- `Added`: `BackgroundImageTransparency` to `Window` and `Notification`
-- `Added`: `Window:OnClose()`
-- `Added`: Creator.AddSignal
-- `Added`: `TextArea` Type to `Input` element
-- `Added`: `Divider` Element
-- `Added`: Slider Float Support
-- `Added`: `IconThemed: boolean` to `Window`, `Popup`, `Tab`, `Paragraph`
-- `Added`: Section Image (icon)
-- `Added`: Window Open/Close Animations
-- `Added`: Custom topbar Buttons
-- `Added`: ScrollBar
-- `Added`: Display error in `Notification`
-- `Added`: Configs
-- `Fixed`: Colorpicker
-- `Fixed`: URL Images
-- `Fixed`: Dropdown
-- `Changes`: Moved SearchBar
-- `Changes`: Rewrited `Element`
+# 1.6.3
+## Changelog:
+- FullScreen function
+- Dropdown size fix
+- Align some things
+- Topbar buttons icon update
+- Fix `:SetTitle()` in Elements
+- New `Section` Element for Tab's
+- Added More Themes
+- Dialog Redesign
+- Fix other bugs
+- Added `:AllConfigs()` to ConfigManager

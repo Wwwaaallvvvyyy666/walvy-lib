@@ -1,5 +1,4 @@
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
---local WindUI = loadstring(readfile("WindUI/version-time-12.06.lua"))()
 
 -- Test
 
@@ -82,8 +81,8 @@ local Window = WindUI:CreateWindow({
         --     Image = "rbxassetid://18220445082", -- rbxassetid only
         --     Title = "Thumbnail"
         -- },
-        URL = "https://github.com/Footagesus/WindUI", -- remove this if the key is not obtained from the link.
-        SaveKey = true, -- optional
+        URL = "link-to-linkvertise-or-discord-or-idk", -- remove this if the key is not obtained from the link.
+        SaveKey = true, -- saves key : optional
     },
 })
 
@@ -105,7 +104,7 @@ local Window = WindUI:CreateWindow({
 --                        ↓ Name             ↓ Icon          ↓ Callback                           ↓ LayoutOrder
 Window:CreateTopbarButton("MyCustomButton1", "bird",         function() print("clicked 1!") end,  990)
 Window:CreateTopbarButton("MyCustomButton2", "droplet-off",  function() print("clicked 2!") end,  989)
-Window:CreateTopbarButton("MyCustomButton3", "battery-plus", function() print("clicked 3!!") end, 988)
+Window:CreateTopbarButton("MyCustomButton3", "battery-plus", function() Window:ToggleFullscreen() end, 988)
 
 
 Window:EditOpenButton({
@@ -122,40 +121,66 @@ Window:EditOpenButton({
 })
 
 
-local Tabs = {
-    ParagraphTab = Window:Tab({ Title = "Paragraph", Icon = "type" }),
-    ButtonTab = Window:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." }),
-    CodeTab = Window:Tab({ Title = "Code", Icon = "code", Desc = "Displays and manages code snippets." }),
-    ColorPickerTab = Window:Tab({ Title = "ColorPicker", Icon = "paintbrush", Desc = "Choose and customize colors easily." }),
-    DialogTab = Window:Tab({ Title = "Dialog", Icon = "message-square", Desc = "Dialog lol" }),
-    NotificationTab = Window:Tab({ Title = "Notification", Icon = "bell", Desc = "Configure and view notifications." }),
-    ToggleTab = Window:Tab({ Title = "Toggle", Icon = "toggle-left", Desc = "Switch settings on and off." }),
-    SliderTab = Window:Tab({ Title = "Slider", Icon = "sliders-horizontal", Desc = "Adjust values smoothly with sliders." }),
-    InputTab = Window:Tab({ Title = "Input", Icon = "keyboard", Desc = "Accept text and numerical input." }),
-    KeybindTab = Window:Tab({ Title = "Keybind", Icon = "keyboard-off" }),
-    DropdownTab = Window:Tab({ Title = "Dropdown", Icon = "chevrons-up-down", Desc = "Select from multiple options." }),
-    divider1 = Window:Divider(),
-    --
-    WindowTab = Window:Tab({ 
+local Tabs = {}
+
+do
+    Tabs.ElementsSection = Window:Section({
+        Title = "Elements",
+        Opened = true,
+    })
+    
+    Tabs.WindowSection = Window:Section({
+        Title = "Window Management",
+        Icon = "app-window-mac",
+        Opened = true,
+    })
+    
+    Tabs.OtherSection = Window:Section({
+        Title = "Other",
+        Opened = true,
+    })
+
+    
+    Tabs.ParagraphTab = Tabs.ElementsSection:Tab({ Title = "Paragraph", Icon = "type" })
+    Tabs.ButtonTab = Tabs.ElementsSection:Tab({ Title = "Button", Icon = "mouse-pointer-2", Desc = "Contains interactive buttons for various actions." })
+    Tabs.CodeTab = Tabs.ElementsSection:Tab({ Title = "Code", Icon = "code", Desc = "Displays and manages code snippets." })
+    Tabs.ColorPickerTab = Tabs.ElementsSection:Tab({ Title = "ColorPicker", Icon = "paintbrush", Desc = "Choose and customize colors easily." })
+    Tabs.DialogTab = Tabs.ElementsSection:Tab({ Title = "Dialog", Icon = "message-square", Desc = "Dialog lol" })
+    Tabs.NotificationTab = Tabs.ElementsSection:Tab({ Title = "Notification", Icon = "bell", Desc = "Configure and view notifications." })
+    Tabs.ToggleTab = Tabs.ElementsSection:Tab({ Title = "Toggle", Icon = "toggle-left", Desc = "Switch settings on and off." })
+    Tabs.SliderTab = Tabs.ElementsSection:Tab({ Title = "Slider", Icon = "sliders-horizontal", Desc = "Adjust values smoothly with sliders." })
+    Tabs.InputTab = Tabs.ElementsSection:Tab({ Title = "Input", Icon = "keyboard", Desc = "Accept text and numerical input." })
+    Tabs.KeybindTab = Tabs.ElementsSection:Tab({ Title = "Keybind", Icon = "keyboard-off" })
+    Tabs.DropdownTab = Tabs.ElementsSection:Tab({ Title = "Dropdown", Icon = "chevrons-up-down", Desc = "Select from multiple options." })
+    
+    Tabs.WindowTab = Tabs.WindowSection:Tab({ 
         Title = "Window and File Configuration", 
         Icon = "settings", 
         Desc = "Manage window settings and file configurations.", 
-        ShowTabTitle = true
-    }),
-
-    CreateThemeTab = Window:Tab({ Title = "Create Theme", Icon = "palette", Desc = "Design and apply custom themes." }),
-    be = Window:Divider(),
-    LongTab = Window:Tab({
+        ShowTabTitle = true 
+    })
+    Tabs.CreateThemeTab = Tabs.WindowSection:Tab({ Title = "Create Theme", Icon = "palette", Desc = "Design and apply custom themes." })
+    
+    Tabs.LongTab = Tabs.OtherSection:Tab({ 
         Title = "Long and empty tab. with custom icon", 
-        Icon = "rbxassetid://129260712070622", -- vector icon (like lucide) in white color 
+        Icon = "rbxassetid://129260712070622", 
         IconThemed = true, 
         Desc = "Long Description" 
-    }),
-    LockedTab = Window:Tab({ Title = "Locked Tab", Icon = "lock", Desc = "This tab is locked", Locked = true }),
-    TabWithoutIcon = Window:Tab({ Title = "Tab Without icon", ShowTabTitle = true }),
-    Tests = Window:Tab({ Title = "Tests", Icon = "https://raw.githubusercontent.com/Footagesus/WindUI/main/docs/ui.png", ShowTabTitle = true }),
-    ConfigTab = Window:Tab({ Title = "Config", Icon = "file-cog" }),
-}
+    })
+    Tabs.LockedTab = Tabs.OtherSection:Tab({ Title = "Locked Tab", Icon = "lock", Desc = "This tab is locked", Locked = true })
+    Tabs.TabWithoutIcon = Tabs.OtherSection:Tab({ Title = "Tab Without icon", ShowTabTitle = true })
+    Tabs.Tests = Tabs.OtherSection:Tab({ Title = "Tests", Icon = "https://raw.githubusercontent.com/Footagesus/WindUI/main/docs/ui.png", ShowTabTitle = true })
+    
+    
+    Tabs.LastSection = Window:Section({
+        Title = "Section without tabs",
+        --Opened = true,
+    })
+    
+    Tabs.ConfigTab = Window:Tab({ Title = "Config", Icon = "file-cog" })
+end
+
+
 
 Window:SelectTab(1)
 
@@ -575,6 +600,26 @@ Tabs.DropdownTab:Dropdown({
     AllowNone = true,
     Callback = function(option) 
         print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+    end
+})
+Tabs.DropdownTab:Dropdown({
+    Title = "Big Dropdown",
+    Values = { "Lllllllloooooooonnnnnggggggggg Tab", 
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+               "Hi",
+             },
+    --Value = { "" },
+    Multi = true,
+    AllowNone = true,
+    Callback = function(option) 
+        print("Pisun selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
     end
 })
 
@@ -1079,6 +1124,14 @@ Tabs.ConfigTab:Button({
     Desc = "Loads elements from config",
     Callback = function()
         myConfig:Load()
+    end
+})
+
+Tabs.ConfigTab:Button({
+    Title = "Print all configs",
+    --Desc = "Prints configs",
+    Callback = function()
+        print(game:GetService("HttpService"):JSONEncode(ConfigManager:AllConfigs()))
     end
 })
 

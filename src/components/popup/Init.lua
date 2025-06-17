@@ -1,6 +1,6 @@
 local PopupModule = {}
 
-local Creator = require("../Creator")
+local Creator = require("../../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
@@ -15,7 +15,7 @@ function PopupModule.new(PopupConfig)
         Buttons = PopupConfig.Buttons
     }
     
-    local DialogInit = require("./Dialog").Init(PopupConfig.WindUI.ScreenGui.Popups)
+    local DialogInit = require("../window/Dialog").Init(nil, PopupConfig.WindUI.ScreenGui.Popups)
     local Dialog = DialogInit.Create(true)
     
     local ThumbnailSize = 200
@@ -41,7 +41,7 @@ function PopupModule.new(PopupConfig)
             "Popup",
             PopupConfig.IconThemed
         )
-        IconFrame.Size = UDim2.new(0,24,0,24)
+        IconFrame.Size = UDim2.new(0,22,0,22)
         IconFrame.LayoutOrder = -1
     end
     
@@ -171,7 +171,7 @@ function PopupModule.new(PopupConfig)
         }),
     })
 
-    local CreateButton = require("./UI").Button
+    local CreateButton = require("../ui/Button").New
     
     for _, values in next, Popup.Buttons do
         CreateButton(values.Title, values.Icon, values.Callback, values.Variant, ButtonsContainer, Dialog)

@@ -5,6 +5,7 @@ local ConfigManager
 ConfigManager = {
     Window = nil,
     Folder = nil,
+    Path = nil,
     Configs = {},
     Parser = {
         Colorpicker = {
@@ -93,12 +94,14 @@ function ConfigManager:Init(Window)
     ConfigManager.Window = Window
     ConfigManager.Folder = Window.Folder
     
+    ConfigManager.Path = "WindUI/" .. ConfigManager.Folder .. "/config/"
+    
     return ConfigManager
 end
 
 function ConfigManager:CreateConfig(configFilename)
     local ConfigModule = {
-        Path = "WindUI/" .. ConfigManager.Folder .. "/config/" .. configFilename .. ".json",
+        Path = ConfigManager.Path .. configFilename .. ".json",
         
         Elements = {}
     }
@@ -148,5 +151,19 @@ function ConfigManager:CreateConfig(configFilename)
     return ConfigModule
 end
 
+function ConfigManager:AllConfigs()
+    if listfiles then
+        local files = {}
+        for _, file in next, listfiles(ConfigManager.Path) do
+            local name = file:match("([^\\/]+)%.json$")
+            if name then
+                table.insert(files, name)
+            end
+        end
+        
+        return files
+    end
+    return false
+end
 
 return ConfigManager

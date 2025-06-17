@@ -70,6 +70,10 @@ local Creator = {
         },
         UIListLayout = {
             SortOrder = "LayoutOrder",
+        },
+        ScrollingFrame = {
+            ScrollBarImageTransparency = 1,
+            BorderSizePixel = 0,
         }
     },
     Colors = {
@@ -216,6 +220,7 @@ function Creator.NewRoundFrame(Radius, Type, Properties, Children, isButton)
     local Image = Creator.New(isButton and "ImageButton" or "ImageLabel", {
         Image = Type == "Squircle" and "rbxassetid://80999662900595"
              or Type == "SquircleOutline" and "rbxassetid://117788349049947" 
+             or Type == "SquircleOutline2" and "rbxassetid://117817408534198" 
              or Type == "Shadow-sm" and "rbxassetid://84825982946844"
              or Type == "Squircle-TL-TR" and "rbxassetid://73569156276236",
         ScaleType = "Slice",

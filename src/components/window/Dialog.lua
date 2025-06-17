@@ -1,23 +1,23 @@
-local Creator = require("../Creator")
+local Creator = require("../../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
 local DialogModule = {
-    UICorner = 14,
-    UIPadding = 12,
     Holder = nil,
     Window = nil,
+    Parent = nil,
 }
 
-function DialogModule.Init(Window)
+function DialogModule.Init(Window, Parent)
     DialogModule.Window = Window
+    DialogModule.Parent = Parent
     return DialogModule
 end
 
 function DialogModule.Create(Key)
     local Dialog = {
-        UICorner = 19,
-        UIPadding = 16,
+        UICorner = 32,
+        UIPadding = 12,
         UIElements = {}
     }
     
@@ -32,7 +32,7 @@ function DialogModule.Create(Key)
             Size = UDim2.new(1,0,1,0),
             Active = false, -- true
             Visible = false, -- true
-            Parent = Key and DialogModule.Window or DialogModule.Window.UIElements.Main.Main
+            Parent = DialogModule.Parent or (DialogModule.Window and DialogModule.Window.UIElements and DialogModule.Window.UIElements.Main and DialogModule.Window.UIElements.Main.Main)
         }, {
             New("UICorner", {
                 CornerRadius = UDim.new(0,DialogModule.Window.UICorner)
@@ -62,31 +62,37 @@ function DialogModule.Create(Key)
         Visible = false, -- true
         --GroupTransparency = 1, -- 0
         ImageTransparency = Key and 0.15 or 0, 
-        Parent = Key and DialogModule.Window or Dialog.UIElements.FullScreen,
+        Parent = Key and DialogModule.Parent or Dialog.UIElements.FullScreen,
         Position = UDim2.new(0.5,0,0.5,0),
         AnchorPoint = Vector2.new(0.5,0.5),
         AutomaticSize = "XY",
         ThemeTag = {
-            ImageColor3 = "Accent"
+            ImageColor3 = "Background"
         },
         ZIndex = 9999,
     }, {
+        -- Creator.NewRoundFrame(Dialog.UICorner, "Squircle", {
+        --     ImageColor3 = Color3.new(0,0,0),
+        --     ImageTransparency = .8,
+        --     Size = UDim2.new(1,0,1,0)
+        -- }),
         Dialog.UIElements.Main,
-        New("UIScale", {
-            Scale = .9
-        }),
-        Creator.NewRoundFrame(Dialog.UICorner, "SquircleOutline", {
+        -- New("UIScale", {
+        --     Scale = .9
+        -- }),
+        Creator.NewRoundFrame(Dialog.UICorner, "SquircleOutline2", {
             Size = UDim2.new(1,0,1,0),
-            ImageTransparency = 1,
+            ImageTransparency = .85,
             ThemeTag = {
                 ImageColor3 = "Outline",
             },
         }, {
             New("UIGradient", {
-                Rotation = 90,
+                Rotation = 45,
                 Transparency = NumberSequence.new({
-                    NumberSequenceKeypoint.new(0, 0),
-                    NumberSequenceKeypoint.new(1, 1),
+                    NumberSequenceKeypoint.new(0, 0.55),
+                    NumberSequenceKeypoint.new(0.5, 0.8),
+                    NumberSequenceKeypoint.new(1, 0.6)
                 })
             })
         })
@@ -105,7 +111,7 @@ function DialogModule.Create(Key)
                 Tween(Dialog.UIElements.FullScreen, 0.1, {BackgroundTransparency = .5}):Play()
             end
             Tween(Dialog.UIElements.MainContainer, 0.1, {ImageTransparency = 0}):Play()
-            Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = 1}):Play()
+            --Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = 1}):Play()
             --Tween(Dialog.UIElements.MainContainer.UIStroke, 0.1, {Transparency = 1}):Play()
             task.spawn(function()
                 task.wait(0.05)
@@ -125,7 +131,7 @@ function DialogModule.Create(Key)
         Dialog.UIElements.Main.Visible = false
         
         Tween(Dialog.UIElements.MainContainer, 0.1, {ImageTransparency = 1}):Play()
-        Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = .9}):Play()
+        --Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = .9}):Play()
         --Tween(Dialog.UIElements.MainContainer.UIStroke, 0.1, {Transparency = 1}):Play()
         
         task.spawn(function()

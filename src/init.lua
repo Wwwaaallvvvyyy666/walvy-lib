@@ -1,17 +1,19 @@
 local WindUI = {
     Window = nil,
     Theme = nil,
-    Creator = require("./Creator"),
-    Themes = require("./Themes/init"),
+    Creator = require("./modules/Creator"),
+    Themes = require("./themes/init"),
     Transparent = false,
     
     TransparencyValue = .15,
     
+    UIScale = 1,
+    
     ConfigManager = nil
 }
-local RunService = game:GetService("RunService")
 
-local KeySystem = require("./Components/KeySystem")
+
+local KeySystem = require("./components/KeySystem")
 
 local Themes = WindUI.Themes
 local Creator = WindUI.Creator
@@ -35,6 +37,9 @@ WindUI.ScreenGui = New("ScreenGui", {
     IgnoreGuiInset = true,
     ScreenInsets = "None",
 }, {
+    New("UIScale", {
+        Scale = WindUI.Scale,
+    }),
     New("Folder", {
         Name = "Window"
     }),
@@ -73,7 +78,7 @@ Creator.Init(WindUI)
 
 math.clamp(WindUI.TransparencyValue, 0, 0.4)
 
-local Notify = require("./Components/Notification")
+local Notify = require("./components/Notification")
 local Holder = Notify.Init(WindUI.NotificationGui)
 
 function WindUI:Notify(Config)
@@ -125,12 +130,12 @@ end
 
 function WindUI:Popup(PopupConfig)
     PopupConfig.WindUI = WindUI
-    return require("./Components/Popup").new(PopupConfig)
+    return require("./components/popup/Init").new(PopupConfig)
 end
 
 
 function WindUI:CreateWindow(Config)
-    local CreateWindow = require("./Components/Window")
+    local CreateWindow = require("./components/window/Init")
     
     if not isfolder("WindUI") then
         makefolder("WindUI")
@@ -163,9 +168,11 @@ function WindUI:CreateWindow(Config)
         CanLoadWindow = false
         if Config.KeySystem.SaveKey and Config.Folder then
             if isfile(Config.Folder .. "/" .. Filename .. ".key") then
-                local isKey = tostring(Config.KeySystem.Key) == tostring(readfile(Config.Folder .. "/" .. Filename .. ".key" ))
+                local isKey
                 if type(Config.KeySystem.Key) == "table" then
                     isKey = table.find(Config.KeySystem.Key, readfile(Config.Folder .. "/" .. Filename .. ".key" ))
+                else
+                    isKey = tostring(Config.KeySystem.Key) == tostring(readfile(Config.Folder .. "/" .. Filename .. ".key" ))
                 end
                 if isKey then
                     CanLoadWindow = true

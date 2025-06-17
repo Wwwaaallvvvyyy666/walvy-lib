@@ -6,7 +6,7 @@ local SearchBar = {
 }
 
 
-local Creator = require("../Creator")
+local Creator = require("../../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
 
@@ -15,22 +15,11 @@ function SearchBar.new(TabModule, Parent, OnClose)
     local SearchBarModule = {
         IconSize = 14,
         Padding = 14,
-        Radius = 15,
+        Radius = 18,
         Width = 400,
         MaxHeight = 380,
         
-        Icons = { -- lucide
-            Tab         = "table-of-contents",
-            Paragraph   = "type",
-            Button      = "square-mouse-pointer",
-            Toggle      = "toggle-right",
-            Slider      = "sliders-horizontal",
-            Keybind     = "command",
-            Input       = "text-cursor-input",
-            Dropdown    = "chevrons-up-down",
-            Code        = "terminal",
-            Colorpicker = "palette",
-        }
+        Icons = require("./Icons")
     }
     
     
@@ -194,12 +183,21 @@ function SearchBar.new(TabModule, Parent, OnClose)
             Scale = .9, -- 1
         }),
         SearchFrame,
-        Creator.NewRoundFrame(SearchBarModule.Radius, "SquircleOutline", {
+        Creator.NewRoundFrame(SearchBarModule.Radius, "SquircleOutline2", {
             Size = UDim2.new(1,0,1,0),
             ThemeTag = {
                 ImageColor3 = "Outline",
             },
-            ImageTransparency = .9,
+            ImageTransparency = .7,
+        }, {
+            New("UIGradient", {
+                Rotation = 45,
+                Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 0.55),
+                    NumberSequenceKeypoint.new(0.5, 0.8),
+                    NumberSequenceKeypoint.new(1, 0.6)
+                })
+            })
         })
     })
     

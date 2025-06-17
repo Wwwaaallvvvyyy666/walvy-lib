@@ -1,4 +1,4 @@
-local Creator = require("../Creator")
+local Creator = require("../../modules/Creator")
 local New = Creator.New
 local NewRoundFrame = Creator.NewRoundFrame
 local Tween = Creator.Tween
@@ -19,8 +19,8 @@ return function(Config)
         Color = Config.Color,
         Scalable = Config.Scalable,
         Parent = Config.Parent,
-        UIPadding = 12,
-        UICorner = 13,
+        UIPadding = 14,
+        UICorner = 14,
         UIElements = {}
     }
     
@@ -68,7 +68,7 @@ return function(Config)
         return New("TextLabel", {
             BackgroundTransparency = 1,
             Text = Title or "",
-            TextSize = Type == "Desc" and 15 or 16,
+            TextSize = Type == "Desc" and 15 or 17,
             TextXAlignment = "Left",
             ThemeTag = {
                 TextColor3 = not Element.Color and (Type == "Desc" and "Icon" or "Text") or nil,
@@ -176,13 +176,13 @@ return function(Config)
         end)
     end
     
-    function Element:SetTitle(Title)
-        Title.Text = Title
+    function Element:SetTitle(text)
+        Title.Text = text
     end
     
-    function Element:SetDesc(Title)
-        Desc.Text = Title or ""
-        if not Title then
+    function Element:SetDesc(text)
+        Desc.Text = text or ""
+        if not text then
             Desc.Visible = false
         elseif not Desc.Visible then
             Desc.Visible = true
