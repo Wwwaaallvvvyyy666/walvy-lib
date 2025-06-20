@@ -91,12 +91,15 @@ ConfigManager = {
 }
 
 function ConfigManager:Init(Window)
-    ConfigManager.Window = Window
-    ConfigManager.Folder = Window.Folder
-    
-    ConfigManager.Path = "WindUI/" .. ConfigManager.Folder .. "/config/"
-    
-    return ConfigManager
+    if Window.Folder then
+        ConfigManager.Window = Window
+        ConfigManager.Folder = Window.Folder
+        
+        ConfigManager.Path = "WindUI/" .. ConfigManager.Folder .. "/config/"
+        
+        return ConfigManager
+    end
+    return false
 end
 
 function ConfigManager:CreateConfig(configFilename)
