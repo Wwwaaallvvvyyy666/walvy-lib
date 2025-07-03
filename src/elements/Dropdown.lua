@@ -357,6 +357,13 @@ function Element:New(Config)
     function Dropdown:Select(Items)
         if Items then
             Dropdown.Value = Items
+        else
+            if Dropdown.Multi then
+                Dropdown.Value = {}
+            else
+                Dropdown.Value = nil
+                
+            end
         end
         Dropdown:Refresh(Dropdown.Values)
     end
@@ -365,28 +372,30 @@ function Element:New(Config)
     RecalculateListSize()
     
     function Dropdown:Open()
-        Dropdown.UIElements.MenuCanvas.Visible = true
-        Dropdown.UIElements.MenuCanvas.Active = true
-        Dropdown.UIElements.Menu.Size = UDim2.new(
-            1, 0,
-            0, 0
-        )
-        Tween(Dropdown.UIElements.Menu, 0.1, {
-            Size = UDim2.new(
+        if CanCallback then
+            Dropdown.UIElements.MenuCanvas.Visible = true
+            Dropdown.UIElements.MenuCanvas.Active = true
+            Dropdown.UIElements.Menu.Size = UDim2.new(
                 1, 0,
-                1, 0
+                0, 0
             )
-        }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
-        
-        task.spawn(function()
-            task.wait(.1)
-            Dropdown.Opened = true
-        end)
-        
-        --Tween(DropdownIcon, .15, {Rotation = 180}):Play()
-        Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 0}):Play()
-        
-        UpdatePosition()
+            Tween(Dropdown.UIElements.Menu, 0.1, {
+                Size = UDim2.new(
+                    1, 0,
+                    1, 0
+                )
+            }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out):Play()
+            
+            task.spawn(function()
+                task.wait(.1)
+                Dropdown.Opened = true
+            end)
+            
+            --Tween(DropdownIcon, .15, {Rotation = 180}):Play()
+            Tween(Dropdown.UIElements.MenuCanvas, .15, {GroupTransparency = 0}):Play()
+            
+            UpdatePosition()
+        end
     end
     function Dropdown:Close()
         Dropdown.Opened = false
@@ -405,9 +414,7 @@ function Element:New(Config)
     end
     
     Creator.AddSignal(Dropdown.UIElements.Dropdown.MouseButton1Click, function()
-        if CanCallback then
-            Dropdown:Open()
-        end
+        Dropdown:Open()
     end)
     
     Creator.AddSignal(UserInputService.InputBegan, function(Input)

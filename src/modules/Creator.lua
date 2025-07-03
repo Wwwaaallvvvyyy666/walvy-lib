@@ -335,6 +335,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
         return str
     end
     
+    Folder = Folder or "Temp"
     Name = SanitizeFilename(Name)
     
     local ImageFrame = New("Frame", {

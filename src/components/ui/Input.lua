@@ -22,6 +22,8 @@ function Input.New(Placeholder, Icon, Parent, Type, Callback)
         })
     end
     
+    local isMulti = Type ~= "Input"
+    
     local TextBox = New("TextBox", {
         BackgroundTransparency = 1,
         TextSize = 16,
@@ -30,8 +32,8 @@ function Input.New(Placeholder, Icon, Parent, Type, Callback)
         PlaceholderText = Placeholder,
         ClearTextOnFocus = false,
         ClipsDescendants = true,
-        MultiLine = Type == "Input" and false or true,
-        TextWrapped = Type == "Input" and false or true,
+        TextWrapped = isMulti,
+        MultiLine = isMulti,
         TextXAlignment = "Left",
         TextYAlignment = Type == "Input" and "Center" or "Top",
         --AutomaticSize = "XY",

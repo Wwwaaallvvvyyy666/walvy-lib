@@ -43,7 +43,7 @@ function DialogModule.Create(Key)
     Dialog.UIElements.Main = New("Frame", {
         --Size = UDim2.new(1,0,1,0),
         ThemeTag = {
-            BackgroundColor3 = "Accent",
+            BackgroundColor3 = "Dialog",
         },
         AutomaticSize = "XY",
         BackgroundTransparency = 1, -- .7
@@ -67,7 +67,7 @@ function DialogModule.Create(Key)
         AnchorPoint = Vector2.new(0.5,0.5),
         AutomaticSize = "XY",
         ThemeTag = {
-            ImageColor3 = "Background"
+            ImageColor3 = "Dialog"
         },
         ZIndex = 9999,
     }, {

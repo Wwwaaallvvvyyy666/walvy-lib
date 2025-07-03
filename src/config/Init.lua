@@ -91,15 +91,17 @@ ConfigManager = {
 }
 
 function ConfigManager:Init(Window)
-    if Window.Folder then
-        ConfigManager.Window = Window
-        ConfigManager.Folder = Window.Folder
+    if not Window.Folder then
+        warn("[ WindUI.ConfigManager ] Window.Folder is not specified.")
         
-        ConfigManager.Path = "WindUI/" .. ConfigManager.Folder .. "/config/"
-        
-        return ConfigManager
+        return false
     end
-    return false
+    
+    ConfigManager.Window = Window
+    ConfigManager.Folder = Window.Folder
+    ConfigManager.Path = "WindUI/" .. tostring(ConfigManager.Folder) .. "/config/"
+
+    return ConfigManager
 end
 
 function ConfigManager:CreateConfig(configFilename)

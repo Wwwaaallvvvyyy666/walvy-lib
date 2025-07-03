@@ -24,6 +24,7 @@ return function(Config)
         Icon = Config.Icon,
         IconThemed = Config.IconThemed,
         Folder = Config.Folder,
+        Resizable = Config.Resizable,
         Background = Config.Background,
         BackgroundImageTransparency = Config.BackgroundImageTransparency or 0,
         User = Config.User or {},
@@ -61,6 +62,9 @@ return function(Config)
     
     if Window.HideSearchBar ~= false then
         Window.HideSearchBar = true
+    end
+    if Window.Resizable ~= false then
+        Window.Resizable = true
     end
     
     if Window.Folder then
@@ -816,8 +820,9 @@ return function(Config)
             
             Window.CanResize = false
         else
-            
-            Window.CanResize = true
+            if Window.Resizable then
+                Window.CanResize = true
+            end
         end
         
         Tween(Window.UIElements.Main, 0.45, {Size = isFullscreen and CurrentSize or UDim2.new(1,-20,1,-20-52)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
@@ -888,7 +893,9 @@ return function(Config)
                 Tween(ResizeHandle.ImageLabel, .45, {ImageTransparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
                 task.wait(.45)
                 WindowDragModule:Set(true)
-                Window.CanResize = true
+                if Window.Resizable then
+                    Window.CanResize = true
+                end
             end)
         
             
@@ -1093,6 +1100,10 @@ return function(Config)
         return SectionModule.New(SectionConfig, Window.UIElements.SideBar.Frame, Window.Folder, Config.WindUI.UIScale)
     end
     
+    function Window:IsResizable(v)
+        Window.Resizable = v
+        Window.CanResize = v
+    end
     
     function Window:Divider()
         local Divider = New("Frame", {
@@ -1401,7 +1412,9 @@ return function(Config)
             SearchBar.new(Window.TabModule, Window.UIElements.Main, function()
                 -- OnClose
                 IsOpen = false
-                Window.CanResize = true
+                if Window.Resizable then
+                    Window.CanResize = true
+                end
                 
                 Tween(FullScreenBlur, 0.1, {ImageTransparency = 1}):Play()
                 FullScreenBlur.Active = false

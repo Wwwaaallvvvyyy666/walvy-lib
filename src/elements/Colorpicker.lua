@@ -611,12 +611,10 @@ function Element:New(Config)
     Creator.AddSignal(Colorpicker.UIElements.Colorpicker.MouseButton1Click, function()
         if CanCallback then
             Element:Colorpicker(Colorpicker, function(color, transparency)
-                if CanCallback then
-                    Colorpicker:Update(color, transparency)
-                    Colorpicker.Default = color
-                    Colorpicker.Transparency = transparency
-                    Creator.SafeCallback(Colorpicker.Callback, color, transparency)
-                end
+                Colorpicker:Update(color, transparency)
+                Colorpicker.Default = color
+                Colorpicker.Transparency = transparency
+                Creator.SafeCallback(Colorpicker.Callback, color, transparency)
             end).ColorpickerFrame:Open()
         end
     end)

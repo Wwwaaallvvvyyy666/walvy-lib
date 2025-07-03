@@ -62,6 +62,7 @@ local Window = WindUI:CreateWindow({
     Folder = "CloudHub",
     Size = UDim2.fromOffset(580, 460),
     Transparent = true,
+    Resizable = false,
     Theme = "Dark",
     User = {
         Enabled = true, -- <- or false
@@ -592,6 +593,18 @@ Tabs.DropdownTab:Dropdown({
     Callback = function(option) print("Selected: " .. option) end
 })
 
+local superdropdown
+
+superdropdown = Tabs.DropdownTab:Dropdown({
+    Title = "You cant select.",
+    Values = { "Option 1", "Option 2", "Option 3" },
+    Value = nil,
+    AllowNone = true,
+    Callback = function(option)
+        superdropdown:Select()
+    end
+})
+
 Tabs.DropdownTab:Dropdown({
     Title = "Choose a Category (Multi)",
     Values = { "Category A", "Category B", "Category C" },
@@ -605,14 +618,6 @@ Tabs.DropdownTab:Dropdown({
 Tabs.DropdownTab:Dropdown({
     Title = "Big Dropdown",
     Values = { "Lllllllloooooooonnnnnggggggggg Tab", 
-               "Hi",
-               "Hi",
-               "Hi",
-               "Hi",
-               "Hi",
-               "Hi",
-               "Hi",
-               "Hi",
                "Hi",
              },
     --Value = { "" },
@@ -1072,74 +1077,82 @@ local ColorpickerElement = Tabs.ConfigTab:Colorpicker({
 -- 1. Load ConfigManager
 local ConfigManager = Window.ConfigManager
 
-
--- 2. Create Config File                    ↓ Config File name
-local myConfig = ConfigManager:CreateConfig("myConfig")
-
-
--- 3. Register elements
-
---               | ↓ Element name (no spaces)  | ↓ Element          |
-myConfig:Register( "toggleNameExample",          ToggleElement      )
-myConfig:Register( "sliderNameExample",          SliderElement      ) 
-myConfig:Register( "keybindNameExample",         KeybindElement     )
-myConfig:Register( "dropdownNameExample",        DropdownElement    )
-myConfig:Register( "inputNameExample",           InputElement       )
-myConfig:Register( "ColorpickerNameExample",     ColorpickerElement )
-
-
--- Save
-
---[[ Saving at 
-    {yourExecutor}
-        /Workspace
-            /WindUI
-                /{Window.Folder}
-                    /config
-                        /myConfig.json
-                        
-                                       ]]
-                                   
--- myConfig:Save()
-
-
--- Load   
-
--- myConfig:Load()
-
-
-
--- Usage:
-
-Tabs.ConfigTab:Button({
-    Title = "Save",
-    Desc = "Saves elements to config",
-    Callback = function()
-        myConfig:Save()
-    end
-})
-
-Tabs.ConfigTab:Button({
-    Title = "Load",
-    Desc = "Loads elements from config",
-    Callback = function()
-        myConfig:Load()
-    end
-})
-
-Tabs.ConfigTab:Button({
-    Title = "Print all configs",
-    --Desc = "Prints configs",
-    Callback = function()
-        print(game:GetService("HttpService"):JSONEncode(ConfigManager:AllConfigs()))
-    end
-})
-
-
-
+if ConfigManager then
+    -- 2. Create Config File                    ↓ Config File name
+    local myConfig = ConfigManager:CreateConfig("myConfig")
+    
+    
+    -- 3. Register elements
+    
+    --               | ↓ Element name (no spaces)  | ↓ Element          |
+    myConfig:Register( "toggleNameExample",          ToggleElement      )
+    myConfig:Register( "sliderNameExample",          SliderElement      ) 
+    myConfig:Register( "keybindNameExample",         KeybindElement     )
+    myConfig:Register( "dropdownNameExample",        DropdownElement    )
+    myConfig:Register( "inputNameExample",           InputElement       )
+    myConfig:Register( "ColorpickerNameExample",     ColorpickerElement )
+    
+    
+    -- Save
+    
+    --[[ Saving at 
+        {yourExecutor}
+            /Workspace
+                /WindUI
+                    /{Window.Folder}
+                        /config
+                            /myConfig.json
+                            
+                                           ]]
+                                       
+    -- myConfig:Save()
+    
+    
+    -- Load   
+    
+    -- myConfig:Load()
+    
+    
+    
+    -- Usage:
+    
+    Tabs.ConfigTab:Button({
+        Title = "Save",
+        Desc = "Saves elements to config",
+        Callback = function()
+            myConfig:Save()
+        end
+    })
+    
+    Tabs.ConfigTab:Button({
+        Title = "Load",
+        Desc = "Loads elements from config",
+        Callback = function()
+            myConfig:Load()
+        end
+    })
+    
+    Tabs.ConfigTab:Button({
+        Title = "Print all configs",
+        --Desc = "Prints configs",
+        Callback = function()
+            print(game:GetService("HttpService"):JSONEncode(ConfigManager:AllConfigs()))
+        end
+    })
+    
+end
+    
+    
 -- function :OnClose()
 
-
 Window:OnClose(function()
-    print("UI closed.")
+    print("UI Closed.")
+end)
+
+
+
+-- function :OnDestroy()
+
+Window:OnDestroy(function()
+    print("UI Destroyed.")
 end)

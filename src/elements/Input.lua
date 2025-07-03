@@ -19,7 +19,7 @@ function Element:New(Config)
         Type = Config.Type or "Input", -- Input or Textarea
         Locked = Config.Locked or false,
         InputIcon = Config.InputIcon or false,
-        PlaceholderText = Config.Placeholder or "Enter Text...",
+        Placeholder = Config.Placeholder or "Enter Text...",
         Value = Config.Value or "",
         Callback = Config.Callback or function() end,
         ClearTextOnFocus = Config.ClearTextOnFocus or false,
@@ -36,7 +36,7 @@ function Element:New(Config)
         Hover = false,
     })
     
-    local InputComponent = CreateInput(Input.PlaceholderText, Input.InputIcon, Input.InputFrame.UIElements.Container, Input.Type, function(v)
+    local InputComponent = CreateInput(Input.Placeholder, Input.InputIcon, Input.InputFrame.UIElements.Container, Input.Type, function(v)
         Input:Set(v)
     end)
     InputComponent.Size = UDim2.new(1,0,0,Input.Type == "Input" and 42 or 42+56+50)
@@ -63,6 +63,10 @@ function Element:New(Config)
             InputComponent.Frame.Frame.TextBox.Text = v
             Input.Value = v
         end
+    end
+    function Input:SetPlaceholder(v)
+        InputComponent.Frame.Frame.TextBox.PlaceholderText = v
+        Input.Placeholder = v
     end
     
     Input:Set(Input.Value)

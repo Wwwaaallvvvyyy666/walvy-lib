@@ -15,7 +15,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale)
         Opened = SectionConfig.Opened or false,
         
         HeaderSize = 42,
-        IconSize = 20,
+        IconSize = 18,
         
         Expandable = false,
     }
@@ -80,7 +80,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale)
                 ThemeTag = {
                     TextColor3 = "Text",
                 },
-                FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
+                FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
                 TextSize = 14,
                 BackgroundTransparency = 1,
                 TextTransparency = .7,

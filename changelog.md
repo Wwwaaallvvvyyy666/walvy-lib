@@ -1,12 +1,9 @@
-# 1.6.3
+# 1.6.31
 ## Changelog:
-- FullScreen function
-- Dropdown size fix
-- Align some things
-- Topbar buttons icon update
-- Fix `:SetTitle()` in Elements
-- New `Section` Element for Tab's
-- Added More Themes
-- Dialog Redesign
-- Fix other bugs
-- Added `:AllConfigs()` to ConfigManager
+- Lock Resize: `Window:IsResizable(false)`
+- Fix Config manager error
+- Added `SetPlaceholder()` to Input
+- Fix Dropdown
+- Fixed Key system Input
+- Paragraph button size 
+- Added `Dialog` to themes. ( If you create your own theme, add a `Dialog` )

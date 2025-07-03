@@ -120,7 +120,7 @@ function TabModule.New(Config)
             true,
             Tab.IconThemed
         )
-        Icon.Size = UDim2.new(0,18,0,18)
+        Icon.Size = UDim2.new(0,16,0,16)
         Icon.Parent = Tab.UIElements.Main.Frame
         Icon.ImageLabel.ImageTransparency = not Tab.Locked and 0 or .7
         Tab.UIElements.Main.Frame.TextLabel.Size = UDim2.new(1,-30,0,0)
@@ -138,7 +138,7 @@ function TabModule.New(Config)
             true,
             Tab.IconThemed
         )
-        Icon2.Size = UDim2.new(0,18,0,18)
+        Icon2.Size = UDim2.new(0,16,0,16)
         Icon2.ImageLabel.ImageTransparency = not Tab.Locked and 0 or .7
         TextOffset = -30
         
@@ -357,7 +357,7 @@ function TabModule.New(Config)
         ParagraphModule.ParagraphFrame = Paragraph  
         if ElementConfig.Buttons and #ElementConfig.Buttons > 0 then  
             local ButtonsContainer = New("Frame", {  
-                Size = UDim2.new(0,0,0,38),  
+                Size = UDim2.new(1,0,0,38),  
                 BackgroundTransparency = 1,  
                 AutomaticSize = "Y",
                 Parent = Paragraph.UIElements.Container
@@ -371,8 +371,8 @@ function TabModule.New(Config)
   
             for _,Button in next, ElementConfig.Buttons do  
                 local ButtonFrame = CreateButton(Button.Title, Button.Icon, Button.Callback, "White", ButtonsContainer)  
-                ButtonFrame.Size = UDim2.new(0,0,0,38)  
-                ButtonFrame.AutomaticSize = "X"  
+                ButtonFrame.Size = UDim2.new(1,0,0,38)  
+                --ButtonFrame.AutomaticSize = "X"  
             end
         end  
           
@@ -483,9 +483,9 @@ function TabModule:SelectTab(TabIndex)
         for _, TabObject in next, TabModule.Tabs do
             if not TabObject.Locked then
                 Tween(TabObject.UIElements.Main, 0.15, {ImageTransparency = 1}):Play()
-                Tween(TabObject.UIElements.Main.Frame.TextLabel, 0.15, {TextTransparency = 0.45}):Play()
+                Tween(TabObject.UIElements.Main.Frame.TextLabel, 0.15, {TextTransparency = 0.3}):Play()
                 if TabObject.UIElements.Icon then
-                    Tween(TabObject.UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.5}):Play()
+                    Tween(TabObject.UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.4}):Play()
                 end
                 TabObject.Selected = false
             end
@@ -493,7 +493,7 @@ function TabModule:SelectTab(TabIndex)
         Tween(TabModule.Tabs[TabIndex].UIElements.Main, 0.15, {ImageTransparency = 0.95}):Play()
         Tween(TabModule.Tabs[TabIndex].UIElements.Main.Frame.TextLabel, 0.15, {TextTransparency = 0}):Play()
         if TabModule.Tabs[TabIndex].UIElements.Icon then
-            Tween(TabModule.Tabs[TabIndex].UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.15}):Play()
+            Tween(TabModule.Tabs[TabIndex].UIElements.Icon.ImageLabel, 0.15, {ImageTransparency = 0.1}):Play()
         end
         TabModule.Tabs[TabIndex].Selected = true
         
