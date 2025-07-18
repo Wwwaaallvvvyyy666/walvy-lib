@@ -30,7 +30,7 @@ local Confirmed = false
 
 WindUI:Popup({
     Title = "Welcome! Popup Example",
-    Icon = "rbxassetid://129260712070622",
+    Icon = "rbxassetid://77799629590713",
     IconThemed = true,
     Content = "This is an Example UI for the " .. gradient("WindUI", Color3.fromHex("#00FF87"), Color3.fromHex("#60EFFF")) .. " Lib",
     Buttons = {
@@ -52,17 +52,17 @@ WindUI:Popup({
 
 repeat wait() until Confirmed
 
---
+-- Start
 
 local Window = WindUI:CreateWindow({
     Title = "WindUI Library",
-    Icon = "rbxassetid://129260712070622",
+    Icon = "rbxassetid://77799629590713",
     IconThemed = true,
     Author = "Example UI",
     Folder = "CloudHub",
     Size = UDim2.fromOffset(580, 460),
     Transparent = true,
-    Resizable = false,
+    Resizable = true,
     Theme = "Dark",
     User = {
         Enabled = true, -- <- or false
@@ -110,7 +110,7 @@ Window:CreateTopbarButton("MyCustomButton3", "battery-plus", function() Window:T
 
 Window:EditOpenButton({
     Title = "Open Example UI",
-    Icon = "monitor",
+    Icon = "rbxassetid://77799629590713",
     CornerRadius = UDim.new(0,16),
     StrokeThickness = 2,
     Color = ColorSequence.new( -- gradient
@@ -164,7 +164,7 @@ do
     
     Tabs.LongTab = Tabs.OtherSection:Tab({ 
         Title = "Long and empty tab. with custom icon", 
-        Icon = "rbxassetid://129260712070622", 
+        Icon = "rbxassetid://77799629590713", 
         IconThemed = true, 
         Desc = "Long Description" 
     })
@@ -353,6 +353,7 @@ Tabs.DialogTab:Button({
         Window:Dialog({
             Title = "Example Dialog",
             Content = "Example Content. lalala",
+            Width = 400,
             Icon = "bird",
             Buttons = {
                 {
@@ -398,7 +399,7 @@ Tabs.DialogTab:Button({
         Window:Dialog({
             Title = "Example Dialog 2",
             Content = "Example Content. lalala",
-            Icon = "rbxassetid://129260712070622",
+            Icon = "rbxassetid://77799629590713",
             Buttons = {
                 {
                     Title = "Ok!",
@@ -442,7 +443,7 @@ Tabs.NotificationTab:Button({
         WindUI:Notify({
             Title = "Notification Example 2",
             Content = "Content",
-            Icon = "rbxassetid://129260712070622",
+            Icon = "rbxassetid://77799629590713",
             IconThemed = true, -- automatic color icon to theme 
             Duration = 5,
         })
@@ -588,8 +589,9 @@ Tabs.KeybindTab:Keybind({
 
 Tabs.DropdownTab:Dropdown({
     Title = "Select an Option",
-    Values = { "Option 1", "Option 2", "Option 3" },
+    Values = { "Option 1", "Option 2", "Option 3", "Option 4" },
     Value = "Option 1",
+    MenuWidth = 360,
     Callback = function(option) print("Selected: " .. option) end
 })
 

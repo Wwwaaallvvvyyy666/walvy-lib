@@ -43,10 +43,10 @@ return function(Config)
 		UIElements = {},
 		CanDropdown = true,
 		Closed = false,
-		SuperParent = Config.Parent,
+		Parent = Config.Parent,
 		Destroyed = false,
 		IsFullscreen = false,
-		CanResize = true,
+		CanResize = false,
 		IsOpenButtonEnabled = true,
 
         ConfigManager = nil,
@@ -64,6 +64,7 @@ return function(Config)
         Window.HideSearchBar = true
     end
     if Window.Resizable ~= false then
+        Window.CanResize = true
         Window.Resizable = true
     end
     
@@ -246,155 +247,13 @@ return function(Config)
         IsPC = nil
     end
     
-    local OpenButtonContainer = nil
-    local OpenButton = nil
-    local OpenButtonIcon = nil
-    local Glow = nil
     
-    do
-        OpenButtonIcon = New("ImageLabel", {
-            Image = "",
-            Size = UDim2.new(0,22,0,22),
-            Position = UDim2.new(0.5,0,0.5,0),
-            LayoutOrder = -1,
-            AnchorPoint = Vector2.new(0.5,0.5),
-            BackgroundTransparency = 1,
-            Name = "Icon"
-        })
     
-        OpenButtonTitle = New("TextLabel", {
-            Text = Window.Title,
-            TextSize = 17,
-            FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-            BackgroundTransparency = 1,
-            AutomaticSize = "XY",
-        })
     
-        OpenButtonDrag = New("Frame", {
-            Size = UDim2.new(0,44-8,0,44-8),
-            BackgroundTransparency = 1, 
-            Name = "Drag",
-        }, {
-            New("ImageLabel", {
-                Image = Creator.Icon("move")[1],
-                ImageRectOffset = Creator.Icon("move")[2].ImageRectPosition,
-                ImageRectSize = Creator.Icon("move")[2].ImageRectSize,
-                Size = UDim2.new(0,18,0,18),
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0.5,0,0.5,0),
-                AnchorPoint = Vector2.new(0.5,0.5),
-            })
-        })
-        OpenButtonDivider = New("Frame", {
-            Size = UDim2.new(0,1,1,0),
-            Position = UDim2.new(0,20+16,0.5,0),
-            AnchorPoint = Vector2.new(0,0.5),
-            BackgroundColor3 = Color3.new(1,1,1),
-            BackgroundTransparency = .9,
-        })
+    -- local OpenButtonContainer = nil
+    -- local OpenButton = nil
+    -- local OpenButtonIcon = nil
     
-        OpenButtonContainer = New("Frame", {
-            Size = UDim2.new(0,0,0,0),
-            Position = UDim2.new(0.5,0,0,6+44/2),
-            AnchorPoint = Vector2.new(0.5,0.5),
-            Parent = Config.Parent,
-            BackgroundTransparency = 1,
-            Active = true,
-            Visible = false,
-        })
-        OpenButton = New("TextButton", {
-            Size = UDim2.new(0,0,0,44),
-            AutomaticSize = "X",
-            Parent = OpenButtonContainer,
-            Active = false,
-            BackgroundTransparency = .25,
-            ZIndex = 99,
-            BackgroundColor3 = Color3.new(0,0,0),
-        }, {
-            -- New("UIScale", {
-            --     Scale = 1.05,
-            -- }),
-		    New("UICorner", {
-                CornerRadius = UDim.new(1,0)
-            }),
-            New("UIStroke", {
-                Thickness = 1,
-                ApplyStrokeMode = "Border",
-                Color = Color3.new(1,1,1),
-                Transparency = 0,
-            }, {
-                New("UIGradient", {
-                    Color = ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff"))
-                })
-            }),
-            OpenButtonDrag,
-            OpenButtonDivider,
-            
-            New("UIListLayout", {
-                Padding = UDim.new(0, 4),
-                FillDirection = "Horizontal",
-                VerticalAlignment = "Center",
-            }),
-            
-            New("TextButton",{
-                AutomaticSize = "XY",
-                Active = true,
-                BackgroundTransparency = 1, -- .93
-                Size = UDim2.new(0,0,0,44-(4*2)),
-                --Position = UDim2.new(0,20+16+16+1,0,0),
-                BackgroundColor3 = Color3.new(1,1,1),
-            }, {
-                New("UICorner", {
-                    CornerRadius = UDim.new(1,-4)
-                }),
-                OpenButtonIcon,
-                New("UIListLayout", {
-                    Padding = UDim.new(0, Window.UIPadding),
-                    FillDirection = "Horizontal",
-                    VerticalAlignment = "Center",
-                }),
-                OpenButtonTitle,
-                New("UIPadding", {
-                    PaddingLeft = UDim.new(0,8+4),
-                    PaddingRight = UDim.new(0,8+4),
-                }),
-            }),
-            New("UIPadding", {
-                PaddingLeft = UDim.new(0,4),
-                PaddingRight = UDim.new(0,4),
-            })
-        })
-        
-        local uiGradient = OpenButton and OpenButton.UIStroke.UIGradient or nil
-    
-        
-        Creator.AddSignal(RunService.RenderStepped, function(deltaTime)
-            if Window.UIElements.Main and OpenButtonContainer and OpenButtonContainer.Parent ~= nil then
-                if uiGradient then
-                    uiGradient.Rotation = (uiGradient.Rotation + 1) % 360
-                end
-                if Glow and Glow.Parent ~= nil and Glow.UIGradient then
-                    Glow.UIGradient.Rotation = (Glow.UIGradient.Rotation + 1) % 360
-                end
-            end
-        end)
-        
-        Creator.AddSignal(OpenButton:GetPropertyChangedSignal("AbsoluteSize"), function()
-            OpenButtonContainer.Size = UDim2.new(
-                0, OpenButton.AbsoluteSize.X,
-                0, OpenButton.AbsoluteSize.Y
-            )
-        end)
-        
-        Creator.AddSignal(OpenButton.TextButton.MouseEnter, function()
-            --Tween(OpenButton.UIScale, .1, {Scale = .99}):Play()
-            Tween(OpenButton.TextButton, .1, {BackgroundTransparency = .93}):Play()
-        end)
-        Creator.AddSignal(OpenButton.TextButton.MouseLeave, function()
-            --Tween(OpenButton.UIScale, .1, {Scale = 1.05}):Play()
-            Tween(OpenButton.TextButton, .1, {BackgroundTransparency = 1}):Play()
-        end)
-    end
     
     local UserIcon
     if Window.User.Enabled then
@@ -414,12 +273,34 @@ return function(Config)
             AnchorPoint = Vector2.new(0,1),
             BackgroundTransparency = 1,
         }, {
+            Creator.NewRoundFrame(Window.UICorner-(Window.UIPadding/2), "SquircleOutline", {
+                Size = UDim2.new(1,0,1,0),
+                ThemeTag = {
+                    ImageColor3 = "Text",
+                },
+                ImageTransparency = 1, -- .85
+                Name = "Outline"
+            }, {
+                New("UIGradient", {
+                    Rotation = 78,
+                    Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 255, 255)),
+                        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 255, 255)),
+                    }),
+                    Transparency = NumberSequence.new({
+                        NumberSequenceKeypoint.new(0.0, 0.1),
+                        NumberSequenceKeypoint.new(0.5, 1),
+                        NumberSequenceKeypoint.new(1.0, 0.1),
+                    })
+                }),
+            }),
             Creator.NewRoundFrame(Window.UICorner-(Window.UIPadding/2), "Squircle", {
                 Size = UDim2.new(1,0,1,0),
                 ThemeTag = {
                     ImageColor3 = "Text",
                 },
-                ImageTransparency = 1, -- .94
+                ImageTransparency = 1, -- .95
                 Name = "UserIcon",
             }, {
                 New("ImageLabel", {
@@ -488,10 +369,12 @@ return function(Config)
                 Window.User.Callback()
             end)
             Creator.AddSignal(UserIcon.MouseEnter, function()
-                Tween(UserIcon.UserIcon, 0.04, {ImageTransparency = .94}):Play()
+                Tween(UserIcon.UserIcon, 0.04, {ImageTransparency = .95}):Play()
+                Tween(UserIcon.Outline, 0.04, {ImageTransparency = .85}):Play()
             end)
             Creator.AddSignal(UserIcon.InputEnded, function()
                 Tween(UserIcon.UserIcon, 0.04, {ImageTransparency = 1}):Play()
+                Tween(UserIcon.Outline, 0.04, {ImageTransparency = 1}):Play()
             end)
         end
     end
@@ -671,23 +554,41 @@ return function(Config)
         IconFrame.AnchorPoint = Vector2.new(0.5,0.5)
         IconFrame.Position = UDim2.new(0.5,0,0.5,0)
         
-        local Button = New("TextButton", {
+        local Button = Creator.NewRoundFrame(9, "Squircle", {
             Size = UDim2.new(0,36,0,36),
-            BackgroundTransparency = 1,
             LayoutOrder = LayoutOrder or 999,
             Parent = Window.UIElements.Main.Main.Topbar.Right,
             --Active = true,
             ZIndex = 9999,
             ThemeTag = {
-                BackgroundColor3 = "Text"
+                ImageColor3 = "Text"
             },
-            BackgroundTransparency = 1 -- .93
+            ImageTransparency = 1 -- .93
         }, {
-            New("UICorner", {
-                CornerRadius = UDim.new(0,9),
+            Creator.NewRoundFrame(9, "SquircleOutline", {
+                Size = UDim2.new(1,0,1,0),
+                ThemeTag = {
+                    ImageColor3 = "Text",
+                },
+                ImageTransparency = 1, -- .75  
+                Name = "Outline"
+            }, {
+                New("UIGradient", {
+                    Rotation = 45,
+                    Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 255, 255)),
+                        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+                        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 255, 255)),
+                    }),
+                    Transparency = NumberSequence.new({
+                        NumberSequenceKeypoint.new(0.0, 0.1),
+                        NumberSequenceKeypoint.new(0.5, 1),
+                        NumberSequenceKeypoint.new(1.0, 0.1),
+                    })
+                }),
             }),
             IconFrame
-        })
+        }, true)
     
         -- shhh
         
@@ -700,11 +601,13 @@ return function(Config)
             Callback()
         end)
         Creator.AddSignal(Button.MouseEnter, function()
-            Tween(Button, .15, {BackgroundTransparency = .93}):Play()
+            Tween(Button, .15, {ImageTransparency = .93}):Play()
+            Tween(Button.Outline, .15, {ImageTransparency = .75}):Play()
             --Tween(IconFrame.ImageLabel, .15, {ImageTransparency = 0}):Play()
         end)
         Creator.AddSignal(Button.MouseLeave, function()
-            Tween(Button, .1, {BackgroundTransparency = 1}):Play()
+            Tween(Button, .1, {ImageTransparency = 1}):Play()
+            Tween(Button.Outline, .1, {ImageTransparency = 1}):Play()
             --Tween(IconFrame.ImageLabel, .1, {ImageTransparency = .2}):Play()
         end)
         
@@ -734,11 +637,11 @@ return function(Config)
     -- })
     
     --Creator.Blur(Window.UIElements.Main.Background)
-    local OpenButtonDragModule
+    -- local OpenButtonDragModule
     
-    if not IsPC then
-        OpenButtonDragModule = Creator.Drag(OpenButtonContainer)
-    end
+    -- if not IsPC then
+    --     OpenButtonDragModule = Creator.Drag(OpenButtonContainer)
+    -- end
     
     if Window.Author then
         local Author = New("TextLabel", {
@@ -758,6 +661,8 @@ return function(Config)
         
     end
     
+    local OpenButtonMain = require("./Openbutton").New(Window)
+
     
     task.spawn(function()
         if Window.Icon then
@@ -774,16 +679,20 @@ return function(Config)
             ImageFrame.Parent = Window.UIElements.Main.Main.Topbar.Left
             ImageFrame.Size = UDim2.new(0,22,0,22)
             
-            if Creator.Icon(tostring(Window.Icon)) and Creator.Icon(tostring(Window.Icon))[1] then
-                -- ImageLabel.Image = Creator.Icon(Window.Icon)[1]
-                -- ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                -- ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
-                OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
-                OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
-                OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
-            end
+            OpenButtonMain:SetIcon(Window.Icon)
+            
+            -- if Creator.Icon(tostring(Window.Icon)) and Creator.Icon(tostring(Window.Icon))[1] then
+            --     -- ImageLabel.Image = Creator.Icon(Window.Icon)[1]
+            --     -- ImageLabel.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+            --     -- ImageLabel.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
+            --     -- OpenButtonIcon.Image = Creator.Icon(Window.Icon)[1]
+            --     -- OpenButtonIcon.ImageRectOffset = Creator.Icon(Window.Icon)[2].ImageRectPosition
+            --     -- OpenButtonIcon.ImageRectSize = Creator.Icon(Window.Icon)[2].ImageRectSize
+                
+            -- end
             -- end
         else
+            OpenButtonMain:SetIcon(Window.Icon)
             OpenButtonIcon.Visible = false
         end
     end)
@@ -840,7 +749,8 @@ return function(Config)
         task.spawn(function()
             task.wait(.3)
             if not IsPC and Window.IsOpenButtonEnabled then
-                OpenButtonContainer.Visible = true
+                -- OpenButtonContainer.Visible = true
+                OpenButtonMain:Visible(true)
             end
         end)
         
@@ -873,7 +783,7 @@ return function(Config)
             Window.Closed = false
             
             Tween(Window.UIElements.Main.Background, 0.2, {
-                ImageTransparency = Config.Transparent and Config.WindUI.TransparencyValue or 0,
+                ImageTransparency = Window.Transparent and Config.WindUI.TransparencyValue or 0,
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         
             Tween(Window.UIElements.Main.Background, 0.4, {
@@ -890,10 +800,10 @@ return function(Config)
             task.spawn(function()
                 task.wait(.5)
                 Tween(BottomDragFrame, .45, {Size = UDim2.new(0,200,0,4), ImageTransparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
-                Tween(ResizeHandle.ImageLabel, .45, {ImageTransparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
                 task.wait(.45)
                 WindowDragModule:Set(true)
                 if Window.Resizable then
+                    Tween(ResizeHandle.ImageLabel, .45, {ImageTransparency = .8}, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out):Play()
                     Window.CanResize = true
                 end
             end)
@@ -903,7 +813,7 @@ return function(Config)
             
             Window.UIElements.Main.Visible = true
             task.spawn(function()
-                task.wait(.19)
+                task.wait(.05)
                 Window.UIElements.Main.Main.Visible = true
             end)
         end)
@@ -990,8 +900,9 @@ return function(Config)
     end
 
     if not IsPC and Window.IsOpenButtonEnabled then
-        Creator.AddSignal(OpenButton.TextButton.MouseButton1Click, function()
-            OpenButtonContainer.Visible = false
+        Creator.AddSignal(OpenButtonMain.Button.TextButton.MouseButton1Click, function()
+            -- OpenButtonContainer.Visible = false
+            OpenButtonMain:Visible(false)
             Window:Open()
         end)
     end
@@ -1014,69 +925,7 @@ return function(Config)
     end)
     
     function Window:EditOpenButton(OpenButtonConfig)
-        -- fuck
-        --task.wait()
-        if OpenButton and OpenButton.Parent ~= nil then
-            local OpenButtonModule = {
-                Title = OpenButtonConfig.Title,
-                Icon = OpenButtonConfig.Icon or Window.Icon,
-                Enabled = OpenButtonConfig.Enabled,
-                Position = OpenButtonConfig.Position,
-                Draggable = OpenButtonConfig.Draggable,
-                OnlyMobile = OpenButtonConfig.OnlyMobile,
-                CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
-                StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
-                Color = OpenButtonConfig.Color 
-                    or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
-            }
-            
-            -- wtf lol
-            
-            if OpenButtonModule.Enabled == false then
-                Window.IsOpenButtonEnabled = false
-            end
-            if OpenButtonModule.Draggable == false and OpenButtonDrag and OpenButtonDivider then
-                OpenButtonDrag.Visible = OpenButtonModule.Draggable
-                OpenButtonDivider.Visible = OpenButtonModule.Draggable
-                
-                if OpenButtonDragModule then
-                    OpenButtonDragModule:Set(OpenButtonModule.Draggable)
-                end
-            end
-            if OpenButtonModule.Position and OpenButtonContainer then
-                OpenButtonContainer.Position = OpenButtonModule.Position
-                --OpenButtonContainer.AnchorPoint = Vector2.new(0,0)
-            end
-            
-            local IsPC = UserInputService.KeyboardEnabled or not UserInputService.TouchEnabled
-            OpenButton.Visible = not OpenButtonModule.OnlyMobile or not IsPC
-            
-            if not OpenButton.Visible then return end
-            
-            if OpenButtonTitle then
-                if OpenButtonModule.Title then
-                    OpenButtonTitle.Text = OpenButtonModule.Title
-                elseif OpenButtonModule.Title == nil then
-                    --OpenButtonTitle.Visible = false
-                end
-            end
-            
-            if Creator.Icon(OpenButtonModule.Icon) and OpenButtonIcon then
-                OpenButtonIcon.Visible = true
-                OpenButtonIcon.Image = Creator.Icon(OpenButtonModule.Icon)[1]
-                OpenButtonIcon.ImageRectOffset = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectPosition
-                OpenButtonIcon.ImageRectSize = Creator.Icon(OpenButtonModule.Icon)[2].ImageRectSize
-            end
-    
-            OpenButton.UIStroke.UIGradient.Color = OpenButtonModule.Color
-            if Glow then
-                Glow.UIGradient.Color = OpenButtonModule.Color
-            end
-    
-            OpenButton.UICorner.CornerRadius = OpenButtonModule.CornerRadius
-            OpenButton.TextButton.UICorner.CornerRadius = UDim.new(OpenButtonModule.CornerRadius.Scale, OpenButtonModule.CornerRadius.Offset-4)
-            OpenButton.UIStroke.Thickness = OpenButtonModule.StrokeThickness
-        end
+        return OpenButtonMain:Edit(OpenButtonConfig)
     end
     
     
@@ -1118,7 +967,7 @@ return function(Config)
         local MainDivider = New("Frame", {
             Parent = Window.UIElements.SideBar.Frame,
             --AutomaticSize = "Y",
-            Size = UDim2.new(1,-7,0,1),
+            Size = UDim2.new(1,-7,0,5),
             BackgroundTransparency = 1,
         }, {
             Divider
@@ -1131,12 +980,15 @@ return function(Config)
     function Window:Dialog(DialogConfig)
         local DialogTable = {
             Title = DialogConfig.Title or "Dialog",
+            Width = DialogConfig.Width or 320,
             Content = DialogConfig.Content,
             Buttons = DialogConfig.Buttons or {},
             
             TextPadding = 10,
         }
         local Dialog = DialogModule.Create(false)
+        
+        Dialog.UIElements.Main.Size = UDim2.new(0,DialogTable.Width,0,0)
         
         local DialogTopFrame = New("Frame", {
             Size = UDim2.new(1,0,0,0),
@@ -1187,7 +1039,7 @@ return function(Config)
 
         Dialog.UIElements.Title = New("TextLabel", {
             Text = DialogTable.Title,
-            TextSize = 18,
+            TextSize = 20,
             FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
             TextXAlignment = "Left",
             TextWrapped = true,
@@ -1251,8 +1103,20 @@ return function(Config)
         end
         
         local function CheckButtonsOverflow()
+            ButtonsLayout.FillDirection = Enum.FillDirection.Horizontal
+            ButtonsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+            ButtonsLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+            ButtonsContent.AutomaticSize = Enum.AutomaticSize.None
+            
+            for _, button in ipairs(Buttons) do
+                button.Size = UDim2.new(0, 0, 1, 0)
+                button.AutomaticSize = Enum.AutomaticSize.X
+            end
+            
+            wait()
+            
             local totalWidth = ButtonsLayout.AbsoluteContentSize.X
-            local parentWidth = ButtonsContent.AbsoluteSize.X - 1
+            local parentWidth = ButtonsContent.AbsoluteSize.X
             
             if totalWidth > parentWidth then
                 ButtonsLayout.FillDirection = Enum.FillDirection.Vertical
@@ -1265,18 +1129,6 @@ return function(Config)
                     button.AutomaticSize = Enum.AutomaticSize.None
                 end
             else
-                ButtonsLayout.FillDirection = Enum.FillDirection.Horizontal
-                ButtonsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-                ButtonsLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-                ButtonsContent.AutomaticSize = Enum.AutomaticSize.None
-                
-                for _, button in ipairs(Buttons) do
-                    button.Size = UDim2.new(0, 0, 1, 0)
-                    button.AutomaticSize = Enum.AutomaticSize.X
-                end
-                
-                wait()
-                
                 local availableSpace = parentWidth - totalWidth
                 if availableSpace > 0 then
                     local smallestButton = nil
@@ -1300,7 +1152,8 @@ return function(Config)
 
         Creator.AddSignal(Dialog.UIElements.Main:GetPropertyChangedSignal("AbsoluteSize"), CheckButtonsOverflow)
         CheckButtonsOverflow()
-
+        
+        wait()
         Dialog:Open()
         
         return Dialog

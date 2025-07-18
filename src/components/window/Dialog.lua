@@ -22,13 +22,13 @@ function DialogModule.Create(Key)
     }
     
     if Key then Dialog.UIPadding = 0 end -- 16
-    if Key then Dialog.UICorner  = 22 end
+    if Key then Dialog.UICorner  = 26 end
     
     if not Key then
         Dialog.UIElements.FullScreen = New("Frame", {
             ZIndex = 999,
-            BackgroundTransparency = 1, -- 0.5
-            BackgroundColor3 = Color3.fromHex("#2a2a2a"),
+            BackgroundTransparency = 1, -- 0.3
+            BackgroundColor3 = Color3.fromHex("#000000"),
             Size = UDim2.new(1,0,1,0),
             Active = false, -- true
             Visible = false, -- true
@@ -41,11 +41,11 @@ function DialogModule.Create(Key)
     end
     
     Dialog.UIElements.Main = New("Frame", {
-        --Size = UDim2.new(1,0,1,0),
+        Size = UDim2.new(0,280,0,0),
         ThemeTag = {
             BackgroundColor3 = "Dialog",
         },
-        AutomaticSize = "XY",
+        AutomaticSize = "Y",
         BackgroundTransparency = 1, -- .7
         Visible = false,
         ZIndex = 99999,
@@ -108,7 +108,7 @@ function DialogModule.Create(Key)
             Dialog.UIElements.MainContainer.Visible = true
             
             if not Key then
-                Tween(Dialog.UIElements.FullScreen, 0.1, {BackgroundTransparency = .5}):Play()
+                Tween(Dialog.UIElements.FullScreen, 0.1, {BackgroundTransparency = .3}):Play()
             end
             Tween(Dialog.UIElements.MainContainer, 0.1, {ImageTransparency = 0}):Play()
             --Tween(Dialog.UIElements.MainContainer.UIScale, 0.1, {Scale = 1}):Play()

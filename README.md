@@ -2,10 +2,13 @@
 
 
 <picture>
-    <source srcset="docs/banner-dark.png" media="(prefers-color-scheme: dark)">
-    <source srcset="docs/banner-light.png" media="(prefers-color-scheme: light)">
+    <source srcset="docs/banner-dark.webp" media="(prefers-color-scheme: dark)">
+    <source srcset="docs/banner-light.webp" media="(prefers-color-scheme: light)">
     <img src="docs/banner-light.png" alt="WindUI Banner">
 </picture>
+
+> [!WARNING]
+> This WindUI was not inspired by, and the name has nothing to do with UI Frameworks
 
 
 ### Credits
