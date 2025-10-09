@@ -1,635 +1,662 @@
--- This is just an example.
-
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
-
-local Localization = WindUI:Localization({
-    Enabled = true,
-    Prefix = "loc:",
-    DefaultLanguage = "en",
-    Translations = {
-        ["en"] = {
-            ["WINDUI_EXAMPLE"] = "WindUI Example",
-            ["WELCOME"] = "Welcome to WindUI!",
-            ["LIB_DESC"] = "Beautiful UI library for Roblox",
-            ["SETTINGS"] = "Settings",
-            ["APPEARANCE"] = "Appearance",
-            ["FEATURES"] = "Features",
-            ["UTILITIES"] = "Utilities",
-            ["UI_ELEMENTS"] = "UI Elements",
-            ["CONFIGURATION"] = "Configuration",
-            ["SAVE_CONFIG"] = "Save Configuration",
-            ["LOAD_CONFIG"] = "Load Configuration",
-            ["THEME_SELECT"] = "Select Theme",
-            ["TRANSPARENCY"] = "Window Transparency",
-            ["LOCKED_TAB"] = "Locked Tab"
-        }
-    }
-})
-
-WindUI.TransparencyValue = 0.2
-WindUI:SetTheme("Dark")
-
-local function gradient(text, startColor, endColor)
-    local result = ""
-    for i = 1, #text do
-        local t = (i - 1) / (#text - 1)
-        local r = math.floor((startColor.R + (endColor.R - startColor.R) * t) * 255)
-        local g = math.floor((startColor.G + (endColor.G - startColor.G) * t) * 255)
-        local b = math.floor((startColor.B + (endColor.B - startColor.B) * t) * 255)
-        result = result .. string.format('<font color="rgb(%d,%d,%d)">%s</font>', r, g, b, text:sub(i, i))
-    end
-    return result
-end
-
-WindUI:Popup({
-    Title = gradient("WindUI Demo", Color3.fromHex("#6A11CB"), Color3.fromHex("#2575FC")),
-    Icon = "sparkles",
-    Content = "loc:LIB_DESC",
-    Buttons = {
-        {
-            Title = "Get Started",
-            Icon = "arrow-right",
-            Variant = "Primary",
-            Callback = function() end
-        }
-    }
-})
-
-
--- Add your service to get key 
 --[[
-WindUI.Services.mysuperservicetogetkey = {
-    Name = "My Super Service",
-    Icon = "droplet", -- lucide or rbxassetid or raw link to img
+
+    WindUI Example (wip)
     
-    Args = { "ServiceId" }, --       <- \
-    --                                   |
-    -- important!!!!!!!!!!!!!!!          |
-    New = function(ServiceId) -- <------ | Args!!!!!!!!!!!!
-        
-        function validateKey(key) -- <--- this too important!!!
-            -- your function to validate key
-            -- see examples at src/utils/
-            
-            if not key then
-                return false, "Key is invalid!" 
-                
-            end
-            
-            return true, "Key is valid!" 
-        end
-        
-        function copyLink()
-            return setclipboard("link to key system service.")
-        end
-        
-        return { 
-        
-            Verify = validateKey, -- <-----  THIS TOO IMPORTANT!!!!!
-            Copy = copyLink -- <-------- IMPORTANT!1!1!1!1!1!1!11!
-        }
-    end
-}
 ]]
 
 
+local WindUI
+
+do
+    local ok, result = pcall(function()
+        return require("./src/init")
+    end)
+    
+    if ok then
+        WindUI = result
+    else 
+        WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+    end
+end
+
+
+-- */  Window  /* --
 local Window = WindUI:CreateWindow({
-    Title = "loc:WINDUI_EXAMPLE",
-    Icon = "geist:window",
-    Author = "loc:WELCOME",
-    Folder = "WindUI_Example",
-    Size = UDim2.fromOffset(580, 490),
-    Theme = "Dark",
+    Title = ".ftgs hub  |  WindUI Example",
+    Author = "by .ftgs • Footagesus",
+    Folder = "ftgshub",
+    NewElements = true,
     
-    HidePanelBackground = false,
-    NewElements = false,
-    -- Background = WindUI:Gradient({
-    --     ["0"] = { Color = Color3.fromHex("#0f0c29"), Transparency = 1 },
-    --     ["100"] = { Color = Color3.fromHex("#302b63"), Transparency = 0.9 },
-    -- }, {
-    --     Rotation = 45,
-    -- }),
-    --Background = "video:https://cdn.discordapp.com/attachments/1337368451865645096/1402703845657673878/VID_20250616_180732_158.webm?ex=68958a01&is=68943881&hm=164c5b04d1076308b38055075f7eb0653c1d73bec9bcee08e918a31321fe3058&",
-    User = {
-        Enabled = true,
-        Anonymous = true,
-        Callback = function()
-            WindUI:Notify({
-                Title = "User Profile",
-                Content = "User profile clicked!",
-                Duration = 3
-            })
-        end
-    },
-    Acrylic = false,
     HideSearchBar = false,
-    SideBarWidth = 200,
-    -- KeySystem = { -- 
-    --     -- Key = { "1234", "5678" },  
-    --     Note = "Example Key System. With platoboost, etc.",
-    --     -- URL = "https://github.com/Footagesus/WindUI",
-    --     -- Thumbnail = {
-    --     --     Image = "rbxassetid://",
-    --     --     Title = "Thumbnail",
-    --     -- },
-    --     API = {
-    --         {   
-    --             -- Title = "Platoboost", -- optional 
-    --             -- Desc = "Click to copy.", -- optional
-    --             -- Icon = "rbxassetid://", -- optional
     
-    --             Type = "platoboost", -- type: platoboost, ...
-    --             ServiceId = 5541, -- service id
-    --             Secret = "1eda3b70-aab4-4394-82e4-4e7f507ae198", -- platoboost secret
-    --         },
-    --         {   
-    --             -- Title = "Other service", -- optional 
-    --             -- Desc = nil, -- optional
-    --             -- Icon = "rbxassetid://", -- optional
-    
-    --             Type = "pandadevelopment", -- type: platoboost, ...
-    --             ServiceId = "windui", -- service id
-    --         },
-    --         {   
-    --             Type = "luarmor",
-    --             ScriptId = "...",
-    --             Discord = "https://discord.com/invite/...",
-    --         },
-    --         { -- Custom service 
-    --             Type = "mysuperservicetogetkey",
-    --             ServiceId = 42,
-    --         }
-    --     },
-    --     SaveKey = true,
-    -- },
-    -- KeySystem = {
-    --     Key = { "pisun" },
-    --     Thumbnail = {
-    --         Image = "rbxassetid://88271032881974",
-    --         Width = 180, -- default 200
-    --     }
-    -- }
-})
-
-
-
--- OPTIONAL   >:(
-
-
-Window.User:SetAnonymous(true)
---Window.User:Disable()
-
-
-
-
-Window:SetIconSize(48)
-
-Window:Tag({
-    Title = "v1.6.4",
-    Color = Color3.fromHex("#30ff6a")
-})
-Window:Tag({
-    Title = "Beta",
-    Color = Color3.fromHex("#315dff")
-})
-local TimeTag = Window:Tag({
-    Title = "--:--",
-    Radius = 0,
-    --Color = Color3.fromHex("#000000"),
-    Color = WindUI:Gradient({
-        ["0"]   = { Color = Color3.fromHex("#FF0F7B"), Transparency = 0 },
-        ["100"] = { Color = Color3.fromHex("#F89B29"), Transparency = 0 },
-    }, {
-        Rotation = 45,
-    }),
-})
-
-
-local hue = 0
-
--- Rainbow effect & Time 
-task.spawn(function()
-	while true do
-		local now = os.date("*t")
-		local hours = string.format("%02d", now.hour)
-		local minutes = string.format("%02d", now.min)
-		
-		hue = (hue + 0.01) % 1
-		local color = Color3.fromHSV(hue, 1, 1)
-		
-		TimeTag:SetTitle(hours .. ":" .. minutes)
-		--TimeTag:SetColor(color)
-
-		task.wait(0.06)
-	end
-end)
-
-
-Window:CreateTopbarButton("theme-switcher", "moon", function()
-    WindUI:SetTheme(WindUI:GetCurrentTheme() == "Dark" and "Light" or "Dark")
-    WindUI:Notify({
-        Title = "Theme Changed",
-        Content = "Current theme: "..WindUI:GetCurrentTheme(),
-        Duration = 2
-    })
-end, 990)
-
-local Sections = {
-    Main = Window:Section({ Title = "loc:FEATURES", Opened = true }),
-    Settings = Window:Section({ Title = "loc:SETTINGS", Opened = true }),
-    Utilities = Window:Section({ Title = "loc:UTILITIES", Opened = true })
-}
-
-local Tabs = {
-    Elements = Sections.Main:Tab({ Title = "loc:UI_ELEMENTS", Icon = "layout-grid", Desc = "UI Elements Example" }),
-    Appearance = Sections.Settings:Tab({ Title = "loc:APPEARANCE", Icon = "brush" }),
-    Config = Sections.Utilities:Tab({ Title = "loc:CONFIGURATION", Icon = "settings" }),
-    LockedTab1 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
-    LockedTab2 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
-    LockedTab3 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
-    LockedTab4 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
-    LockedTab5 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
-}
-
--- Tabs.Elements:Paragraph({
---     Title = "Interactive Components",
---     Desc = "Explore WindUI's powerful elements",
---     Image = "component",
---     ImageSize = 20,
---     Color = Color3.fromHex("#30ff6a"),
--- })
-
-Tabs.Elements:Section({
-    Title = "Interactive Components",
-    TextSize = 20,
-})
-
-Tabs.Elements:Section({
-    Title = "Explore WindUI's powerful elements",
-    TextSize = 16,
-    TextTransparency = .25,
-})
-
-Tabs.Elements:Divider()
-
-local ElementsSection = Tabs.Elements:Section({
-    Title = "Section Example",
-    Icon = "bird",
-})
-
-local toggleState = false
-local featureToggle = ElementsSection:Toggle({
-    Title = "Enable Features",
-    --Desc = "Unlocks additional functionality",
-    Value = false,
-    Callback = function(state) 
-        toggleState = state
-        WindUI:Notify({
-            Title = "Features",
-            Content = state and "Features Enabled" or "Features Disabled",
-            Icon = state and "check" or "x",
-            Duration = 2
-        })
-    end
-})
-
-local intensitySlider = ElementsSection:Slider({
-    Title = "Effect Intensity",
-    Desc = "Adjust the effect strength",
-    Value = { Min = 0, Max = 100, Default = 50 },
-    Callback = function(value)
-        print("Intensity set to:", value)
-    end
-})
-
-local values = {}
-
-for i = 1, 40 do
-    table.insert(values, "Test " .. i)
-end
-
-ElementsSection:Space()
-
-
-local testDropdown = ElementsSection:Dropdown({
-    Title = "Dropdown test",
-    Values = values,
-    Value = "Test 1",
-    Callback = function(option)
-        -- WindUI:Notify({
-        --     Title = "Dropdown",
-        --     Content = "Selected: "..option,
-        --     Duration = 2
-        -- })
-    end
-})
-
-testDropdown:Refresh(values)
-
-ElementsSection:Divider()
-
-ElementsSection:Button({
-    Title = "Show Notification",
-    Icon = "bell",
-    Callback = function()
-        WindUI:Notify({
-            Title = "Hello WindUI!",
-            Content = "This is a sample notification",
-            Icon = "bell",
-            Duration = 3
-        })
-    end
-})
-
-ElementsSection:Colorpicker({
-    Title = "Select Color",
-    --Desc = "Select coloe",
-    Default = Color3.fromHex("#30ff6a"),
-    Transparency = 0, -- enable transparency
-    Callback = function(color, transparency)
-        WindUI:Notify({
-            Title = "Color Changed",
-            Content = "New color: "..color:ToHex().."\nTransparency: "..transparency,
-            Duration = 2
-        })
-    end
-})
-
-ElementsSection:Code({
-    Title = "my_code.luau",
-    Code = [[print("Hello world!")]],
-    OnCopy = function()
-        print("Copied to clipboard!")
-    end
-})
-
-Tabs.Appearance:Paragraph({
-    Title = "Customize Interface",
-    Desc = "Personalize your experience",
-    Image = "palette",
-    ImageSize = 20,
-    Color = "White"
-})
-
-local themes = {}
-for themeName, _ in pairs(WindUI:GetThemes()) do
-    table.insert(themes, themeName)
-end
-table.sort(themes)
-
-local canchangetheme = true
-local canchangedropdown = true
-
-
-
-local themeDropdown = Tabs.Appearance:Dropdown({
-    Title = "loc:THEME_SELECT",
-    Values = themes,
-    SearchBarEnabled = true,
-    MenuWidth = 280,
-    Value = "Dark",
-    Callback = function(theme)
-        canchangedropdown = false
-        WindUI:SetTheme(theme)
-        WindUI:Notify({
-            Title = "Theme Applied",
-            Content = theme,
-            Icon = "palette",
-            Duration = 2
-        })
-        canchangedropdown = true
-    end
-})
-
-local transparencySlider = Tabs.Appearance:Slider({
-    Title = "loc:TRANSPARENCY",
-    Value = { 
-        Min = 0,
-        Max = 1,
-        Default = 0.2,
-    },
-    Step = 0.1,
-    Callback = function(value)
-        WindUI.TransparencyValue = tonumber(value)
-        Window:ToggleTransparency(tonumber(value) > 0)
-    end
-})
-
-local ThemeToggle = Tabs.Appearance:Toggle({
-    Title = "Enable Dark Mode",
-    Desc = "Use dark color scheme",
-    Value = true,
-    Callback = function(state)
-        if canchangetheme then
-            WindUI:SetTheme(state and "Dark" or "Light")
-        end
-        if canchangedropdown then
-            themeDropdown:Select(state and "Dark" or "Light")
-        end
-    end
-})
-
-WindUI:OnThemeChange(function(theme)
-    canchangetheme = false
-    ThemeToggle:Set(theme == "Dark")
-    canchangetheme = true
-end)
-
-
-Tabs.Appearance:Button({
-    Title = "Create New Theme",
-    Icon = "plus",
-    Callback = function()
-        Window:Dialog({
-            Title = "Create Theme",
-            Content = "This feature is coming soon!",
-            Buttons = {
-                {
-                    Title = "OK",
-                    Variant = "Primary"
-                }
-            }
-        })
-    end
-})
-
-Tabs.Config:Paragraph({
-    Title = "Configuration Manager",
-    Desc = "Save and load your settings",
-    Image = "save",
-    ImageSize = 20,
-    Color = "White"
-})
-
-local configName = "default"
-local configFile = nil
-local MyPlayerData = {
-    name = "Player1",
-    level = 1,
-    inventory = { "sword", "shield", "potion" }
-}
-
-Tabs.Config:Input({
-    Title = "Config Name",
-    Value = configName,
-    Callback = function(value)
-        configName = value or "default"
-    end
-})
-
-local ConfigManager = Window.ConfigManager
-if ConfigManager then
-    ConfigManager:Init(Window)
-    
-    Tabs.Config:Button({
-        Title = "loc:SAVE_CONFIG",
-        Icon = "save",
-        Variant = "Primary",
-        Callback = function()
-            configFile = ConfigManager:CreateConfig(configName)
-            
-            configFile:Register("featureToggle", featureToggle)
-            configFile:Register("intensitySlider", intensitySlider)
-            configFile:Register("testDropdown", testDropdown)
-            configFile:Register("themeDropdown", themeDropdown)
-            configFile:Register("transparencySlider", transparencySlider)
-            
-            configFile:Set("playerData", MyPlayerData)
-            configFile:Set("lastSave", os.date("%Y-%m-%d %H:%M:%S"))
-            
-            if configFile:Save() then
-                WindUI:Notify({ 
-                    Title = "loc:SAVE_CONFIG", 
-                    Content = "Saved as: "..configName,
-                    Icon = "check",
-                    Duration = 3
-                })
-            else
-                WindUI:Notify({ 
-                    Title = "Error", 
-                    Content = "Failed to save config",
-                    Icon = "x",
-                    Duration = 3
-                })
-            end
-        end
-    })
-
-    Tabs.Config:Button({
-        Title = "loc:LOAD_CONFIG",
-        Icon = "folder",
-        Callback = function()
-            configFile = ConfigManager:CreateConfig(configName)
-            local loadedData = configFile:Load()
-            
-            if loadedData then
-                if loadedData.playerData then
-                    MyPlayerData = loadedData.playerData
-                end
-                
-                local lastSave = loadedData.lastSave or "Unknown"
-                WindUI:Notify({ 
-                    Title = "loc:LOAD_CONFIG", 
-                    Content = "Loaded: "..configName.."\nLast save: "..lastSave,
-                    Icon = "refresh-cw",
-                    Duration = 5
-                })
-                
-                Tabs.Config:Paragraph({
-                    Title = "Player Data",
-                    Desc = string.format("Name: %s\nLevel: %d\nInventory: %s", 
-                        MyPlayerData.name, 
-                        MyPlayerData.level, 
-                        table.concat(MyPlayerData.inventory, ", "))
-                })
-            else
-                WindUI:Notify({ 
-                    Title = "Error", 
-                    Content = "Failed to load config",
-                    Icon = "x",
-                    Duration = 3
-                })
-            end
-        end
-    })
-else
-    Tabs.Config:Paragraph({
-        Title = "Config Manager Not Available",
-        Desc = "This feature requires ConfigManager",
-        Image = "alert-triangle",
-        ImageSize = 20,
-        Color = "White"
-    })
-end
-
-
-local footerSection = Window:Section({ Title = "WindUI " .. WindUI.Version })
-Tabs.Config:Paragraph({
-    Title = "Github Repository",
-    Desc = "github.com/Footagesus/WindUI",
-    Image = "github",
-    ImageSize = 20,
-    Color = "Grey",
-    Buttons = {
-        {
-            Title = "Copy Link",
-            Icon = "copy",
-            Variant = "Tertiary",
-            Callback = function()
-                setclipboard("https://github.com/Footagesus/WindUI")
-                WindUI:Notify({
-                    Title = "Copied!",
-                    Content = "GitHub link copied to clipboard",
-                    Duration = 2
-                })
-            end
-        }
+    OpenButton = {
+        Title = "Open .ftgs hub UI", -- can be changed
+        CornerRadius = UDim.new(1,0), -- fully rounded
+        StrokeThickness = 3, -- removing outline
+        Enabled = true, -- enable or disable openbutton
+        Draggable = true,
+        OnlyMobile = false,
+        
+        Color = ColorSequence.new( -- gradient
+            Color3.fromHex("#30FF6A"), 
+            Color3.fromHex("#e7ff2f")
+        )
     }
 })
 
-Window:OnClose(function()
-    print("Window closed")
+
+-- */ Other Functions /* --
+local function parseJSON(luau_table, indent, level, visited)
+    indent = indent or 2
+    level = level or 0
+    visited = visited or {}
     
-    if ConfigManager and configFile then
-        configFile:Set("playerData", MyPlayerData)
-        configFile:Set("lastSave", os.date("%Y-%m-%d %H:%M:%S"))
-        configFile:Save()
-        print("Config auto-saved on close")
+    local currentIndent = string.rep(" ", level * indent)
+    local nextIndent = string.rep(" ", (level + 1) * indent)
+    
+    if luau_table == nil then
+        return "null"
     end
-end)
-
-Window:OnDestroy(function()
-    print("Window destroyed")
-end)
-
-Window:OnOpen(function()
-    print("Window opened")
-end)
-
-
-
--- lock all elements
-Window:UnlockAll()
-
--- unlock all elements
---Window:UnlockAll()
-
--- unlock all elements in tab
-task.wait(0.05)
---  no working :( idk why 
--- Tabs.Elements:LockAll()
-
-if Window:GetUnlocked() and #Window:GetUnlocked() > 0 then
-    print("Locked Elements in Window: ")
-    for _, lockedelement in next, Window:GetUnlocked() do
-        local title = lockedelement.Title
-        if string.find(title, Localization.Prefix) then
-            local translations = Localization.Translations[WindUI.Creator.Language] or Localization.Translations[Localization.DefaultLanguage]
-            title = translations[ title:gsub("^" .. Localization.Prefix, "") ]
+    
+    local dataType = type(luau_table)
+    
+    if dataType == "table" then
+        if visited[luau_table] then
+            return "\"[Circular Reference]\""
         end
-        print("- " .. (title or "Unknown"))
+        
+        visited[luau_table] = true
+        
+        local isArray = true
+        local maxIndex = 0
+        
+        for k, _ in pairs(luau_table) do
+            if type(k) == "number" and k > maxIndex then
+                maxIndex = k
+            end
+            if type(k) ~= "number" or k <= 0 or math.floor(k) ~= k then
+                isArray = false
+                break
+            end
+        end
+        
+        local count = 0
+        for _ in pairs(luau_table) do
+            count = count + 1
+        end
+        if count ~= maxIndex and isArray then
+            isArray = false
+        end
+        
+        if count == 0 then
+            return "{}"
+        end
+        
+        if isArray then
+            if count == 0 then
+                return "[]"
+            end
+            
+            local result = "[\n"
+            
+            for i = 1, maxIndex do
+                result = result .. nextIndent .. parseJSON(luau_table[i], indent, level + 1, visited)
+                if i < maxIndex then
+                    result = result .. ","
+                end
+                result = result .. "\n"
+            end
+            
+            result = result .. currentIndent .. "]"
+            return result
+        else
+            local result = "{\n"
+            local first = true
+            
+            local keys = {}
+            for k in pairs(luau_table) do
+                table.insert(keys, k)
+            end
+            table.sort(keys, function(a, b)
+                if type(a) == type(b) then
+                    return tostring(a) < tostring(b)
+                else
+                    return type(a) < type(b)
+                end
+            end)
+            
+            for _, k in ipairs(keys) do
+                local v = luau_table[k]
+                if not first then
+                    result = result .. ",\n"
+                else
+                    first = false
+                end
+                
+                if type(k) == "string" then
+                    result = result .. nextIndent .. "\"" .. k .. "\": "
+                else
+                    result = result .. nextIndent .. "\"" .. tostring(k) .. "\": "
+                end
+                
+                result = result .. parseJSON(v, indent, level + 1, visited)
+            end
+            
+            result = result .. "\n" .. currentIndent .. "}"
+            return result
+        end
+    elseif dataType == "string" then
+        local escaped = luau_table:gsub("\\", "\\\\")
+        escaped = escaped:gsub("\"", "\\\"")
+        escaped = escaped:gsub("\n", "\\n")
+        escaped = escaped:gsub("\r", "\\r")
+        escaped = escaped:gsub("\t", "\\t")
+        
+        return "\"" .. escaped .. "\""
+    elseif dataType == "number" then
+        return tostring(luau_table)
+    elseif dataType == "boolean" then
+        return luau_table and "true" or "false"
+    elseif dataType == "function" then
+        return "\"function\""
+    else
+        return "\"" .. dataType .. "\""
     end
-    
+end
+
+local function tableToClipboard(luau_table, indent)
+    indent = indent or 4
+    local jsonString = parseJSON(luau_table, indent)
+    setclipboard(jsonString)
+    return jsonString
 end
 
 
+-- */  Abo ut Tab  /* --
+do
+    local AboutTab = Window:Tab({
+        Title = "About WindUI",
+        Icon = "info",
+    })
+    
+    local AboutSection = AboutTab:Section({
+        Title = "About WindUI",
+    })
+    
+    AboutSection:Image({
+        Image = "https://repository-images.githubusercontent.com/880118829/428bedb1-dcbd-43d5-bc7f-3beb2e9e0177",
+        AspectRatio = "16:9",
+        Radius = 9,
+    })
+    
+    AboutSection:Space({ Columns = 3 })
+    
+    AboutSection:Section({
+        Title = "What is WindUI?",
+        TextSize = 24,
+        FontWeight = Enum.FontWeight.SemiBold,
+    })
+
+    AboutSection:Space()
+    
+    AboutSection:Section({
+        Title = [[WindUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.
+Developed by Footagesus (.ftgs, Footages).
+It aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.
+The project is primarily written in Lua (Luau), the scripting language used in Roblox.]],
+        TextSize = 18,
+        TextTransparency = .35,
+        FontWeight = Enum.FontWeight.Medium,
+    })
+    
+    AboutTab:Space({ Columns = 4 }) 
+    
+    
+    -- Default buttons
+    
+    AboutTab:Button({
+        Title = "Export WindUI JSON (copy)",
+        Color = Color3.fromHex("#a2ff30"),
+        Justify = "Center",
+        IconAlign = "Left",
+        Icon = "", -- removing icon
+        Callback = function()
+            tableToClipboard(WindUI)
+            WindUI:Notify({
+                Title = "WindUI JSON",
+                Content = "Copied to Clipboard!"
+            })
+        end
+    })
+    AboutTab:Space({ Columns = 1 }) 
+    
+    
+    AboutTab:Button({
+        Title = "Destroy Window",
+        Color = Color3.fromHex("#ff4830"),
+        Justify = "Center",
+        Icon = "shredder",
+        IconAlign = "Left",
+        Callback = function()
+            Window:Destroy()
+        end
+    })
+end
+
+-- */  Elements Section  /* --
+local ElementsSection = Window:Section({
+    Title = "Elements",
+})
+local ConfigUsageSection = Window:Section({
+    Title = "Config Usage",
+})
+local OtherSection = Window:Section({
+    Title = "Other",
+})
+
+
+-- */ Using Nebula Icons /* --
+do
+    local NebulaIcons = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
+    
+    -- Adding icons (e.g. Fluency)
+    WindUI.Creator.AddIcons("fluency",    NebulaIcons.Fluency)
+    --               ^ Icon name          ^ Table of Icons
+    
+    -- You can also add nebula icons
+    WindUI.Creator.AddIcons("nebula",    NebulaIcons.nebulaIcons)
+    
+    -- Usage ↑ ↓
+    
+    local TestSection = Window:Section({
+        Title = "Custom icons usage test (nebula)",
+        Icon = "nebula:nebula",
+    })
+end
+
+
+
+-- */  Toggle Tab  /* --
+do
+    local ToggleTab = ElementsSection:Tab({
+        Title = "Toggle",
+        Icon = "arrow-left-right"
+    })
+    
+    
+    ToggleTab:Toggle({
+        Title = "Toggle",
+    })
+    
+    ToggleTab:Space()
+    
+    ToggleTab:Toggle({
+        Title = "Toggle",
+        Desc = "Toggle example"
+    })
+    
+    ToggleTab:Space()
+    
+    
+    ToggleTab:Toggle({
+        Title = "Toggle",
+        Locked = true,
+    })
+    
+    ToggleTab:Toggle({
+        Title = "Toggle",
+        Desc = "Toggle example",
+        Locked = true,
+    })
+end
+
+
+-- */  Button Tab  /* --
+do
+    local ButtonTab = ElementsSection:Tab({
+        Title = "Button",
+        Icon = "mouse-pointer-click",
+    })
+    
+    
+    local HighlightButton
+    HighlightButton = ButtonTab:Button({
+        Title = "Highlight Button",
+        Icon = "mouse",
+        Callback = function()
+            print("clicked highlight")
+            HighlightButton:Highlight()
+        end
+    })
+
+    ButtonTab:Space()
+    
+    ButtonTab:Button({
+        Title = "Blue Button",
+        Color = Color3.fromHex("#305dff"),
+        Icon = "",
+        Callback = function()
+        end
+    })
+
+    ButtonTab:Space()
+    
+    ButtonTab:Button({
+        Title = "Blue Button",
+        Desc = "With description",
+        Color = Color3.fromHex("#305dff"),
+        Icon = "",
+        Callback = function()
+        end
+    })
+    
+    ButtonTab:Space()
+    
+    ButtonTab:Button({
+        Title = "Button",
+        Desc = "Button example",
+    })
+    
+    ButtonTab:Space()
+    
+    ButtonTab:Button({
+        Title = "Button",
+        Locked = true,
+    })
+    
+    
+    ButtonTab:Button({
+        Title = "Button",
+        Desc = "Button example",
+        Locked = true,
+    })
+end
+
+
+-- */  Input Tab  /* --
+do
+    local InputTab = ElementsSection:Tab({
+        Title = "Input",
+        Icon = "text-cursor-input",
+    })
+    
+    
+    InputTab:Input({
+        Title = "Input",
+        Icon = "mouse"
+    })
+    
+    InputTab:Space()
+    
+    
+    InputTab:Input({
+        Title = "Input Textarea",
+        Type = "Textarea",
+        Icon = "mouse",
+    })
+    
+    InputTab:Space()
+    
+    
+    InputTab:Input({
+        Title = "Input Textarea",
+        Type = "Textarea",
+        --Icon = "mouse",
+    })
+    
+    InputTab:Space()
+    
+    
+    InputTab:Input({
+        Title = "Input",
+        Desc = "Input example",
+    })
+    
+    InputTab:Space()
+    
+    
+    InputTab:Input({
+        Title = "Input Textarea",
+        Desc = "Input example",
+        Type = "Textarea",
+    })
+    
+    InputTab:Space()
+    
+    
+    InputTab:Input({
+        Title = "Input",
+        Locked = true,
+    })
+    
+    
+    InputTab:Input({
+        Title = "Input",
+        Desc = "Input example",
+        Locked = true,
+    })
+end
+
+
+
+
+
+-- */  Config Usage  /* --
+do -- config elements
+    local ConfigElementsTab = ConfigUsageSection:Tab({
+        Title = "Config Elements",
+        Icon = "square-dashed-mouse-pointer",
+    })
+    
+    -- All elements are taken from the official documentation: https://footagesus.github.io/WindUI-Docs/docs
+    
+    -- Saving elements to the config using `Flag`
+    
+    ConfigElementsTab:Colorpicker({
+        Flag = "ColorpickerTest",
+        Title = "Colorpicker",
+        Desc = "Colorpicker Description",
+        Default = Color3.fromRGB(0, 255, 0),
+        Transparency = 0,
+        Locked = false,
+        Callback = function(color) 
+            print("Background color: " .. tostring(color))
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Dropdown({
+        Flag = "DropdownTest",
+        Title = "Advanced Dropdown",
+        Values = {
+            {
+                Title = "Category A",
+                Icon = "bird"
+            },
+            {
+                Title = "Category B",
+                Icon = "house"
+            },
+            {
+                Title = "Category C",
+                Icon = "droplet"
+            },
+        },
+        Value = "Category A",
+        Callback = function(option) 
+            print("Category selected: " .. option.Title .. " with icon " .. option.Icon) 
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Input({
+        Flag = "InputTest",
+        Title = "Input",
+        Desc = "Input Description",
+        Value = "Default value",
+        InputIcon = "bird",
+        Type = "Input", -- or "Textarea"
+        Placeholder = "Enter text...",
+        Callback = function(input) 
+            print("Text entered: " .. input)
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Keybind({
+        Flag = "KeybindTest",
+        Title = "Keybind",
+        Desc = "Keybind to open ui",
+        Value = "G",
+        Callback = function(v)
+            Window:SetToggleKey(Enum.KeyCode[v])
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Slider({
+        Flag = "SliderTest",
+        Title = "Slider",
+        Step = 1,
+        Value = {
+            Min = 20,
+            Max = 120,
+            Default = 70,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Toggle({
+        Flag = "ToggleTest",
+        Title = "Toggle",
+        Desc = "Toggle Description",
+        --Icon = "house",
+        --Type = "Checkbox",
+        Default = false,
+        Callback = function(state) 
+            print("Toggle Activated" .. tostring(state))
+        end
+    })
+end
+
+do -- config panel
+    local ConfigTab = ConfigUsageSection:Tab({
+        Title = "Config Usage",
+        Icon = "folder",
+    })
+
+    local ConfigManager = Window.ConfigManager
+    local ConfigName = "default"
+
+    local ConfigNameInput = ConfigTab:Input({
+        Title = "Config Name",
+        Icon = "file-cog",
+        Callback = function(value)
+            ConfigName = value
+        end
+    })
+
+    local AllConfigs = ConfigManager:AllConfigs()
+    local DefaultValue = table.find(AllConfigs, ConfigName) and ConfigName or nil
+
+    ConfigTab:Dropdown({
+        Title = "All Configs",
+        Desc = "Select existing configs",
+        Values = AllConfigs,
+        Value = DefaultValue,
+        Callback = function(value)
+            ConfigName = value
+            ConfigNameInput:Set(value)
+        end
+    })
+
+    ConfigTab:Space()
+
+    ConfigTab:Button({
+        Title = "Save Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Save() then
+                WindUI:Notify({
+                    Title = "Config Saved",
+                    Desc = "Config '" .. ConfigName .. "' saved",
+                    Icon = "check",
+                })
+            end
+        end
+    })
+
+    ConfigTab:Space()
+
+    ConfigTab:Button({
+        Title = "Load Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Load() then
+                WindUI:Notify({
+                    Title = "Config Loaded",
+                    Desc = "Config '" .. ConfigName .. "' loaded",
+                    Icon = "refresh-cw",
+                })
+            end
+        end
+    })
+end
+
+
+
+
+-- */  Other  /* --
+do
+    local InviteCode = "ftgs-development-hub-1300692552005189632"
+    local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
+
+    local Response = game:GetService("HttpService"):JSONDecode(WindUI.Creator.Request({
+        Url = DiscordAPI,
+        Method = "GET",
+        Headers = {
+            ["User-Agent"] = "WindUI/Example",
+            ["Accept"] = "application/json"
+        }
+    }).Body)
+    
+    local DiscordTab = OtherSection:Tab({
+        Title = "Discord",
+    })
+    
+    if Response and Response.guild then
+        DiscordTab:Section({
+            Title = "Join our Discord server!",
+            TextSize = 20,
+        })
+        local DiscordServerParagraph = DiscordTab:Paragraph({
+            Title = tostring(Response.guild.name),
+            Desc = tostring(Response.guild.description),
+            Image = "https://cdn.discordapp.com/icons/" .. Response.guild.id .. "/" .. Response.guild.icon .. ".png?size=1024",
+            Thumbnail = "https://cdn.discordapp.com/banners/1300692552005189632/35981388401406a4b7dffd6f447a64c4.png?size=512",
+            ImageSize = 48,
+            Buttons = {
+                {
+                    Title = "Copy link",
+                    Icon = "link",
+                    Callback = function()
+                        setclipboard("https://discord.gg/" .. InviteCode)
+                    end
+                }
+            }
+        })
+        
+    end
+end

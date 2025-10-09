@@ -14,10 +14,8 @@ do
     
     if ok then
         WindUI = result
-        warn("[WindUI] Development mode (require)")
-    else
-        WindUI = loadstring(game:HttpGet("https://footagesus.github.io/WindUI/init.lua"))()
-        warn("[WindUI] Production mode (loadstring)")
+    else 
+        WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
     end
 end
 
