@@ -191,7 +191,7 @@ function OpenButton.New(Window)
             Enabled = OpenButtonConfig.Enabled,
             Position = OpenButtonConfig.Position,
             OnlyIcon = OpenButtonConfig.OnlyIcon or false,
-            Draggable = OpenButtonConfig.Draggable,
+            Draggable = OpenButtonConfig.Draggable or nil,
             OnlyMobile = OpenButtonConfig.OnlyMobile,
             CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
             StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
@@ -225,10 +225,14 @@ function OpenButton.New(Window)
             Container.Position = OpenButtonModule.Position
         end
         
-        if OpenButtonModule.OnlyIcon and Title then
+        if OpenButtonModule.OnlyIcon == true and Title then
             Title.Visible = false
             Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7)
             Button.TextButton.UIPadding.PaddingRight = UDim.new(0,7)
+        elseif OpenButtonModule.OnlyIcon == false then
+            Title.Visible = true
+            Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7+4)
+            Button.TextButton.UIPadding.PaddingRight = UDim.new(0,7+4)
         end
         
         --OpenButtonMain:Visible((not OpenButtonModule.OnlyMobile) or (not Window.IsPC))

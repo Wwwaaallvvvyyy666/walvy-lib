@@ -149,7 +149,7 @@ return function(Config)
         ThumbnailFrame = Creator.Image(
             Element.Thumbnail, 
             Element.Title, 
-            Element.UICorner-3, 
+            Config.Window.NewElements and Element.UICorner-12 or (Element.UICorner-4), 
             Config.Window.Folder,
             "Thumbnail",
             false,
@@ -161,7 +161,7 @@ return function(Config)
         ImageFrame = Creator.Image(
             Element.Image, 
             Element.Title, 
-            Element.UICorner-3, 
+            Config.Window.NewElements and Element.UICorner-12 or (Element.UICorner-4), 
             Config.Window.Folder,
             "Image",
             not Element.Color and true or false
@@ -214,7 +214,7 @@ return function(Config)
         New("UIListLayout", {
             Padding = UDim.new(0,Element.UIPadding),
             FillDirection = "Vertical",
-            VerticalAlignment = Config.Window.NewElements and "Top" or "Center",
+            VerticalAlignment = "Center",
             HorizontalAlignment = Element.Justify == "Between" and "Left" or "Center",
         }),
         ThumbnailFrame,

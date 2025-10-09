@@ -484,6 +484,7 @@ end
 function Creator.Drag(mainFrame, dragFrames, ondrag)
     local currentDragFrame = nil
     local dragging, dragInput, dragStart, startPos
+    
     local DragModule = {
         CanDraggable = true
     }
@@ -508,6 +509,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                     dragging = true
                     dragStart = input.Position
                     startPos = mainFrame.Position
+                    dragInput = input 
                     
                     if ondrag and type(ondrag) == "function" then 
                         ondrag(true, currentDragFrame)
@@ -517,20 +519,13 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                         if input.UserInputState == Enum.UserInputState.End then
                             dragging = false
                             currentDragFrame = nil
+                            dragInput = nil
                             
                             if ondrag and type(ondrag) == "function" then 
-                                ondrag(false, currentDragFrame)
+                                ondrag(false, nil)
                             end
                         end
                     end)
-                end
-            end
-        end)
-        
-        dragFrame.InputChanged:Connect(function(input)
-            if currentDragFrame == dragFrame and dragging then
-                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                    dragInput = input
                 end
             end
         end)
@@ -550,7 +545,6 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
     
     return DragModule
 end
-
 Icons.Init(New, "Icon")
 
 function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
@@ -593,7 +587,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
         }).IconFrame
         IconLabel.Parent = ImageFrame
     elseif string.find(Img,"http") then
-        local FileName = "WindUI/" .. Folder .. "/Assets/." .. Type .. "-" .. Name .. ".png"
+        local FileName = "WindUI/" .. Folder .. "/assets/." .. Type .. "-" .. Name .. ".png"
         local success, response = pcall(function()
             task.spawn(function()
                 if not isfile(FileName) then
@@ -604,7 +598,17 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
                     
                     writefile(FileName, response)
                 end
-                ImageFrame.ImageLabel.Image = getcustomasset(FileName)
+                --ImageFrame.ImageLabel.Image = getcustomasset(FileName)
+                
+                local assetSuccess, asset = pcall(getcustomasset, FileName)
+                if assetSuccess then
+                    ImageFrame.ImageLabel.Image = asset
+                else
+                    warn(string.format("[ WindUI.Creator ] Failed to load custom asset '%s': %s", FileName, tostring(asset)))
+                    ImageFrame:Destroy()
+                    
+                    return
+                end
             end)
         end)
         if not success then

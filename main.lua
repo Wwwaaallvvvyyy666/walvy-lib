@@ -323,6 +323,7 @@ local toggleState = false
 local featureToggle = ElementsSection:Toggle({
     Title = "Enable Features",
     --Desc = "Unlocks additional functionality",
+    Flag = "featureToggle",
     Value = false,
     Callback = function(state) 
         toggleState = state
@@ -338,6 +339,7 @@ local featureToggle = ElementsSection:Toggle({
 local intensitySlider = ElementsSection:Slider({
     Title = "Effect Intensity",
     Desc = "Adjust the effect strength",
+    Flag = "intensitySlider",
     Value = { Min = 0, Max = 100, Default = 50 },
     Callback = function(value)
         print("Intensity set to:", value)
@@ -375,6 +377,7 @@ ElementsSection:Space()
 local testDropdown = ElementsSection:Dropdown({
     Title = "Dropdown test",
     Values = values,
+    Flag = "testDropdown",
     SearchBarEnabled = true,
     Value = "Test 1",
     Callback = function(option)
@@ -388,6 +391,7 @@ local testDropdown = ElementsSection:Dropdown({
 
 local testDropdown2 = ElementsSection:Dropdown({
     Title = "Dropdown test 2",
+    Flag = "testDropdown2", 
     Values = {
         {
             Title = "Test 1",
@@ -415,6 +419,7 @@ local testDropdown2 = ElementsSection:Dropdown({
 
 local testDropdown3 = ElementsSection:Dropdown({
     Title = "Dropdown test 3",
+    Flag = "testDropdown3", 
     Values = values,
     SearchBarEnabled = true,
     Value = "Test 1",
@@ -489,6 +494,7 @@ local canchangedropdown = true
 local themeDropdown = Tabs.Appearance:Dropdown({
     Title = "loc:THEME_SELECT",
     Values = themes,
+    Flag = "themeDropdown",
     SearchBarEnabled = true,
     MenuWidth = 280,
     Value = "Dark",
@@ -512,6 +518,7 @@ local transparencySlider = Tabs.Appearance:Slider({
         Max = 1,
         Default = 0,
     },
+    Flag = "transparencySlider",
     Step = 0.1,
     Callback = function(value)
         Window:SetBackgroundTransparency(value)
@@ -586,7 +593,7 @@ local ConfigManager = Window.ConfigManager
 Tabs.Config:Dropdown({
     Title = "Select Config",
     Values = ConfigManager:AllConfigs(),
-    Value = nil,
+    Value = configName,
     AllowNone = false,
     Callback = function(value)
         configName = value or "default"
@@ -608,11 +615,11 @@ if ConfigManager then
         Callback = function()
             configFile = ConfigManager:CreateConfig(configName)
             
-            configFile:Register("featureToggle", featureToggle)
-            configFile:Register("intensitySlider", intensitySlider)
-            configFile:Register("testDropdown", testDropdown)
-            configFile:Register("themeDropdown", themeDropdown)
-            configFile:Register("transparencySlider", transparencySlider)
+            --configFile:Register("featureToggle", featureToggle)
+            --configFile:Register("intensitySlider", intensitySlider)
+            --configFile:Register("testDropdown", testDropdown)
+            --configFile:Register("themeDropdown", themeDropdown)
+            --configFile:Register("transparencySlider", transparencySlider)
             
             configFile:Set("playerData", MyPlayerData)
             configFile:Set("lastSave", os.date("%Y-%m-%d %H:%M:%S"))

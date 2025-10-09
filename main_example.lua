@@ -1,10 +1,32 @@
-local WindUI = require("./src/init")
+--[[
+
+    WindUI Example (wip)
+    
+]]
+
+
+local WindUI
+
+do
+    local ok, result = pcall(function()
+        return require("./src/init")
+    end)
+    
+    if ok then
+        WindUI = result
+        warn("[WindUI] Development mode (require)")
+    else
+        WindUI = loadstring(game:HttpGet("https://footagesus.github.io/WindUI/init.lua"))()
+        warn("[WindUI] Production mode (loadstring)")
+    end
+end
 
 
 -- */  Window  /* --
 local Window = WindUI:CreateWindow({
     Title = ".ftgs hub  |  WindUI Example",
     Author = "by .ftgs • Footagesus",
+    Folder = "ftgshub",
     NewElements = true,
     
     HideSearchBar = false,
@@ -23,28 +45,6 @@ local Window = WindUI:CreateWindow({
         )
     }
 })
-
---Window:SetTitle(Window.Title .. " | " .. WindUI.Version)
-
-
--- */  Configuring OpenButton  /* --
---[[ moved to :CreateWindow(...)
-Window:EditOpenButton({
-    Title = "Open .ftgs hub UI", -- can be changed
-    CornerRadius = UDim.new(1,0), -- fully rounded
-    StrokeThickness = 3, -- removing outline
-    Enabled = true, -- enable or disable openbutton
-    Draggable = true,
-    OnlyMobile = false,
-    
-    Color = ColorSequence.new( -- gradient
-        Color3.fromHex("#30FF6A"), 
-        Color3.fromHex("#e7ff2f")
-    )
-    
-    -- Icon = "monitor",
-})
---]]
 
 
 -- */ Other Functions /* --
@@ -174,7 +174,7 @@ local function tableToClipboard(luau_table, indent)
 end
 
 
--- */  About Tab  /* --
+-- */  Abo ut Tab  /* --
 do
     local AboutTab = Window:Tab({
         Title = "About WindUI",
@@ -245,6 +245,18 @@ The project is primarily written in Lua (Luau), the scripting language used in R
     })
 end
 
+-- */  Elements Section  /* --
+local ElementsSection = Window:Section({
+    Title = "Elements",
+})
+local ConfigUsageSection = Window:Section({
+    Title = "Config Usage",
+})
+local OtherSection = Window:Section({
+    Title = "Other",
+})
+
+
 -- */ Using Nebula Icons /* --
 do
     local NebulaIcons = loadstring(game:HttpGet("https://raw.nebulasoftworks.xyz/nebula-icon-library-loader"))()
@@ -260,14 +272,10 @@ do
     
     local TestSection = Window:Section({
         Title = "Custom icons usage test (nebula)",
-        Icon = "nebula:nebula"
+        Icon = "nebula:nebula",
     })
 end
 
--- */  Elements Section  /* --
-local ElementsSection = Window:Section({
-    Title = "Elements",
-})
 
 
 -- */  Toggle Tab  /* --
@@ -432,3 +440,225 @@ do
 end
 
 
+
+
+
+-- */  Config Usage  /* --
+do -- config elements
+    local ConfigElementsTab = ConfigUsageSection:Tab({
+        Title = "Config Elements",
+        Icon = "square-dashed-mouse-pointer",
+    })
+    
+    -- All elements are taken from the official documentation: https://footagesus.github.io/WindUI-Docs/docs
+    
+    -- Saving elements to the config using `Flag`
+    
+    ConfigElementsTab:Colorpicker({
+        Flag = "ColorpickerTest",
+        Title = "Colorpicker",
+        Desc = "Colorpicker Description",
+        Default = Color3.fromRGB(0, 255, 0),
+        Transparency = 0,
+        Locked = false,
+        Callback = function(color) 
+            print("Background color: " .. tostring(color))
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Dropdown({
+        Flag = "DropdownTest",
+        Title = "Advanced Dropdown",
+        Values = {
+            {
+                Title = "Category A",
+                Icon = "bird"
+            },
+            {
+                Title = "Category B",
+                Icon = "house"
+            },
+            {
+                Title = "Category C",
+                Icon = "droplet"
+            },
+        },
+        Value = "Category A",
+        Callback = function(option) 
+            print("Category selected: " .. option.Title .. " with icon " .. option.Icon) 
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Input({
+        Flag = "InputTest",
+        Title = "Input",
+        Desc = "Input Description",
+        Value = "Default value",
+        InputIcon = "bird",
+        Type = "Input", -- or "Textarea"
+        Placeholder = "Enter text...",
+        Callback = function(input) 
+            print("Text entered: " .. input)
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Keybind({
+        Flag = "KeybindTest",
+        Title = "Keybind",
+        Desc = "Keybind to open ui",
+        Value = "G",
+        Callback = function(v)
+            Window:SetToggleKey(Enum.KeyCode[v])
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Slider({
+        Flag = "SliderTest",
+        Title = "Slider",
+        Step = 1,
+        Value = {
+            Min = 20,
+            Max = 120,
+            Default = 70,
+        },
+        Callback = function(value)
+            print(value)
+        end
+    })
+    
+    ConfigElementsTab:Space()
+    
+    ConfigElementsTab:Toggle({
+        Flag = "ToggleTest",
+        Title = "Toggle",
+        Desc = "Toggle Description",
+        --Icon = "house",
+        --Type = "Checkbox",
+        Default = false,
+        Callback = function(state) 
+            print("Toggle Activated" .. tostring(state))
+        end
+    })
+end
+
+do -- config panel
+    local ConfigTab = ConfigUsageSection:Tab({
+        Title = "Config Usage",
+        Icon = "folder",
+    })
+
+    local ConfigManager = Window.ConfigManager
+    local ConfigName = "default"
+
+    local ConfigNameInput = ConfigTab:Input({
+        Title = "Config Name",
+        Icon = "file-cog",
+        Callback = function(value)
+            ConfigName = value
+        end
+    })
+
+    local AllConfigs = ConfigManager:AllConfigs()
+    local DefaultValue = table.find(AllConfigs, ConfigName) and ConfigName or nil
+
+    ConfigTab:Dropdown({
+        Title = "All Configs",
+        Desc = "Select existing configs",
+        Values = AllConfigs,
+        Value = DefaultValue,
+        Callback = function(value)
+            ConfigName = value
+            ConfigNameInput:Set(value)
+        end
+    })
+
+    ConfigTab:Space()
+
+    ConfigTab:Button({
+        Title = "Save Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Save() then
+                WindUI:Notify({
+                    Title = "Config Saved",
+                    Desc = "Config '" .. ConfigName .. "' saved",
+                    Icon = "check",
+                })
+            end
+        end
+    })
+
+    ConfigTab:Space()
+
+    ConfigTab:Button({
+        Title = "Load Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Load() then
+                WindUI:Notify({
+                    Title = "Config Loaded",
+                    Desc = "Config '" .. ConfigName .. "' loaded",
+                    Icon = "refresh-cw",
+                })
+            end
+        end
+    })
+end
+
+
+
+
+-- */  Other  /* --
+do
+    local InviteCode = "ftgs-development-hub-1300692552005189632"
+    local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
+
+    local Response = game:GetService("HttpService"):JSONDecode(WindUI.Creator.Request({
+        Url = DiscordAPI,
+        Method = "GET",
+        Headers = {
+            ["User-Agent"] = "WindUI/Example",
+            ["Accept"] = "application/json"
+        }
+    }).Body)
+    
+    local DiscordTab = OtherSection:Tab({
+        Title = "Discord",
+    })
+    
+    if Response and Response.guild then
+        DiscordTab:Section({
+            Title = "Join our Discord server!",
+            TextSize = 20,
+        })
+        local DiscordServerParagraph = DiscordTab:Paragraph({
+            Title = tostring(Response.guild.name),
+            Desc = tostring(Response.guild.description),
+            Image = "https://cdn.discordapp.com/icons/" .. Response.guild.id .. "/" .. Response.guild.icon .. ".png?size=1024",
+            Thumbnail = "https://cdn.discordapp.com/banners/1300692552005189632/35981388401406a4b7dffd6f447a64c4.png?size=512",
+            ImageSize = 48,
+            Buttons = {
+                {
+                    Title = "Copy link",
+                    Icon = "link",
+                    Callback = function()
+                        setclipboard("https://discord.gg/" .. InviteCode)
+                    end
+                }
+            }
+        })
+        
+    end
+end

@@ -225,7 +225,7 @@ function Element:New(Config)
     end)
     
     task.spawn(function()
-        task.wait()
+        task.wait(0.02)
         if Section.Expandable then
             -- New("UIPadding", {
             --     PaddingTop = UDim.new(0,4),

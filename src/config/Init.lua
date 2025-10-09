@@ -5,7 +5,6 @@ local Window
 
 local ConfigManager
 ConfigManager = {
-    --Window = nil,
     Folder = nil,
     Path = nil,
     Configs = {},
@@ -19,7 +18,7 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
+                if element and element.Update then
                     element:Update(Color3.fromHex(data.value), data.transparency or nil)
                 end
             end
@@ -32,7 +31,7 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
+                if element and element.Select then
                     element:Select(data.value)
                 end
             end
@@ -45,7 +44,7 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
+                if element and element.Set then
                     element:Set(data.value)
                 end
             end
@@ -58,7 +57,7 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
+                if element and element.Set then
                     element:Set(data.value)
                 end
             end
@@ -71,8 +70,8 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
-                    element:Set(data.value)
+                if element and element.Set then
+                    element:Set(tonumber(data.value))
                 end
             end
         },
@@ -84,7 +83,7 @@ ConfigManager = {
                 }
             end,
             Load = function(element, data)
-                if element then
+                if element and element.Set then
                     element:Set(data.value)
                 end
             end
@@ -116,7 +115,6 @@ function ConfigManager:Init(WindowTable)
             ConfigManager.Configs[f] = readfile(f .. ".json")
         end
     end
-
     
     return ConfigManager
 end
@@ -126,11 +124,15 @@ function ConfigManager:CreateConfig(configFilename)
         Path = ConfigManager.Path .. configFilename .. ".json",
         Elements = {},
         CustomData = {},
-        Version = 1.1 -- Current config version
+        Version = 1.1
     }
     
     if not configFilename then
         return false, "No config file is selected"
+    end
+    
+    function ConfigModule:SetAsCurrent()
+        Window:SetCurrentConfig(ConfigModule)
     end
 
     function ConfigModule:Register(Name, Element)
@@ -146,6 +148,12 @@ function ConfigManager:CreateConfig(configFilename)
     end
     
     function ConfigModule:Save()
+        if Window.PendingFlags then
+            for flag, element in next, Window.PendingFlags do
+                ConfigModule:Register(flag, element)
+            end
+        end
+        
         local saveData = {
             __version = ConfigModule.Version,
             __elements = {},
@@ -172,7 +180,10 @@ function ConfigManager:CreateConfig(configFilename)
         end
         
         local success, loadData = pcall(function()
-            local readfile = readfile or function() warn("[ WindUI.ConfigManager ] The config system doesn't work in the studio.") return nil end
+            local readfile = readfile or function() 
+                warn("[ WindUI.ConfigManager ] The config system doesn't work in the studio.") 
+                return nil 
+            end
             return HttpService:JSONDecode(readfile(ConfigModule.Path))
         end)
         
@@ -187,6 +198,12 @@ function ConfigManager:CreateConfig(configFilename)
                 __custom = {}
             }
             loadData = migratedData
+        end
+        
+        if Window.PendingFlags then
+            for flag, element in next, Window.PendingFlags do
+                ConfigModule:Register(flag, element)
+            end
         end
         
         for name, data in next, (loadData.__elements or {}) do
@@ -209,6 +226,7 @@ function ConfigManager:CreateConfig(configFilename)
         }
     end
     
+    ConfigModule:SetAsCurrent()
     ConfigManager.Configs[configFilename] = ConfigModule
     return ConfigModule
 end

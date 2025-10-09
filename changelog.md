@@ -1,18 +1,9 @@
-# 1.6.53
+# 1.6.54
 ## Changelog:
-- Themes Rework (Gradients, Color3)
-- Fixed Label Colors
-- Fixed `Tab:Select()`
-- Fixed Dropdown Height
-- Fixed `Window.BackgroundImageTransparency`
-- Fixed Window Background Animation
-- Fixed Input
-- Fixed Section Center Text
-- Fixed OpenButton on PC
-- Fixed UI in studio (maybe)
-- Added `IconSize` to `Window`
-- Added `OpenButton` to `:CreateWindow()`
-- Added Icons to `Dropdown`
-- Added `IconOnly` to `OpenButton`
-- Added Section box
-- Added `:SetMax(number)` and `:SetMin(number)` to `Slider`
+- Fixed OpenButton (maybe)
+- Fixed URL Icons (maybe)
+- Fixed Dropdown Height on big screens
+- Fixed Keybind (no longer triggers while typing)
+- Fixed `:Set()` in Input
+- Fixed ConfigManager `:Load()`
+- Returned back `Window.Acrylic`

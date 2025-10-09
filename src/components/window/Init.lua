@@ -4,7 +4,7 @@ local RunService = game:GetService("RunService")
 
 local CurrentCamera = workspace.CurrentCamera
 
---local Acrylic = require("../../utils/Acrylic/Init")
+local Acrylic = require("../../utils/Acrylic/Init")
 
 local Creator = require("../../modules/Creator")
 local New = Creator.New
@@ -42,8 +42,9 @@ return function(Config)
         HideSearchBar = Config.HideSearchBar,
         ScrollBarEnabled = Config.ScrollBarEnabled or false,
         SideBarWidth = Config.SideBarWidth or 200,
-        --Acrylic = Config.Acrylic or false,
+        Acrylic = Config.Acrylic or false,
         NewElements = Config.NewElements or false,
+        IgnoreAlerts = Config.IgnoreAlerts or false,
         HidePanelBackground = Config.HidePanelBackground or false,
         AutoScale = Config.AutoScale, -- or true
         OpenButton = Config.OpenButton,
@@ -61,8 +62,9 @@ return function(Config)
         CanResize = false,
         IsOpenButtonEnabled = true,
     
+        CurrentConfig = nil,
         ConfigManager = nil,
-        --AcrylicPaint = nil,
+        AcrylicPaint = nil,
         CurrentTab = nil,
         TabModule = nil,
         
@@ -77,7 +79,9 @@ return function(Config)
         TopBarButtons = {},
         AllElements = {},
         
-        ElementConfig = {}
+        ElementConfig = {},
+        
+        PendingFlags = {},
     }
     
     
@@ -106,7 +110,18 @@ return function(Config)
     end
     
     if Window.Folder then
-        makefolder("WindUI/" .. Window.Folder)
+        if not isfolder("WindUI/" .. Window.Folder) then
+            makefolder("WindUI/" .. Window.Folder)
+        end
+        if not isfolder("WindUI/" .. Window.Folder .. "/assets") then
+            makefolder("WindUI/" .. Window.Folder .. "/assets")
+        end
+        if not isfolder(Window.Folder) then
+            makefolder(Window.Folder)
+        end
+        if not isfolder(Window.Folder .. "/assets") then
+            makefolder(Window.Folder .. "/assets")
+        end
     end
     
     local UICorner = New("UICorner", {
@@ -118,11 +133,12 @@ return function(Config)
     end
     
     
+    if Window.Acrylic then
+        local AcrylicPaint, BlurModule = Acrylic.AcrylicPaint({ UseAcrylic = Window.Acrylic })
     
-    --local AcrylicPaint, BlurModule = Acrylic.AcrylicPaint({ UseAcrylic = Window.Acrylic })
-
-    --Window.AcrylicPaint = AcrylicPaint
-
+        Window.AcrylicPaint = AcrylicPaint
+    end
+    
     local ResizeHandle = New("Frame", {
         Size = UDim2.new(0,32,0,32),
         Position = UDim2.new(1,0,1,0),
@@ -471,14 +487,25 @@ return function(Config)
         return str
     end
     
+    local function GetImageExtension(url)
+        local ext = url:match("%.(%w+)$") or url:match("%.(%w+)%?")
+        if ext then
+            ext = ext:lower()
+            if ext == "jpg" or ext == "jpeg" or ext == "png" or ext == "webp" then
+                return "." .. ext
+            end
+        end
+        return ".png"
+    end
+        
     if typeof(Window.Background) == "string" and BGVideo then
         IsVideoBG = true
     
         if string.find(BGVideo, "http") then
-            local videoPath = Window.Folder .. "/Assets/." .. SanitizeFilename(BGVideo) .. ".webm"
+            local videoPath = Window.Folder .. "/assets/." .. SanitizeFilename(BGVideo) .. ".webm"
             if not isfile(videoPath) then
                 local success, result = pcall(function()
-                    local response = Creator.Request({Url = BGVideo, Method="GET"})
+                    local response = Creator.Request({Url = BGVideo, Method="GET", Headers = { ["User-Agent"] = "Roblox/Exploit" }})
                     writefile(videoPath, response.Body)
                 end)
                 if not success then
@@ -511,10 +538,10 @@ return function(Config)
         BGImage:Play()
     
     elseif BGImageUrl then
-        local imagePath = Window.Folder .. "/Assets/." .. SanitizeFilename(BGImageUrl) .. ".png"
+        local imagePath = Window.Folder .. "/assets/." .. SanitizeFilename(BGImageUrl) .. GetImageExtension(BGImageUrl)
         if not isfile(imagePath) then
             local success, result = pcall(function()
-                local response = Creator.Request({Url = BGImageUrl, Method="GET"})
+                local response = Creator.Request({Url = BGImageUrl, Method="GET", Headers = { ["User-Agent"] = "Roblox/Exploit" }})
                 writefile(imagePath, response.Body)
             end)
             if not success then
@@ -623,7 +650,7 @@ return function(Config)
         AnchorPoint = Vector2.new(0.5,0.5),
         Active = true,
     }, {
-        --Window.AcrylicPaint.Frame,
+        Window.AcrylicPaint and Window.AcrylicPaint.Frame or nil,
         Blur,
         Creator.NewRoundFrame(Window.UICorner, "Squircle", {
             ImageTransparency = 1, -- Window.Transparent and 0.25 or 0
@@ -953,13 +980,15 @@ return function(Config)
     end
     function Window:SetBackgroundImageTransparency(v)
         if BGImage and BGImage:IsA("ImageLabel") then
-            BGImage.ImageTransparency = math.floor(v + 0.5)
+            BGImage.ImageTransparency = math.floor(v * 10 + 0.5) / 10
         end
-        Window.BackgroundImageTransparency = math.floor(v + 0.5)
+        Window.BackgroundImageTransparency = math.floor(v * 10 + 0.5) / 10
     end
+    
     function Window:SetBackgroundTransparency(v)
-        WindUI.TransparencyValue = math.floor(tonumber(v) + 0.5)
-        Window:ToggleTransparency(math.floor(tonumber(v) + 0.5) > 0)
+        local rounded = math.floor(tonumber(v) * 10 + 0.5) / 10
+        Config.WindUI.TransparencyValue = rounded
+        Window:ToggleTransparency(rounded > 0)
     end
     
     local CurrentPos
@@ -999,13 +1028,13 @@ return function(Config)
     
     Window:CreateTopbarButton("Minimize", "minus", function() 
         Window:Close()
-        task.spawn(function()
-            task.wait(.3)
-            if not Window.IsPC and Window.IsOpenButtonEnabled then
-                -- OpenButtonContainer.Visible = true
-                Window.OpenButtonMain:Visible(true)
-            end
-        end)
+        -- task.spawn(function()
+        --     task.wait(.3)
+        --     if not Window.IsPC and Window.IsOpenButtonEnabled then
+        --         -- OpenButtonContainer.Visible = true
+        --         --Window.OpenButtonMain:Visible(true)
+        --     end
+        -- end)
         
         -- local NotifiedText = Window.IsPC and "Press " .. Window.ToggleKey.Name .. " to open the Window" or "Click the Button to open the Window"
         
@@ -1033,9 +1062,9 @@ return function(Config)
         Window.OnDestroyCallback = func
     end
     
---     if Config.WindUI.UseAcrylic then
---		Window.AcrylicPaint.AddParent(Window.UIElements.Main)
---	end
+    if Config.WindUI.UseAcrylic then
+		Window.AcrylicPaint.AddParent(Window.UIElements.Main)
+	end
 
     function Window:SetIconSize(Size)
         local NewSize
@@ -1088,6 +1117,10 @@ return function(Config)
                 end
             end            
             
+            if Window.OpenButtonMain then
+                Window.OpenButtonMain:Visible(false)
+            end
+            
             --Tween(Window.UIElements.Main.Background.UIScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out):Play()
             Tween(Blur, 0.25, {ImageTransparency = .7}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
             if UIStroke then
@@ -1113,7 +1146,7 @@ return function(Config)
                 task.wait(.05)
                 Window.UIElements.Main:WaitForChild("Main").Visible = true
                 
-                --Config.WindUI:ToggleAcrylic(true)
+                Config.WindUI:ToggleAcrylic(true)
             end)
         end)
     end
@@ -1126,7 +1159,7 @@ return function(Config)
             end)
         end
         
-        --Config.WindUI:ToggleAcrylic(false)
+        Config.WindUI:ToggleAcrylic(false)
         
         Window.UIElements.Main:WaitForChild("Main").Visible = false
         
@@ -1169,24 +1202,32 @@ return function(Config)
         task.spawn(function()
             task.wait(0.4)
             Window.UIElements.Main.Visible = false
+            
+            if Window.OpenButtonMain and not Window.Destroyed then
+                Window.OpenButtonMain:Visible(true)
+            end
         end)
         
         function Close:Destroy()
-            if Window.OnDestroyCallback then
-                task.spawn(function()
-                    Creator.SafeCallback(Window.OnDestroyCallback)
-                end)
-            end
-            -- if Window.AcrylicPaint.Model then
-            --     Window.AcrylicPaint.Model:Destroy()
-            -- end
-            Window.Destroyed = true
-            task.wait(0.4)
-            Config.WindUI.ScreenGui:Destroy()
-            Config.WindUI.NotificationGui:Destroy()
-            Config.WindUI.DropdownGui:Destroy()
-            
-            --Creator.DisconnectAll()
+            task.spawn(function()
+                if Window.OnDestroyCallback then
+                    task.spawn(function()
+                        Creator.SafeCallback(Window.OnDestroyCallback)
+                    end)
+                end
+                if Window.AcrylicPaint and Window.AcrylicPaint.Model then
+                    Window.AcrylicPaint.Model:Destroy()
+                end
+                Window.Destroyed = true
+                task.wait(0.4)
+                Config.WindUI.ScreenGui:Destroy()
+                Config.WindUI.NotificationGui:Destroy()
+                Config.WindUI.DropdownGui:Destroy()
+                
+                Creator.DisconnectAll()
+                
+                return
+            end)
         end
         
         return Close
@@ -1258,6 +1299,10 @@ return function(Config)
         return Window
     end
     
+    function Window:SetCurrentConfig(ConfigModule)
+        Window.CurrentConfig = ConfigModule
+    end
+    
     do
         local Margin = 40
         local ViewportSize = CurrentCamera.ViewportSize
@@ -1290,7 +1335,7 @@ return function(Config)
     if Window.OpenButtonMain and Window.OpenButtonMain.Button then
         Creator.AddSignal(Window.OpenButtonMain.Button.TextButton.MouseButton1Click, function()
             -- OpenButtonContainer.Visible = false
-            Window.OpenButtonMain:Visible(false)
+            --Window.OpenButtonMain:Visible(false)
             Window:Open()
         end)
     end
@@ -1557,26 +1602,30 @@ return function(Config)
     
     
     Window:CreateTopbarButton("Close", "x", function()
-        Window:SetToTheCenter()
-        Window:Dialog({
-            --Icon = "trash-2",
-            Title = "Close Window",
-            Content = "Do you want to close this window? You will not be able to open it again.",
-            Buttons = {
-                {
-                    Title = "Cancel",
-                    --Icon = "chevron-left",
-                    Callback = function() end,
-                    Variant = "Secondary",
-                },
-                {
-                    Title = "Close Window",
-                    --Icon = "chevron-down",
-                    Callback = function() Window:Close():Destroy() end,
-                    Variant = "Primary",
+        if not Window.IgnoreAlerts then
+            Window:SetToTheCenter()
+            Window:Dialog({
+                --Icon = "trash-2",
+                Title = "Close Window",
+                Content = "Do you want to close this window? You will not be able to open it again.",
+                Buttons = {
+                    {
+                        Title = "Cancel",
+                        --Icon = "chevron-left",
+                        Callback = function() end,
+                        Variant = "Secondary",
+                    },
+                    {
+                        Title = "Close Window",
+                        --Icon = "chevron-down",
+                        Callback = function() Window:Destroy() end,
+                        Variant = "Primary",
+                    }
                 }
-            }
-        })
+            })
+        else
+            Window:Destroy()
+        end
     end, 999)
     
     function Window:Tag(TagConfig)

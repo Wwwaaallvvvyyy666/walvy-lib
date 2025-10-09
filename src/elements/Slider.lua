@@ -92,7 +92,7 @@ function Element:New(Config)
     Slider.UIElements.SliderContainer = New("Frame", {
         Size = UDim2.new(0, Slider.Width, 0, 0),
         AutomaticSize = "Y",
-        Position = UDim2.new(1, 0, .5, 0),
+        Position = UDim2.new(1, Config.Window.NewElements and -12 or 0, 0.5, 0),
         AnchorPoint = Vector2.new(1,0.5),
         BackgroundTransparency = 1,
         Parent = Slider.SliderFrame.UIElements.Main,

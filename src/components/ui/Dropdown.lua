@@ -83,7 +83,8 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
         --     PaddingBottom = UDim.new(0,1),
         -- }),
         New("UISizeConstraint", {
-            MinSize = Vector2.new(170,0)
+            MinSize = Vector2.new(170,0),
+            MaxSize = Vector2.new(300,400),
         })
     })
     
@@ -175,6 +176,7 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
                             tab.UIElements.TabItem.Visible = false
                         end
                         RecalculateListSize()
+                        RecalculateCanvasSize()
                     end
                 end, true)
                 SearchLabel.Size = UDim2.new(1,0,0,Element.SearchBarHeight)
@@ -419,6 +421,7 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
     
     --DropdownModule:Display()
     RecalculateListSize()
+    RecalculateCanvasSize()
     
     function DropdownModule:Open()
         if CanCallback then

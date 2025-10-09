@@ -30,6 +30,33 @@ return {
         
                 local elementInstance, content = module:New(config)
                 
+                if config.Flag and typeof(config.Flag) == "string" then
+                    if Window.CurrentConfig then
+                        Window.CurrentConfig:Register(config.Flag, content)
+                        
+                        if Window.PendingConfigData and Window.PendingConfigData[config.Flag] then
+                            local data = Window.PendingConfigData[config.Flag]
+                            
+                            local ConfigManager = Window.ConfigManager
+                            if ConfigManager.Parser[data.__type] then
+                                task.defer(function()
+                                    local success, err = pcall(function()
+                                        ConfigManager.Parser[data.__type].Load(content, data)
+                                    end)
+                                    
+                                    if success then
+                                        Window.PendingConfigData[config.Flag] = nil
+                                    else
+                                        warn("[ WindUI ] Failed to apply pending config for '" .. config.Flag .. "': " .. tostring(err))
+                                    end
+                                end)
+                            end
+                        end
+                    else
+                        Window.PendingFlags = Window.PendingFlags or {}
+                        Window.PendingFlags[config.Flag] = content
+                    end
+                end
                 
                 local frame
                 for key, value in pairs(content) do
