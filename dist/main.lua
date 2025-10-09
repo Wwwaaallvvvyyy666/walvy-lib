@@ -499,10 +499,10 @@ function m.SetDraggable(u)
 m.CanDraggable=u
 end
 
+
 function m.Drag(u,v,A)
 local B
 local C,F,G,H
-
 local J={
 CanDraggable=true
 }
@@ -527,7 +527,6 @@ B=M
 C=true
 G=N.Position
 H=u.Position
-F=N
 
 if A and type(A)=="function"then
 A(true,B)
@@ -537,13 +536,20 @@ N.Changed:Connect(function()
 if N.UserInputState==Enum.UserInputState.End then
 C=false
 B=nil
-F=nil
 
 if A and type(A)=="function"then
-A(false,nil)
+A(false,B)
 end
 end
 end)
+end
+end
+end)
+
+M.InputChanged:Connect(function(N)
+if B==M and C then
+if N.UserInputType==Enum.UserInputType.MouseMovement or N.UserInputType==Enum.UserInputType.Touch then
+F=N
 end
 end
 end)
@@ -563,7 +569,10 @@ end
 
 return J
 end
+
+
 j.Init(p,"Icon")
+
 
 function m.Image(u,v,A,B,C,F,G)
 local function SanitizeFilename(H)

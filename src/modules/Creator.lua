@@ -481,10 +481,10 @@ function Creator.SetDraggable(can)
     Creator.CanDraggable = can
 end
 
+
 function Creator.Drag(mainFrame, dragFrames, ondrag)
     local currentDragFrame = nil
     local dragging, dragInput, dragStart, startPos
-    
     local DragModule = {
         CanDraggable = true
     }
@@ -509,7 +509,6 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                     dragging = true
                     dragStart = input.Position
                     startPos = mainFrame.Position
-                    dragInput = input 
                     
                     if ondrag and type(ondrag) == "function" then 
                         ondrag(true, currentDragFrame)
@@ -519,13 +518,20 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                         if input.UserInputState == Enum.UserInputState.End then
                             dragging = false
                             currentDragFrame = nil
-                            dragInput = nil
                             
                             if ondrag and type(ondrag) == "function" then 
-                                ondrag(false, nil)
+                                ondrag(false, currentDragFrame)
                             end
                         end
                     end)
+                end
+            end
+        end)
+        
+        dragFrame.InputChanged:Connect(function(input)
+            if currentDragFrame == dragFrame and dragging then
+                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                    dragInput = input
                 end
             end
         end)
@@ -545,7 +551,10 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
     
     return DragModule
 end
+
+
 Icons.Init(New, "Icon")
+
 
 function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
     local function SanitizeFilename(str)
