@@ -25,9 +25,10 @@ return function(Config)
         Title = Config.Title or "UI Library",
         Author = Config.Author,
         Icon = Config.Icon,
+        IconSize = Config.IconSize or 22,
         IconThemed = Config.IconThemed,
         Folder = Config.Folder,
-        Resizable = Config.Resizable,
+        Resizable = Config.Resizable ~= false,
         Background = Config.Background,
         BackgroundImageTransparency = Config.BackgroundImageTransparency or 0,
         User = Config.User or {},
@@ -37,20 +38,21 @@ return function(Config)
         MinSize = Config.MinSize or Vector2.new(560, 350),
         MaxSize = Config.MaxSize or Vector2.new(850, 560),
     
+        TopBarButtonIconSize = Config.TopBarButtonIconSize or 16,
+        
         ToggleKey = Config.ToggleKey,
         Transparent = Config.Transparent or false,
-        HideSearchBar = Config.HideSearchBar,
+        HideSearchBar = Config.HideSearchBar ~= false,
         ScrollBarEnabled = Config.ScrollBarEnabled or false,
         SideBarWidth = Config.SideBarWidth or 200,
         Acrylic = Config.Acrylic or false,
         NewElements = Config.NewElements or false,
         IgnoreAlerts = Config.IgnoreAlerts or false,
         HidePanelBackground = Config.HidePanelBackground or false,
-        AutoScale = Config.AutoScale, -- or true
+        AutoScale = Config.AutoScale ~= false,
         OpenButton = Config.OpenButton,
         
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        IconSize = Config.IconSize or 22,
         UICorner = 16,
         UIPadding = 14,
         UIElements = {},
@@ -59,7 +61,7 @@ return function(Config)
         Parent = Config.Parent,
         Destroyed = false,
         IsFullscreen = false,
-        CanResize = false,
+        CanResize = Config.Resizable ~= false,
         IsOpenButtonEnabled = true,
     
         CurrentConfig = nil,
@@ -97,17 +99,6 @@ return function(Config)
         WindowSize.Y.Scale,
         math.clamp(WindowSize.Y.Offset, Window.MinSize.Y, Window.MaxSize.Y)
     )
-    
-    if Window.HideSearchBar ~= false then
-        Window.HideSearchBar = true
-    end
-    if Window.AutoScale ~= false then
-        Window.AutoScale = true
-    end
-    if Window.Resizable ~= false then
-        Window.CanResize = true
-        Window.Resizable = true
-    end
     
     if Window.Folder then
         if not isfolder("WindUI/" .. Window.Folder) then
@@ -615,7 +606,7 @@ return function(Config)
             TextSize = 13,
             LayoutOrder = 2,
             ThemeTag = {
-                TextColor3 = "Text"
+                TextColor3 = "TopbarAuthor"
             },
             Name = "Author",
         })
@@ -638,7 +629,7 @@ return function(Config)
         TextXAlignment = "Left",
         TextSize = 16,
         ThemeTag = {
-            TextColor3 = "Text"
+            TextColor3 = "TopbarTitle"
         }
     })
     
@@ -659,7 +650,7 @@ return function(Config)
             Position = UDim2.new(0.5,0,0.5,0),
             Name = "Background",
             ThemeTag = {
-                ImageColor3 = "Background"
+                ImageColor3 = "WindowBackground"
             },
             --ZIndex = -9999,
         }, {
@@ -808,9 +799,10 @@ return function(Config)
             Window.Folder,
             "TopbarIcon",
             true,
-            IconThemed
+            IconThemed,
+            "TopbarButtonIcon"
         )
-        IconFrame.Size = UDim2.new(0,16,0,16)
+        IconFrame.Size = UDim2.new(0,Window.TopBarButtonIconSize,0,Window.TopBarButtonIconSize)
         IconFrame.AnchorPoint = Vector2.new(0.5,0.5)
         IconFrame.Position = UDim2.new(0.5,0,0.5,0)
         
@@ -934,7 +926,8 @@ return function(Config)
                 Window.Folder,
                 "Window",
                 true,
-                Window.IconThemed
+                Window.IconThemed,
+                "TopbarIcon"
             )
             WindowIcon.Parent = Window.UIElements.Main.Main.Topbar.Left
             WindowIcon.Size = UDim2.new(0,Window.IconSize,0,Window.IconSize)
@@ -1117,7 +1110,7 @@ return function(Config)
                 end
             end            
             
-            if Window.OpenButtonMain then
+            if Window.OpenButtonMain and Window.IsOpenButtonEnabled then
                 Window.OpenButtonMain:Visible(false)
             end
             
@@ -1203,7 +1196,7 @@ return function(Config)
             task.wait(0.4)
             Window.UIElements.Main.Visible = false
             
-            if Window.OpenButtonMain and not Window.Destroyed then
+            if Window.OpenButtonMain and not Window.Destroyed and not Window.IsPC and Window.IsOpenButtonEnabled then
                 Window.OpenButtonMain:Visible(true)
             end
         end)

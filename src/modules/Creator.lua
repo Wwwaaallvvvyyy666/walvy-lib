@@ -9,7 +9,7 @@ local IconsURL = "https://raw.githubusercontent.com/Footagesus/Icons/main/Main-v
 
 local Icons = loadstring(
     game.HttpGetAsync and game:HttpGetAsync(IconsURL)
-    or HttpService:GetAsync(IconsURL)
+    or HttpService:GetAsync(IconsURL) --studio
 )()
 Icons.SetIconsType("lucide")
 
@@ -93,6 +93,7 @@ local Creator = {
         White = "#ffffff",
         Grey = "#484848",
     },
+    ThemeFallbacks = require("../themes/Fallbacks")
 }
 
 function Creator.Init(WindUITable)
@@ -189,26 +190,55 @@ function Creator.UpdateFont(FontId)
 end
 
 function Creator.GetThemeProperty(Property, Theme)
-    local value = Theme[Property] or Creator.Themes["Dark"][Property]
-    
-    if not value then return nil end
-    
-    if type(value) == "string" and string.sub(value, 1, 1) == "#" then
-        return Color3.fromHex(value)
+    local function getValue(prop, themeTable)
+        local value = themeTable[prop]
+        
+        if not value then return nil end
+        
+        if type(value) == "string" and string.sub(value, 1, 1) == "#" then
+            return Color3.fromHex(value)
+        end
+        
+        if typeof(value) == "Color3" then
+            return value
+        end
+        
+        if type(value) == "table" and value.Color and value.Transparency then
+            return value
+        end
+        
+        if type(value) == "function" then
+            return value()
+        end
+        
+        return nil
     end
-    
-    if typeof(value) == "Color3" then
+
+    local value = getValue(Property, Theme)
+    if value then
         return value
     end
-    
-    if type(value) == "table" and value.Color and value.Transparency then
+
+    local fallbackProperty = Creator.ThemeFallbacks[Property]
+    if fallbackProperty then
+        value = getValue(fallbackProperty, Theme)
+        if value then
+            return value
+        end
+    end
+
+    value = getValue(Property, Creator.Themes["Dark"])
+    if value then
         return value
     end
-    
-    if type(value) == "function" then
-        return value()
+
+    if fallbackProperty then
+        value = getValue(fallbackProperty, Creator.Themes["Dark"])
+        if value then
+            return value
+        end
     end
-    
+
     return nil
 end
 
@@ -482,9 +512,10 @@ function Creator.SetDraggable(can)
 end
 
 
+
 function Creator.Drag(mainFrame, dragFrames, ondrag)
     local currentDragFrame = nil
-    local dragging, dragInput, dragStart, startPos
+    local dragging, dragStart, startPos
     local DragModule = {
         CanDraggable = true
     }
@@ -494,6 +525,8 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
     end
     
     local function update(input)
+        if not dragging or not DragModule.CanDraggable then return end
+        
         local delta = input.Position - dragStart
         Creator.Tween(mainFrame, 0.02, {Position = UDim2.new(
             startPos.X.Scale, startPos.X.Offset + delta.X,
@@ -520,7 +553,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
                             currentDragFrame = nil
                             
                             if ondrag and type(ondrag) == "function" then 
-                                ondrag(false, currentDragFrame)
+                                ondrag(false, nil)
                             end
                         end
                     end)
@@ -529,17 +562,17 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
         end)
         
         dragFrame.InputChanged:Connect(function(input)
-            if currentDragFrame == dragFrame and dragging then
+            if dragging and currentDragFrame == dragFrame then
                 if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                    dragInput = input
+                    update(input)
                 end
             end
         end)
     end
     
     UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging and currentDragFrame ~= nil then
-            if DragModule.CanDraggable then 
+        if dragging and currentDragFrame ~= nil then
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
                 update(input)
             end
         end
@@ -556,7 +589,7 @@ end
 Icons.Init(New, "Icon")
 
 
-function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
+function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, ThemeTagName)
     local function SanitizeFilename(str)
         str = str:gsub("[%s/\\:*?\"<>|]+", "-")
         str = str:gsub("[^%w%-_%.]", "")
@@ -575,7 +608,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed)
             BackgroundTransparency = 1,
             ScaleType = "Crop",
             ThemeTag = (Creator.Icon(Img) or Themed) and {
-                ImageColor3 = IsThemeTag and "Icon" or nil 
+                ImageColor3 = IsThemeTag and (ThemeTagName or "Icon") or nil 
             } or nil,
         }, {
             New("UICorner", {

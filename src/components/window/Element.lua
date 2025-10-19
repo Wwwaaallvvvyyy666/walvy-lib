@@ -164,7 +164,8 @@ return function(Config)
             Config.Window.NewElements and Element.UICorner-12 or (Element.UICorner-4), 
             Config.Window.Folder,
             "Image",
-            not Element.Color and true or false
+            not Element.Color and true or false,
+            "ElementIcon"
         )
         if typeof(Element.Color) == "string" then 
             ImageFrame.ImageLabel.ImageColor3 = GetTextColorForHSB(Color3.fromHex(Creator.Colors[Element.Color]))
@@ -189,7 +190,7 @@ return function(Config)
             TextSize = Type == "Desc" and 15 or 17,
             TextXAlignment = "Left",
             ThemeTag = {
-                TextColor3 = not Element.Color and "Text" or nil,
+                TextColor3 = not Element.Color and ("Element" .. Type) or nil,
             },
             TextColor3 = Element.Color and TextColor or nil,
             TextTransparency = Type == "Desc" and .3 or 0,
@@ -360,7 +361,7 @@ return function(Config)
         --AutoButtonColor = false,
         Parent = Config.Parent,
         ThemeTag = {
-            ImageColor3 = not Element.Color and "Text" or nil
+            ImageColor3 = not Element.Color and "ElementBackground" or nil
         },
         ImageColor3 = Element.Color and 
             ( 

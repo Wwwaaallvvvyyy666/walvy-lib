@@ -9,7 +9,7 @@ local WindUI
 
 do
     local ok, result = pcall(function()
-        return require("./src/init")
+        return require("./src/Init")
     end)
     
     if ok then

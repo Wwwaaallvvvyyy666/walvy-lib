@@ -1,4 +1,3 @@
--- credits: dawid, extended functionality
 local HttpService = game:GetService("HttpService")
 
 local Window 
@@ -219,6 +218,32 @@ function ConfigManager:CreateConfig(configFilename)
         return ConfigModule.CustomData
     end
     
+    function ConfigModule:Delete()
+        if not delfile then
+            return false, "delfile function is not available"
+        end
+        
+        if not isfile(ConfigModule.Path) then
+            return false, "Config file does not exist"
+        end
+        
+        local success, err = pcall(function()
+            delfile(ConfigModule.Path)
+        end)
+        
+        if not success then
+            return false, "Failed to delete config file: " .. tostring(err)
+        end
+        
+        ConfigManager.Configs[configFilename] = nil
+        
+        if Window.CurrentConfig == ConfigModule then
+            Window.CurrentConfig = nil
+        end
+        
+        return true, "Config deleted successfully"
+    end
+    
     function ConfigModule:GetData()
         return {
             elements = ConfigModule.Elements,
@@ -229,6 +254,34 @@ function ConfigManager:CreateConfig(configFilename)
     ConfigModule:SetAsCurrent()
     ConfigManager.Configs[configFilename] = ConfigModule
     return ConfigModule
+end
+
+function ConfigManager:DeleteConfig(configName)
+    if not delfile then
+        return false, "delfile function is not available"
+    end
+    
+    local configPath = ConfigManager.Path .. configName .. ".json"
+    
+    if not isfile(configPath) then
+        return false, "Config file does not exist"
+    end
+    
+    local success, err = pcall(function()
+        delfile(configPath)
+    end)
+    
+    if not success then
+        return false, "Failed to delete config file: " .. tostring(err)
+    end
+    
+    ConfigManager.Configs[configName] = nil
+    
+    if Window.CurrentConfig and Window.CurrentConfig.Path == configPath then
+        Window.CurrentConfig = nil
+    end
+    
+    return true, "Config deleted successfully"
 end
 
 function ConfigManager:AllConfigs()

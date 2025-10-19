@@ -1,9 +1,10 @@
-# 1.6.54
+# 1.6.55
 ## Changelog:
-- Fixed OpenButton (maybe)
-- Fixed URL Icons (maybe)
-- Fixed Dropdown Height on big screens
-- Fixed Keybind (no longer triggers while typing)
-- Fixed `:Set()` in Input
-- Fixed ConfigManager `:Load()`
-- Returned back `Window.Acrylic`
+- Fixed platoboost API URL 
+- Fixed OpenButton (again)
+- Added `yourConfig:Delete()` and `ConfigManager:DeleteConfig(configName: string)`
+- Added `aftman.toml`
+- Fixed `Dropdown` Callback
+- Fixed Drag (?)
+- Advanced Themes (wip)
+- Other bugs fixed

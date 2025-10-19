@@ -157,6 +157,14 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
 		Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Text = (Str == "" and "--" or Str)
 	end
     
+    local function Callback()
+        DropdownModule:Display()
+        task.spawn(function()
+            Creator.SafeCallback(Dropdown.Callback, Dropdown.Value)
+        end)
+    end
+    
+    
     function DropdownModule:Refresh(Values)
         for _, Elementt in next, Dropdown.UIElements.Menu.Frame.ScrollingFrame:GetChildren() do
             if not Elementt:IsA("UIListLayout") then
@@ -313,12 +321,6 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
             
             DropdownModule:Display()
             
-            local function Callback()
-                DropdownModule:Display()
-                task.spawn(function()
-                    Creator.SafeCallback(Dropdown.Callback, Dropdown.Value)
-                end)
-            end
             
             
             Creator.AddSignal(TabMain.UIElements.TabItem.MouseButton1Click, function()
@@ -395,7 +397,7 @@ function DropdownMenu.New(Config, Dropdown, Element, CanCallback, Type)
         
         Dropdown.UIElements.MenuCanvas.Size = UDim2.new(0, maxWidth + 6 + 6 + 5 + 5 + 18 + 6 + 6, Dropdown.UIElements.MenuCanvas.Size.Y.Scale, Dropdown.UIElements.MenuCanvas.Size.Y.Offset)
         --RecalculateListSize()
-          
+        Callback()
     end
     
       

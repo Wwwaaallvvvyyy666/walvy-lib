@@ -64,7 +64,7 @@ function TabModule.New(Config, UIScale)
         AutomaticSize = "Y",
         Parent = Config.Parent,
         ThemeTag = {
-            ImageColor3 = "Text",
+            ImageColor3 = "TabBackground",
         },
         ImageTransparency = 1,
     }, {
@@ -108,7 +108,7 @@ function TabModule.New(Config, UIScale)
             New("TextLabel", {
                 Text = Tab.Title,
                 ThemeTag = {
-                    TextColor3 = "Text"
+                    TextColor3 = "TabTitle"
                 },
                 TextTransparency = not Tab.Locked and 0.4 or .7,
                 TextSize = 15,
@@ -142,7 +142,8 @@ function TabModule.New(Config, UIScale)
             Window.Folder,
             Tab.__type,
             true,
-            Tab.IconThemed
+            Tab.IconThemed,
+            "TabIcon"
         )
         Icon.Size = UDim2.new(0,16,0,16)
         Icon.Parent = Tab.UIElements.Main.Frame

@@ -9,7 +9,7 @@ local WindUI
 
 do
     local ok, result = pcall(function()
-        return require("./src/init")
+        return require("./src/Init")
     end)
     
     if ok then
@@ -43,6 +43,41 @@ local Window = WindUI:CreateWindow({
         )
     }
 })
+
+
+-- */  Theme (soon)  /* --
+do
+    WindUI:AddTheme({
+        Name = "Stylish",
+        
+        Accent = Color3.fromHex("#3b82f6"), 
+        Dialog = Color3.fromHex("#1a1a1a"), 
+        Outline = Color3.fromHex("#3b82f6"),
+        Text = Color3.fromHex("#f8fafc"),  
+        Placeholder = Color3.fromHex("#94a3b8"),
+        Button = Color3.fromHex("#334155"), 
+        Icon = Color3.fromHex("#60a5fa"), 
+        
+        WindowBackground = Color3.fromHex("#0f172a"),
+        
+        TopbarButtonIcon = Color3.fromHex("#60a5fa"),
+        TopbarTitle = Color3.fromHex("#f8fafc"),
+        TopbarAuthor = Color3.fromHex("#94a3b8"),
+        TopbarIcon = Color3.fromHex("#3b82f6"),
+        
+        TabBackground = Color3.fromHex("#1e293b"),    
+        TabTitle = Color3.fromHex("#f8fafc"),
+        TabIcon = Color3.fromHex("#60a5fa"),
+        
+        ElementBackground = Color3.fromHex("#1e293b"),
+        ElementTitle = Color3.fromHex("#f8fafc"),
+        ElementDesc = Color3.fromHex("#cbd5e1"),
+        ElementIcon = Color3.fromHex("#60a5fa"),
+    })
+    
+    -- WindUI:SetTheme("Stylish")
+end
+
 
 
 -- */ Other Functions /* --

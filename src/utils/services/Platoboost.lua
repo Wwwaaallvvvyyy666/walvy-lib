@@ -37,12 +37,12 @@ function Platoboost.New(Service, Secret)
     local cachedLink, cachedTime = "", 0;
     
     --! pick host
-    local host = "https://api.platoboost.com";
+    local host = "https://api.platoboost.app";
     local hostResponse = fRequest({
         Url = host .. "/public/connectivity",
         Method = "GET"
     });
-    if hostResponse.StatusCode ~= 200 or hostResponse.StatusCode ~= 429 then
+    if hostResponse.StatusCode ~= 200 and hostResponse.StatusCode ~= 429 then
         host = "https://api.platoboost.net";
     end
     

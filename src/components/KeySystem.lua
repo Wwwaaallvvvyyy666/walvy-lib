@@ -428,7 +428,7 @@ function KeySystem.new(Config, Filename, func)
     
     local function handleSuccess(key)
         KeyDialog:Close()()
-        writefile((Config.Folder or Config.Title) .. "/" .. Filename .. ".key", tostring(key))
+        writefile((Config.Folder or "Temp") .. "/" .. Filename .. ".key", tostring(key))
         task.wait(.4)
         func(true)
     end
