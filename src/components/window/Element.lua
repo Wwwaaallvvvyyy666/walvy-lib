@@ -149,7 +149,7 @@ return function(Config)
         ThumbnailFrame = Creator.Image(
             Element.Thumbnail, 
             Element.Title, 
-            Config.Window.NewElements and Element.UICorner-12 or (Element.UICorner-4), 
+            Config.Window.NewElements and Element.UICorner-11 or (Element.UICorner-4), 
             Config.Window.Folder,
             "Thumbnail",
             false,
@@ -161,7 +161,7 @@ return function(Config)
         ImageFrame = Creator.Image(
             Element.Image, 
             Element.Title, 
-            Config.Window.NewElements and Element.UICorner-12 or (Element.UICorner-4), 
+            Config.Window.NewElements and Element.UICorner-11 or (Element.UICorner-4), 
             Config.Window.Folder,
             "Image",
             not Element.Color and true or false,

@@ -4,7 +4,7 @@ return {
     Background = "Accent",
     Hover = "Text",
     
-    WindowBackground = "Accent",
+    WindowBackground = "Background",
     
     TopbarButtonIcon = "Icon",
     TopbarTitle = "Text",

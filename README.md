@@ -27,5 +27,7 @@
 - [Discord Server](https://discord.gg/ftgs-development-hub-1300692552005189632)
 - [Documentation](https://Footagesus.github.io/WindUI-Docs/)
 
-- [Small Example](/Example.lua)
-- [New Example](/main_example.lua) (not completed)
+- [Example](/main_example.lua) (wip)
+  ```luau
+  loadstring(game:HttpGet('https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/main_example.lua'))()
+  ```

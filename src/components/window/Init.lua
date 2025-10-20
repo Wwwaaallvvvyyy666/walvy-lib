@@ -773,19 +773,24 @@ return function(Config)
     
     Creator.AddSignal(Window.UIElements.Main.Main.Topbar.Left:GetPropertyChangedSignal("AbsoluteSize"), function()
         local LeftWidth = 0
-        local RightWidth = Window.UIElements.Main.Main.Topbar.Right.UIListLayout.AbsoluteContentSize.X
+        local RightWidth = Window.UIElements.Main.Main.Topbar.Right.UIListLayout.AbsoluteContentSize.X / Config.WindUI.UIScale
         if WindowTitle and WindowAuthor then
-            LeftWidth = math.max(WindowTitle.TextBounds.X, WindowAuthor.TextBounds.X)
+            LeftWidth = math.max(WindowTitle.TextBounds.X / Config.WindUI.UIScale, WindowAuthor.TextBounds.X / Config.WindUI.UIScale)
         else
-            LeftWidth = WindowTitle.TextBounds.X
+            LeftWidth = WindowTitle.TextBounds.X / Config.WindUI.UIScale
         end
         if WindowIcon then
-            LeftWidth = LeftWidth + Window.IconSize + Window.UIPadding+4
+            LeftWidth = LeftWidth + (Window.IconSize / Config.WindUI.UIScale) + (Window.UIPadding / Config.WindUI.UIScale) + (4 / Config.WindUI.UIScale)
         end
-        Window.UIElements.Main.Main.Topbar.Center.Position = UDim2.new(0,LeftWidth + Window.UIPadding,0.5,0)
+        Window.UIElements.Main.Main.Topbar.Center.Position = UDim2.new(
+            0,
+            LeftWidth + (Window.UIPadding / Config.WindUI.UIScale),
+            0.5,
+            0
+        )
         Window.UIElements.Main.Main.Topbar.Center.Size = UDim2.new(
             1,
-            - LeftWidth - RightWidth - (Window.UIPadding*2),
+            - LeftWidth - RightWidth - ((Window.UIPadding * 2) / Config.WindUI.UIScale),
             1,
             0
         )

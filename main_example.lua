@@ -26,6 +26,7 @@ local Window = WindUI:CreateWindow({
     Author = "by .ftgs • Footagesus",
     Folder = "ftgshub",
     NewElements = true,
+    --Size = UDim2.fromOffset(700,700),
     
     HideSearchBar = false,
     
@@ -44,6 +45,13 @@ local Window = WindUI:CreateWindow({
     }
 })
 
+-- */  Tags  /* --
+do
+    Window:Tag({
+        Title = "v" .. WindUI.Version,
+        Color = Color3.fromHex("#6b31ff")
+    })
+end
 
 -- */  Theme (soon)  /* --
 do
