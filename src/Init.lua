@@ -226,7 +226,12 @@ WindUI:SetLanguage(Creator.Language)
 
 
 function WindUI:CreateWindow(Config)
-    local CreateWindow = require("./components/window/Init")
+    local CreateWindow
+    if Config.Style == "Box" then
+        CreateWindow = require("./components/window/BoxWindow")
+    else
+        CreateWindow = require("./components/window/Init")
+    end
     
     if not isfolder("WindUI") then
         makefolder("WindUI")
