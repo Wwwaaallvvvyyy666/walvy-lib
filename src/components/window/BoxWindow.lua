@@ -5,7 +5,6 @@ return function(Config)
 
     local Window = {}
 
-    -- Frame utama
     local Main = New("Frame", {
         Name = "WalvyBoxUI",
         Parent = Config.Parent,
@@ -19,7 +18,6 @@ return function(Config)
         Draggable = true
     })
 
-    -- Judul
     local Title = New("TextLabel", {
         Parent = Main,
         BackgroundColor3 = Color3.fromRGB(45, 45, 45),
@@ -30,7 +28,6 @@ return function(Config)
         TextSize = 16
     })
 
-    -- Tombol contoh
     local Toggle = New("TextButton", {
         Parent = Main,
         BackgroundColor3 = Color3.fromRGB(60, 60, 60),
